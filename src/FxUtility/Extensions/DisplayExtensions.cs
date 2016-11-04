@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace Utility.Extensions
+namespace FxUtility.Extensions
 {
     public static class DisplayExtensions
     {

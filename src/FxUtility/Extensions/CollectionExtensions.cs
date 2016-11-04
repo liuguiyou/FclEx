@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Utility.Extensions
+namespace FxUtility.Extensions
 {
     public static class CollectionExtensions
     {

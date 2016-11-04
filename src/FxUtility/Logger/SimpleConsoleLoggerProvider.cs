@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 
-namespace Utility.Logger
+namespace FxUtility.Logger
 {
     public class SimpleConsoleLoggerProvider : ILoggerProvider
     {

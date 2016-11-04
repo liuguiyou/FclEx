@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class CookieHelper
     {

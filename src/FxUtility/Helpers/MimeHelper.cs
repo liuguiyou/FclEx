@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Utility.Extensions;
+using FxUtility.Extensions;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class MimeHelper
     {

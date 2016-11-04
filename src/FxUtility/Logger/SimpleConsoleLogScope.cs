@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Utility.Logger
+namespace FxUtility.Logger
 {
     public class SimpleConsoleLogScope
     {

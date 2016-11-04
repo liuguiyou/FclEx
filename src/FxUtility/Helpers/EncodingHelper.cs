@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     /// <summary>
     /// 获取文件的编码格式
@@ -39,9 +40,7 @@ namespace Utility.Helpers
                 if (bom[0] == 0xFF && bom[1] == 0xFE && bom[2] == 0x41) return Encoding.Unicode;// 也就是小端的UTF-16
             }
             fs.Seek(0, SeekOrigin.Begin);
-            if (IsUtf8(fs)) return Utf8WithoutBom;
-
-            return Encoding.ASCII;
+            return IsUtf8(fs) ? Utf8WithoutBom : Encoding.ASCII;
         }
 
         // 0XXXXXXX
@@ -50,6 +49,7 @@ namespace Utility.Helpers
         // 11110XXX, 10XXXXXX, 10XXXXXX, 10XXXXXX  
         private static bool IsUtf8(FileStream fs)
         {
+            if (fs == null) throw new ArgumentNullException(nameof(fs));
             using (var r = new BinaryReader(fs))
             {
                 var utf8Flag = 0;

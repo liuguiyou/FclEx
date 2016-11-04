@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace Utility.Extensions
+namespace FxUtility.Extensions
 {
     public static class StringBuilderExtensions
     {

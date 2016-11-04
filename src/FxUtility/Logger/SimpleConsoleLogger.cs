@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using Utility.Extensions;
+using FxUtility.Extensions;
 
-namespace Utility.Logger
+namespace FxUtility.Logger
 {
     public class SimpleConsoleLogger : ILogger
     {

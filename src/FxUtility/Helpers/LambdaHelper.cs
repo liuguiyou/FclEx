@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class LambdaHelper<T>
     {

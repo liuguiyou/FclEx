@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class FileHelper
     {

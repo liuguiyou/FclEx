@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
 
-namespace Utility.Extensions
+namespace FxUtility.Extensions
 {
     public static class Md5Extensions
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class TaskHelper
     {

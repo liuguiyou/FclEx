@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Utility.Extensions;
 
-namespace Utility.Helpers
+namespace FxUtility.Helpers
 {
     public static class EnumHelper
     {
