@@ -17,6 +17,11 @@
             return obj == null;
         }
 
+        public static bool IsNotNull(this object obj)
+        {
+            return obj != null;
+        }
+
         public static bool IsNullOrDefault<T>(this T? obj) where T : struct
         {
             return obj == null || obj.Value.Equals(default(T));
