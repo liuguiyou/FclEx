@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -58,6 +59,33 @@ namespace FxUtility.Extensions
 
             // Compile and return the value.
             return e.Compile()();
+        }
+
+
+        public static object CreateObject(this Type type, params object[] args)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+
+            var argsType = args.Select(a => a.GetType()).ToArray();
+            var ctor = type.GetConstructors().FirstOrDefault(m => m.ArgumentListMatches(argsType));
+            if (ctor != null)
+            {
+                var paras = ctor.GetParameters();
+                if (paras.Length != args.Length)
+                {
+                    // paras.Length must be larger than args.Length
+                    var argsNew = new object[paras.Length];
+                    args.CopyTo(argsNew, 0);
+
+                    for (var i = args.Length; i < paras.Length; i++)
+                    {
+                        argsNew[i] = paras[i].RawDefaultValue;
+                    }
+                    args = argsNew;
+                }
+            }
+            else throw new MissingMethodException();
+            return ctor.Invoke(args);
         }
     }
 }
