@@ -1,0 +1,2 @@
+# FxUtility [![.net core](https://img.shields.io/badge/color-1.0.1-ff69b4.svg?maxAge=2592000&label=.net%20core%20)](https://www.microsoft.com/net/download) [![.net](https://img.shields.io/badge/color-4.6.1-ff69b4.svg?maxAge=2592000&label=.net%20)](https://www.microsoft.com/net/download) ![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)
+some basic useful extensions and helpers for C#
