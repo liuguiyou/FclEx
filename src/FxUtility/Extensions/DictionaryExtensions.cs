@@ -8,7 +8,8 @@ namespace FxUtility.Extensions
     {
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue defaultValue = default(TValue))
         {
-            return dic.ContainsKey(key) ? dic[key] : defaultValue;
+            TValue value;
+            return dic.TryGetValue(key, out value) ? value : defaultValue;
         }
 
         public static void AddOrDo<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue value, Action<TKey> action = null)
@@ -52,6 +53,17 @@ namespace FxUtility.Extensions
         {
             return dic.IsNullOrEmpty() ? string.Empty :
                 string.Join("&", dic.Select(item => $"{item.Key.UrlEncode()}={item.Value.UrlEncode()}"));
+        }
+
+        public static bool GetAndDo<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, Action<TValue> action)
+        {
+            var item = dic.GetOrDefault(key);
+            if (item != null)
+            {
+                action(item);
+                return true;
+            }
+            else return false;
         }
     }
 }
