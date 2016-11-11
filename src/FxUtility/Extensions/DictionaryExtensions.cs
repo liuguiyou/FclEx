@@ -29,6 +29,25 @@ namespace FxUtility.Extensions
             }
         }
 
+        public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dic, IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                if(!dic.ContainsKey(pair.Key))
+                {
+                    dic.Add(pair);
+                }
+            }
+        }
+
+        public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> dic, IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                dic[pair.Key] = pair.Value;
+            }
+        }
+
         public static string ToQueryString(this IDictionary<string, string> dic)
         {
             return dic.IsNullOrEmpty() ? string.Empty :
