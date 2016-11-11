@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,7 +35,7 @@ namespace FxUtility.Extensions
         {
             foreach (var pair in pairs)
             {
-                if(!dic.ContainsKey(pair.Key))
+                if (!dic.ContainsKey(pair.Key))
                 {
                     dic.Add(pair);
                 }
@@ -47,6 +48,12 @@ namespace FxUtility.Extensions
             {
                 dic[pair.Key] = pair.Value;
             }
+        }
+
+        public static void ReplaceBy<TKey, TValue>(this IDictionary<TKey, TValue> dic, IEnumerable<KeyValuePair<TKey, TValue>> pairs)
+        {
+            dic.Clear();
+            AddOrUpdateRange(dic, pairs);
         }
 
         public static string ToQueryString(this IDictionary<string, string> dic)
