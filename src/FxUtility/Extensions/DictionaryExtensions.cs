@@ -77,6 +77,12 @@ namespace FxUtility.Extensions
             AddOrUpdateRange(dic, pairs);
         }
 
+        public static void ReplaceBy<TKey, TValue>(this IDictionary<TKey, TValue> dic, IEnumerable<TValue> items, Func<TValue, TKey> func)
+        {
+            dic.Clear();
+            AddOrUpdateRange(dic, items, func);
+        }
+
         public static string ToQueryString(this IDictionary<string, string> dic)
         {
             return dic.IsNullOrEmpty() ? string.Empty :
