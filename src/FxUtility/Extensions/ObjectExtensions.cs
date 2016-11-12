@@ -31,5 +31,15 @@
         {
             return obj?.ToString() ?? string.Empty;
         }
+
+        public static string ToUpperString(this object obj)
+        {
+            return obj.ToString().ToUpper();
+        }
+
+        public static string ToLowerString(this object obj)
+        {
+            return obj.ToString().ToLower();
+        }
     }
 }
