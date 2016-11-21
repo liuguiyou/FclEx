@@ -10,15 +10,23 @@ namespace FxUtility.Extensions
             return Convert.ToInt32(@enum);
         }
 
-        public static T ToEnum<T>(this string value, T defaultValue = default(T)) where T : struct, IConvertible
+        public static T ToEnum<T>(this string value) where T : struct, IConvertible
         {
-            if (string.IsNullOrEmpty(value))
+            return ToEnum<T>(value, s =>
             {
-                return defaultValue;
-            }
+                throw new ArgumentOutOfRangeException(nameof(value));
+            });
+        }
 
+        public static T ToEnum<T>(this string value, T defaultValue) where T : struct, IConvertible
+        {
+            return ToEnum(value, s => defaultValue);
+        }
+
+        public static T ToEnum<T>(this string value, Func<string, T> defaultValueFunc) where T : struct, IConvertible
+        {
             T result;
-            return Enum.TryParse(value, true, out result) ? result : defaultValue;
+            return Enum.TryParse(value, true, out result) ? result : defaultValueFunc(value);
         }
     }
 }
