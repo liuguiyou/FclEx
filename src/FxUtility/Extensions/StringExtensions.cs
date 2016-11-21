@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -50,6 +51,11 @@ namespace FxUtility.Extensions
         public static string JoinWith(this IEnumerable<string> strs, string separator)
         {
             return string.Join(separator, strs);
+        }
+
+        public static bool Contains(this string source, string toCheck, StringComparison comp)
+        {
+            return source != null && toCheck != null && source.IndexOf(toCheck, comp) >= 0;
         }
     }
 }
