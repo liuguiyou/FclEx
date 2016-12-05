@@ -13,5 +13,12 @@ namespace FxUtility.Helpers
         {
             return (T)typeof(T).CreateObject(args);
         }
+
+        public static void Swap<T>(ref T a, ref T b)
+        {
+            var temp = a;
+            a = b;
+            b = temp;
+        }
     }
 }
