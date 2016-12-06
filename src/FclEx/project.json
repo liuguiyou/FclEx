@@ -1,8 +1,8 @@
 ﻿{
-  "version": "0.1.7-beta",
+  "version": "0.1.7-*",
 
   "packOptions": {
-    "summary": "Some common useful extensions and helpers for .net fundamental class libraries",
+    "summary": "Some basic useful extensions and helpers for C# fundamental class libraries",
     "tags": [ "extensions", "helpers" ],
     "owners": [ "huoshan12345" ],
     "projectUrl": "https://github.com/huoshan12345/FxUtility",
