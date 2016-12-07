@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace FclEx.Extensions
@@ -61,5 +62,45 @@ namespace FclEx.Extensions
         public static byte[] ToBytes(this bool[] bits) => ToBytes(bits, bits.Length);
 
         public static byte[] ToBytes(this List<bool> bits) => ToBytes(bits, bits.Count);
+
+        public static short ToInt16(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToInt16(bytes, startIndex);
+        }
+
+        public static ushort ToUInt16(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToUInt16(bytes, startIndex);
+        }
+
+        public static int ToInt32(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToInt32(bytes, startIndex);
+        }
+
+        public static uint ToUInt32(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToUInt32(bytes, startIndex);
+        }
+
+        public static long ToInt64(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToInt64(bytes, startIndex);
+        }
+
+        public static ulong ToUInt64(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToUInt64(bytes, startIndex);
+        }
+
+        public static float ToSingle(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToSingle(bytes, startIndex);
+        }
+
+        public static double ToDouble(this byte[] bytes, int startIndex = 0)
+        {
+            return BitConverter.ToDouble(bytes, startIndex);
+        }
     }
 }

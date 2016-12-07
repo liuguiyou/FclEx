@@ -31,7 +31,6 @@
     "net461": {
       "dependencies": {
         "System.Net.Http": "4.0.0.0",
-        "System.Runtime": "4.0.20.0",
         "System.Diagnostics.Contracts": "4.0.0.0"
       }
     }
