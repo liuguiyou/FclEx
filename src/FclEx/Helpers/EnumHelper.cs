@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
@@ -10,7 +9,6 @@ namespace FclEx.Helpers
     {
         public static IEnumerable<T> GetValues<T>() where T : struct, IConvertible
         {
-            Contract.Requires<TypeInitializationException>(typeof(T).GetTypeInfo().IsEnum);
             return Enum.GetValues(typeof(T)).Cast<T>();
         }
 
@@ -29,7 +27,6 @@ namespace FclEx.Helpers
 
         public static T ParseFromStrNum<T>(string number, Func<string, T> defaultValueFunc) where T : struct, IConvertible
         {
-            Contract.Requires<TypeInitializationException>(typeof(T).GetTypeInfo().IsEnum);
             int val;
             if (int.TryParse(number, out val))
             {

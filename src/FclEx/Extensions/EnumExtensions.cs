@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Reflection;
 
 namespace FclEx.Extensions
 {
@@ -27,7 +25,6 @@ namespace FclEx.Extensions
 
         public static T ToEnum<T>(this string value, Func<string, T> defaultValueFunc) where T : struct, IConvertible
         {
-            Contract.Requires<TypeInitializationException>(typeof(T).GetTypeInfo().IsEnum);
             T result;
             return Enum.TryParse(value, true, out result) ? result : defaultValueFunc(value);
         }
