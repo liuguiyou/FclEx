@@ -42,9 +42,10 @@ namespace FclEx.Extesions
             return token.ToObject<long>();
         }
 
-        public static T ToEnum<T>(this JToken token) where T : struct, IConvertible
+        public static T ToEnum<T>(this JToken token, T defaultVaule = default(T)) 
+            where T : struct, IConvertible
         {
-            return token.ToString().ToEnum<T>();
+            return token.ToString().ToEnum(defaultVaule);
         }
     }
 }
