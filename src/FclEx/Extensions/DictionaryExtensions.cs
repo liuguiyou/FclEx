@@ -98,5 +98,31 @@ namespace FclEx.Extensions
             }
             else return false;
         }
+
+        public static void Add<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
+            where TCol : ICollection<TValue>, new()
+        {
+            TCol col;
+            if (!dic.TryGetValue(key, out col))
+            {
+                col = new TCol();
+                dic[key] = col;
+            }
+            col.Add(value);
+        }
+
+        public static bool Remove<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
+            where TCol : ICollection<TValue>, new()
+        {
+            TCol col;
+            return dic.TryGetValue(key, out col) && (col?.Remove(value) ?? false);
+        }
+
+        public static bool Contains<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
+            where TCol : ICollection<TValue>, new()
+        {
+            TCol col;
+            return dic.TryGetValue(key, out col) && (col?.Contains(value) ?? false);
+        }
     }
 }
