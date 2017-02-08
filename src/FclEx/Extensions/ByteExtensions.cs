@@ -101,5 +101,63 @@ namespace FclEx.Extensions
         {
             return BitConverter.ToDouble(bytes, startIndex);
         }
+
+        public static int IndexOf(this byte[] buffer, int startIndex, params byte[] subBytes)
+        {
+            if (subBytes.Length > buffer.Length) return -1;
+
+            var i = startIndex; // 主串的位置
+            var j = 0; // 模式串的位置
+            
+            var next = GetNextArray(subBytes);
+
+            while (i < buffer.Length && j < subBytes.Length)
+            {
+                if (j == -1 || buffer[i] == subBytes[j])
+                {
+                    // 当j为-1时，要移动的是i，当然j也要归0
+                    i++;
+                    j++;
+                }
+                else
+                {
+                    // i不需要回溯了
+                    // i = i - j + 1;
+                    j = next[j]; // j回到指定位置
+
+                }
+            }
+            return j == subBytes.Length ? i - j : -1;
+        }
+
+        private static int[] GetNextArray(byte[] subBytes)
+        {
+            var next = new int[subBytes.Length];
+            next[0] = -1;
+            var j = 0;
+            var k = -1;
+
+            while (j < subBytes.Length - 1)
+            {
+                if (k == -1 || subBytes[j] == subBytes[k])
+                {
+                    if (subBytes[++j] == subBytes[++k])
+                    {
+                        // 当两个字符相等时要跳过
+                        next[j] = next[k];
+                    }
+                    else
+                    {
+                        next[j] = k;
+                    }
+                }
+                else
+                {
+                    k = next[k];
+                }
+            }
+            return next;
+
+        }
     }
 }
