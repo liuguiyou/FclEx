@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>0.1.9</VersionPrefix>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
+    <AssemblyName>FclEx.Component</AssemblyName>
+    <PackageId>FclEx.Component</PackageId>
+    <PackageTags>extensions;helpers</PackageTags>
+    <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/huoshan12345/FclEx/blob/master/LICENSE.TXT</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>0.2.0</Version>
+    <Authors>huoshan12345</Authors>
+    <Copyright>huoshan12345</Copyright>
+    <Description></Description>
+    <RootNamespace>FclEx</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FclEx\FclEx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

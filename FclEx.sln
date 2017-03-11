@@ -1,22 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E25A1CA7-1304-44D5-89BD-170AE8F0DED4}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		nupkg\pack.bat = nupkg\pack.bat
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FclEx", "src\FclEx\FclEx.xproj", "{67DB19D1-7956-4B05-9F0C-563CBB3612DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx", "src\FclEx\FclEx.csproj", "{67DB19D1-7956-4B05-9F0C-563CBB3612DF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FclEx.Component", "src\FclEx.Component\FclEx.Component.xproj", "{8505B3D4-5D1F-43D8-B891-E245B57CB601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Component", "src\FclEx.Component\FclEx.Component.csproj", "{8505B3D4-5D1F-43D8-B891-E245B57CB601}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "FclEx.Json", "src\FclEx.Json\FclEx.Json.xproj", "{332874AA-B2D7-4856-A2F8-389E633128E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Json", "src\FclEx.Json\FclEx.Json.csproj", "{332874AA-B2D7-4856-A2F8-389E633128E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
