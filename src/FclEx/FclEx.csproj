@@ -1,39 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>0.1.9</VersionPrefix>
-    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
-    <AssemblyName>FclEx</AssemblyName>
-    <PackageId>FclEx</PackageId>
-    <PackageTags>extensions;helpers</PackageTags>
+    <TargetFramework>netstandard1.6</TargetFramework>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/huoshan12345/FclEx/blob/master/LICENSE.TXT</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <Copyright>huoshan12345</Copyright>
+    <PackageTags>extensions;helpers</PackageTags>
+    <Version>0.2.1</Version>
     <Authors>huoshan12345</Authors>
-    <Version>0.2.0</Version>
+    <Company />
     <Description>Some basic useful extensions and helpers for C# fundamental class libraries</Description>
+    <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/huoshan12345/FclEx/blob/master/LICENSE.TXT</PackageLicenseUrl>
+    <Copyright>huoshan12345</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
-    <PackageReference Include="System.Net.Http" Version="4.3.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

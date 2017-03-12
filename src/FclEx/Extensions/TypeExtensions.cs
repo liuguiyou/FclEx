@@ -23,7 +23,7 @@ namespace FclEx.Extensions
                     while (e1.MoveNext())
                     {
                         if (!e2.MoveNext()) return false;
-                        else if (!(comparer.Equals(e1.Current, e2.Current) || e1.Current.IsAssignableFrom(e2.Current)))
+                        else if (!(comparer.Equals(e1.Current, e2.Current) || e1.Current.GetTypeInfo().IsAssignableFrom(e2.Current)))
                             return false;
                     }
                     if (e2.MoveNext())
@@ -67,7 +67,7 @@ namespace FclEx.Extensions
             if (type == null) throw new ArgumentNullException(nameof(type));
 
             var argsType = args.Select(a => a.GetType()).ToArray();
-            var ctor = type.GetConstructors().FirstOrDefault(m => m.ArgumentListMatches(argsType));
+            var ctor = type.GetTypeInfo().GetConstructors().FirstOrDefault(m => m.ArgumentListMatches(argsType));
             if (ctor != null)
             {
                 var paras = ctor.GetParameters();
