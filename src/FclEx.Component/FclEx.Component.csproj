@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <RootNamespace>FclEx</RootNamespace>
     <Authors>huoshan12345</Authors>
     <Copyright>huoshan12345</Copyright>
