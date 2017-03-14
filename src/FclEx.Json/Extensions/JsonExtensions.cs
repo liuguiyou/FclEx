@@ -1,9 +1,8 @@
 ﻿using System;
-using FclEx.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FclEx.Extesions
+namespace FclEx.Extensions
 {
     public static class JsonExtensions
     {
