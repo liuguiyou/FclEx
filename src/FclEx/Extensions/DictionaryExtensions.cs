@@ -1,15 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FclEx.Collections;
 
 namespace FclEx.Extensions
 {
     public static class DictionaryExtensions
     {
-        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue defaultValue = default(TValue))
+        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, 
+            TValue defaultValue = default(TValue))
         {
-            TValue value;
-            return dic.TryGetValue(key, out value) ? value : defaultValue;
+            return dic.TryGetValue(key, out var value) ? value : defaultValue;
+        }
+
+        public static TValue GetFirstOrDefault<TKey, TValue>(this MultiValueDictionary<TKey, TValue> dic, TKey key,
+            TValue defaultValue = default(TValue))
+        {
+            return dic.TryGetValue(key, out var list) && list.Count > 0 ? list.First() : defaultValue;
         }
 
         public static void AddOrDo<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, TValue value, Action<TKey> action = null)
@@ -102,8 +109,7 @@ namespace FclEx.Extensions
         public static void Add<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
             where TCol : ICollection<TValue>, new()
         {
-            TCol col;
-            if (!dic.TryGetValue(key, out col))
+            if (!dic.TryGetValue(key, out var col))
             {
                 col = new TCol();
                 dic[key] = col;
@@ -114,15 +120,13 @@ namespace FclEx.Extensions
         public static bool Remove<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
             where TCol : ICollection<TValue>, new()
         {
-            TCol col;
-            return dic.TryGetValue(key, out col) && (col?.Remove(value) ?? false);
+            return dic.TryGetValue(key, out var col) && (col?.Remove(value) ?? false);
         }
 
         public static bool Contains<TKey, TValue, TCol>(this IDictionary<TKey, TCol> dic, TKey key, TValue value)
             where TCol : ICollection<TValue>, new()
         {
-            TCol col;
-            return dic.TryGetValue(key, out col) && (col?.Contains(value) ?? false);
+            return dic.TryGetValue(key, out var col) && (col?.Contains(value) ?? false);
         }
     }
 }
