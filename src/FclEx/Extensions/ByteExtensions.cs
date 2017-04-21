@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace FclEx.Extensions
@@ -62,45 +63,29 @@ namespace FclEx.Extensions
 
         public static byte[] ToBytes(this List<bool> bits) => ToBytes(bits, bits.Count);
 
-        public static short ToInt16(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToInt16(bytes, startIndex);
-        }
+        public static short ToInt16(this byte[] bytes, int startIndex = 0) => BitConverter.ToInt16(bytes, startIndex);
+        public static short ReadInt16(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<short>(bytes, ref startIndex);
 
-        public static ushort ToUInt16(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToUInt16(bytes, startIndex);
-        }
+        public static ushort ToUInt16(this byte[] bytes, int startIndex = 0) => BitConverter.ToUInt16(bytes, startIndex);
+        public static ushort ReadUInt16(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<ushort>(bytes, ref startIndex);
 
-        public static int ToInt32(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToInt32(bytes, startIndex);
-        }
+        public static int ToInt32(this byte[] bytes, int startIndex = 0) => BitConverter.ToInt32(bytes, startIndex);
+        public static int ReadInt32(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<int>(bytes, ref startIndex);
 
-        public static uint ToUInt32(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToUInt32(bytes, startIndex);
-        }
+        public static uint ToUInt32(this byte[] bytes, int startIndex = 0) => BitConverter.ToUInt32(bytes, startIndex);
+        public static uint ReadUInt32(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<uint>(bytes, ref startIndex);
 
-        public static long ToInt64(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToInt64(bytes, startIndex);
-        }
+        public static long ToInt64(this byte[] bytes, int startIndex = 0) => BitConverter.ToInt64(bytes, startIndex);
+        public static long ReadInt64(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<long>(bytes, ref startIndex);
 
-        public static ulong ToUInt64(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToUInt64(bytes, startIndex);
-        }
+        public static ulong ToUInt64(this byte[] bytes, int startIndex = 0) => BitConverter.ToUInt64(bytes, startIndex);
+        public static ulong ReadUInt64(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<ulong>(bytes, ref startIndex);
 
-        public static float ToSingle(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToSingle(bytes, startIndex);
-        }
+        public static float ToFloat(this byte[] bytes, int startIndex = 0) => BitConverter.ToSingle(bytes, startIndex);
+        public static float ReadFloat(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<float>(bytes, ref startIndex);
 
-        public static double ToDouble(this byte[] bytes, int startIndex = 0)
-        {
-            return BitConverter.ToDouble(bytes, startIndex);
-        }
+        public static double ToDouble(this byte[] bytes, int startIndex = 0) => BitConverter.ToDouble(bytes, startIndex);
+        public static double ReadDouble(this byte[] bytes, ref int startIndex) => ReadUnmanagedStruct<double>(bytes, ref startIndex);
 
         public static int IndexOf(this byte[] buffer, int startIndex, params byte[] subBytes)
         {
@@ -108,7 +93,7 @@ namespace FclEx.Extensions
 
             var i = startIndex; // 主串的位置
             var j = 0; // 模式串的位置
-            
+
             var next = GetNextArray(subBytes);
 
             while (i < buffer.Length && j < subBytes.Length)
@@ -158,6 +143,33 @@ namespace FclEx.Extensions
             }
             return next;
 
+        }
+
+        public static T ToUnmanagedStruct<T>(this byte[] bytes, int startIndex = 0) where T : struct
+        {
+            return ReadUnmanagedStruct<T>(bytes, ref startIndex);
+        }
+
+        public static T ReadUnmanagedStruct<T>(this byte[] bytes, ref int startIndex) where T : struct
+        {
+            var length = Marshal.SizeOf<T>();
+            var ptr = Marshal.AllocHGlobal(length);
+            Marshal.Copy(bytes, startIndex, ptr, length);
+            var obj = Marshal.PtrToStructure<T>(ptr);
+            Marshal.FreeHGlobal(ptr);
+            startIndex += length;
+            return obj;
+        }
+
+        public static byte[] ToUnmanagedBytes<T>(this T obj) where T : struct
+        {
+            var length = Marshal.SizeOf(obj);
+            var bufByte = new byte[length];
+            var ptr = Marshal.AllocHGlobal(length);
+            Marshal.StructureToPtr(obj, ptr, true);
+            Marshal.Copy(ptr, bufByte, 0, length);
+            Marshal.FreeHGlobal(ptr);
+            return bufByte;
         }
     }
 }

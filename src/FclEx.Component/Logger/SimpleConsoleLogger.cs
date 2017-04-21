@@ -12,8 +12,7 @@ namespace FclEx.Logger
 
         public SimpleConsoleLogger(string name, LogLevel minLevel = LogLevel.Information)
         {
-            if (name == null) throw new ArgumentNullException(nameof(name));
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             _minLevel = minLevel;
         }
 
