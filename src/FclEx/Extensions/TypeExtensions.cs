@@ -41,7 +41,6 @@ namespace FclEx.Extensions
                 return null;
         }
 
-
         public static object GetDefaultValueV2(this Type type)
         {
             // Validate parameters.
@@ -60,7 +59,6 @@ namespace FclEx.Extensions
             // Compile and return the value.
             return e.Compile()();
         }
-
 
         public static object CreateObject(this Type type, params object[] args)
         {
@@ -86,6 +84,18 @@ namespace FclEx.Extensions
             }
             else throw new MissingMethodException();
             return ctor.Invoke(args);
+        }
+
+        public static bool IsInheritedFromGenericType(this Type type, Type genericType)
+        {
+            return GetGenericInterface(type, genericType) != null;
+        }
+
+        public static Type GetGenericInterface(this Type type, Type genericType)
+        {
+            return type.GetTypeInfo().GetInterfaces().FirstOrDefault(x =>
+                x.GetTypeInfo().IsGenericType &&
+                x.GetGenericTypeDefinition() == genericType);
         }
     }
 }
