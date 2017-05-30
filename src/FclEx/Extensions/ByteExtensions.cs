@@ -7,6 +7,8 @@ namespace FclEx.Extensions
 {
     public static class ByteExtensions
     {
+        public static string ToBase64String(this byte[] bytes) => Convert.ToBase64String(bytes);
+
         public static string ToHexString(this byte[] bytes)
         {
             var builder = new StringBuilder();

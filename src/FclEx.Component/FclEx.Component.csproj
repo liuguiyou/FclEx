@@ -12,10 +12,11 @@
     <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>0.2.3-beta3</Version>
+    <Version>0.2.3-beta4</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ImageSharp" Version="1.0.0-alpha9-00089" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
   </ItemGroup>
 

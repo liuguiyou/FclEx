@@ -5,6 +5,8 @@ namespace FclEx.Logger
 {
     public class EmptyLogger : ILogger
     {
+        public static EmptyLogger Logger { get; } = new EmptyLogger();
+
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
             Func<TState, Exception, string> formatter)
         {

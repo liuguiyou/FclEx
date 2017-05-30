@@ -8,6 +8,8 @@ namespace FclEx.Extensions
 {
     public static class StringExtensions
     {
+        public static byte[] Base64StringToBytes(this string base64String) => Convert.FromBase64String(base64String);
+        
         public static byte[] ToUtf8Bytes(this string input)
         {
             return Encoding.UTF8.GetBytes(input);
