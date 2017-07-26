@@ -7,6 +7,10 @@ namespace FclEx.Extensions
 {
     public static class ByteExtensions
     {
+        public static string GetString(this byte[] bytes, Encoding encoding) => encoding.GetString(bytes);
+
+        public static string GetString(this byte[] bytes) => bytes.GetString(Encoding.UTF8);
+
         public static string ToBase64String(this byte[] bytes) => Convert.ToBase64String(bytes);
 
         public static string ToHexString(this byte[] bytes)

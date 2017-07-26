@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FclEx.Extensions
 {
@@ -6,26 +7,12 @@ namespace FclEx.Extensions
     {
         public static int IndexOf<T>(this T[] items, T item)
         {
-            if (items != null)
-            {
-                for (var i = 0; i < items.Length; ++i)
-                {
-                    if (ReferenceEquals(item, items[i])) return i;
-                }
-            }
-            return -1;
+            return items != null ? Array.IndexOf(items, item) : -1;
         }
 
         public static int LastIndexOf<T>(this T[] items, T item)
         {
-            if (items != null)
-            {
-                for (var i = items.Length - 1; i >= 0; --i)
-                {
-                    if (ReferenceEquals(item, items[i])) return i;
-                }
-            }
-            return -1;
+            return items != null ? Array.LastIndexOf(items, item) : -1;
         }
 
         public static void Clear<T>(this T[] items)
@@ -34,6 +21,11 @@ namespace FclEx.Extensions
             {
                 Array.Clear(items, 0, items.Length);
             }
+        }
+
+        public static T GetAtOrDefault<T>(this IList<T> list, int index, T defaultValue = default(T))
+        {
+            return list != null && list.Count > index ? list[index] : defaultValue;
         }
     }
 }

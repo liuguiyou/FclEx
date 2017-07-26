@@ -4,20 +4,19 @@
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <RootNamespace>FclEx</RootNamespace>
     <Authors>huoshan12345</Authors>
-    <Copyright>huoshan12345</Copyright>
-    <Description />
+    <Version>0.2.4</Version>
     <Company />
+    <Description />
+    <Copyright>huoshan12345</Copyright>
     <PackageLicenseUrl>https://github.com/huoshan12345/FclEx/blob/master/LICENSE.TXT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
     <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>0.2.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImageSharp" Version="1.0.0-alpha9-00173" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
+    <PackageReference Include="AutoMapper" Version="6.1.1" />
   </ItemGroup>
 
   <ItemGroup>

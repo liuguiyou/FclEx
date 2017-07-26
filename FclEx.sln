@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}"
 EndProject
@@ -12,11 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx", "src\FclEx\FclEx.csproj", "{C69BFE99-48DF-4508-B479-4ED6B6FD1C7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx", "src\FclEx\FclEx.csproj", "{C69BFE99-48DF-4508-B479-4ED6B6FD1C7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx.Component", "src\FclEx.Component\FclEx.Component.csproj", "{89D0D590-943F-446F-99D1-9A130B2E8779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Component", "src\FclEx.Component\FclEx.Component.csproj", "{89D0D590-943F-446F-99D1-9A130B2E8779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx.Json", "src\FclEx.Json\FclEx.Json.csproj", "{5148DC89-50BD-464B-B3E7-8414D8375516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Json", "src\FclEx.Json\FclEx.Json.csproj", "{5148DC89-50BD-464B-B3E7-8414D8375516}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx.Mapper", "src\FclEx.Mapper\FclEx.Mapper.csproj", "{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{5148DC89-50BD-464B-B3E7-8414D8375516}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5148DC89-50BD-464B-B3E7-8414D8375516}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5148DC89-50BD-464B-B3E7-8414D8375516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,5 +50,6 @@ Global
 		{C69BFE99-48DF-4508-B479-4ED6B6FD1C7C} = {ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}
 		{89D0D590-943F-446F-99D1-9A130B2E8779} = {ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}
 		{5148DC89-50BD-464B-B3E7-8414D8375516} = {ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}
+		{35781FEA-9DC2-4848-ADD0-3A9EB2A95B35} = {ABBD6045-5447-4C9B-AF77-E9ACF4EE2641}
 	EndGlobalSection
 EndGlobal

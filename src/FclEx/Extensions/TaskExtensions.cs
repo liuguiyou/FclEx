@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace FclEx.Extensions
@@ -20,5 +21,9 @@ namespace FclEx.Extensions
         {
             return Task.WhenAll(tasks);
         }
+
+        public static void Forget(this ConfiguredTaskAwaitable awaitable) { }
+
+        public static void Forget<T>(this ConfiguredTaskAwaitable<T> awaitable) { }
     }
 }

@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <RootNamespace>FclEx</RootNamespace>
     <Authors>huoshan12345</Authors>
-    <Version>0.2.3-beta3</Version>
+    <Version>0.2.4</Version>
     <Company />
     <Description />
     <Copyright>huoshan12345</Copyright>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>

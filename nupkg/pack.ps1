@@ -7,7 +7,8 @@ $srcPath = Join-Path $slnPath "src"
 $projects = (
     "FclEx",
     "FclEx.Component",
-    "FclEx.Json"  
+    "FclEx.Json",
+	"FclEx.Mapper"
 )
 
 # Rebuild solution
@@ -32,3 +33,5 @@ foreach($project in $projects) {
 
 # Go back to the pack folder
 Set-Location $packFolder
+
+Read-Host

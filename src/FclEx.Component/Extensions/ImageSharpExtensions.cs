@@ -12,7 +12,7 @@ namespace FclEx.Extensions
         {
             using (var m = new MemoryStream())
             {
-                bitmap.Save(m);
+                bitmap.SaveAsPng(m);
                 return m.ToArray().ToBase64String();
             }
         }
