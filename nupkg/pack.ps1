@@ -35,4 +35,5 @@ foreach($project in $projects) {
 # Go back to the pack folder
 Set-Location $packFolder
 
+Write-Output "Finished. Press any key to exit."
 Read-Host

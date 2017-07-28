@@ -3,26 +3,36 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ImageSharp;
+using ImageSharp.Formats;
 
 namespace FclEx.Extensions
 {
     public static class ImageSharpExtensions
     {
-        public static string ToRawBase64String(this Image<Rgba32> bitmap)
+        public static string ToRawBase64String(this Image<Rgba32> image, IImageFormat format = null)
         {
             using (var m = new MemoryStream())
             {
-                bitmap.SaveAsPng(m);
+                image.Save(m, format ?? image.CurrentImageFormat);
                 return m.ToArray().ToBase64String();
             }
         }
 
         public static Image<Rgba32> Base64StringToImage(this string base64String)
         {
-            using (var m = new MemoryStream(base64String.Base64StringToBytes()))
+            return base64String.Base64StringToBytes().ToImage();
+        }
+
+        public static Image<Rgba32> ToImage(this byte[] bytes) => ImageSharp.Image.Load(bytes);
+
+        public static byte[] ToBytes(this Image<Rgba32> image, IImageFormat format = null)
+        {
+            using (var m = new MemoryStream())
             {
-                return ImageSharp.Image.Load(m);
+                image.Save(m, format ?? image.CurrentImageFormat);
+                return m.ToArray();
             }
+
         }
     }
 }
