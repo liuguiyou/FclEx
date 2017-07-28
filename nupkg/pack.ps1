@@ -6,9 +6,10 @@ $srcPath = Join-Path $slnPath "src"
 # List of projects
 $projects = (
     "FclEx",
-    "FclEx.Component",
+    "FclEx.Logger",
     "FclEx.Json",
-	"FclEx.Mapper"
+	"FclEx.Mapper",
+	"FclEx.Image"
 )
 
 # Rebuild solution

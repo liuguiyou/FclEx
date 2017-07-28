@@ -19,7 +19,7 @@ namespace FclEx.Extensions
 
         public static Image<Rgba32> Base64StringToImage(this string base64String)
         {
-            using (var m = new MemoryStream(Convert.FromBase64String(base64String)))
+            using (var m = new MemoryStream(base64String.Base64StringToBytes()))
             {
                 return ImageSharp.Image.Load(m);
             }

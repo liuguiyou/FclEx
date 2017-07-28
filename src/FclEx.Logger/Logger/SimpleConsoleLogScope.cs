@@ -5,7 +5,7 @@ namespace FclEx.Logger
 {
     public class SimpleConsoleLogScope
     {
-        private static readonly AsyncLocal<SimpleConsoleLogScope> Scope = new AsyncLocal<SimpleConsoleLogScope>();
+        private static readonly AsyncLocal<SimpleConsoleLogScope> _scope = new AsyncLocal<SimpleConsoleLogScope>();
         private readonly string _name;
         private readonly object _state;
 
@@ -15,11 +15,11 @@ namespace FclEx.Logger
         {
             get
             {
-                return Scope.Value;
+                return _scope.Value;
             }
             set
             {
-                Scope.Value = value;
+                _scope.Value = value;
             }
         }
 
