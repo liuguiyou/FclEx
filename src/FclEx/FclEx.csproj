@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>0.2.5</Version>
+    <Version>0.2.6</Version>
     <Authors>huoshan12345</Authors>
     <Company />
     <Description>Some basic useful extensions and helpers for C# fundamental class libraries</Description>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />

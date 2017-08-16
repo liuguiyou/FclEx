@@ -6,8 +6,8 @@ namespace FclEx.Logger
 {
     public class SimpleConsoleLogger : ILogger
     {
+        private static readonly object _syncObj = new object();
         private readonly LogLevel _minLevel;
-        private readonly object _syncObj = new object();
         public string Name { get; }
 
         public SimpleConsoleLogger(string name, LogLevel minLevel = LogLevel.Information)

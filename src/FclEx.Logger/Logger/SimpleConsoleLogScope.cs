@@ -13,14 +13,8 @@ namespace FclEx.Logger
 
         public static SimpleConsoleLogScope Current
         {
-            get
-            {
-                return _scope.Value;
-            }
-            set
-            {
-                _scope.Value = value;
-            }
+            get => _scope.Value;
+            set => _scope.Value = value;
         }
 
         internal SimpleConsoleLogScope(string name, object state)
