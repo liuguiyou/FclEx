@@ -10,9 +10,8 @@ namespace FclEx.Helpers
 {
     public static class ResourceHelper
     {
-        public static Stream LoadEmbededResource(string name)
+        public static Stream LoadEmbededResource(Assembly assembly, string name)
         {
-            var assembly = Assembly.GetEntryAssembly();
             var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(p => p.EndsWith(name));
             var stream = resourceName == null ? null : assembly.GetManifestResourceStream(resourceName);
             return stream;
@@ -26,23 +25,23 @@ namespace FclEx.Helpers
             return fs;
         }
 
-        public static T LoadLocalResource<T>(string name, Func<Stream, T> func)
+        public static T LoadLocalResource<T>(Assembly assembly, string name, Func<Stream, T> func)
         {
-            var resource = LoadFileResource(name) ?? LoadEmbededResource(name);
+            var resource = LoadFileResource(name) ?? LoadEmbededResource(assembly, name);
             using (resource)
             {
                 return func(resource);
             }
         }
 
-        public static string LoadStringFromLocalResource(string name)
+        public static string LoadStringFromLocalResource(Assembly assembly, string name)
         {
-            return LoadLocalResource(name, s => s.ToBytes().GetString());
+            return LoadLocalResource(assembly, name, s => s.ToBytes().GetString());
         }
 
-        public static string[] LoadLinesFromLocalResource(string name)
+        public static string[] LoadLinesFromLocalResource(Assembly assembly, string name)
         {
-            return LoadStringFromLocalResource(name)
+            return LoadStringFromLocalResource(assembly, name)
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
     }
