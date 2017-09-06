@@ -19,8 +19,7 @@ namespace FclEx.Extensions
         public static void AddRangeSafely<T>(this ICollection<T> col, IEnumerable<T> items)
         {
             if (items == null) return;
-            var list = col as List<T>;
-            if (list != null)
+            if (col is List<T> list)
             {
                 list.AddRange(items);
             }

@@ -9,18 +9,16 @@ using System.Linq;
 namespace FclEx.Collections
 {
     /// <summary>
-    /// A MultiValueDictionary can be viewed as a <see cref="IDictionary{TKey,TValue}" /> that allows multiple 
+    /// A MultiValueDictionary can be viewed as a <see cref="T:System.Collections.IDictionary" /> that allows multiple 
     /// values for any given unique key. While the MultiValueDictionary API is 
-    /// mostly the same as that of a regular <see cref="IDictionary" />, there is a distinction
-    /// in that getting the value for a key returns a <see cref="IReadOnlyCollection{TValue}" /> of values
+    /// mostly the same as that of a regular <see cref="T:System.Collections.IDictionary" />, there is a distinction
+    /// in that getting the value for a key returns a <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> of values
     /// rather than a single value associated with that key. Additionally, 
     /// there is functionality to allow adding or removing more than a single
     /// value at once. 
-    /// 
     /// The MultiValueDictionary can also be viewed as a IReadOnlyDictionary&lt;TKey,IReadOnlyCollection&lt;TValue&gt;t&gt;
-    /// where the <see cref="IReadOnlyCollection{TValue}" /> is abstracted from the view of the programmer.
-    /// 
-    /// For a read-only MultiValueDictionary, see <see cref="ILookup{TKey,TElement}" />.
+    /// where the <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> is abstracted from the view of the programmer.
+    /// For a read-only MultiValueDictionary, see <see cref="T:System.Linq.ILookup`2" />.
     /// </summary>
     /// <typeparam name="TKey">The type of the key.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
@@ -104,7 +102,7 @@ namespace FclEx.Collections
         public MultiValueDictionary(int capacity, IEqualityComparer<TKey> comparer)
         {
             if (capacity < 0)
-                throw new ArgumentOutOfRangeException(nameof(capacity));
+                throw new ArgumentOutOfRangeException("capacity");
             _dictionary = new Dictionary<TKey, InnerCollectionView>(capacity, comparer);
         }
 
@@ -171,8 +169,7 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue> { _newCollectionFactory = () => new TValueCollection() };
             return multiValueDictionary;
         }
 
@@ -206,8 +203,7 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity);
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity) { _newCollectionFactory = () => new TValueCollection() };
             return multiValueDictionary;
         }
 
@@ -239,8 +235,7 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer) { _newCollectionFactory = () => new TValueCollection() };
             return multiValueDictionary;
         }
 
@@ -276,8 +271,10 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer);
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer)
+            {
+                _newCollectionFactory = () => new TValueCollection()
+            };
             return multiValueDictionary;
         }
 
@@ -311,8 +308,7 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue> { _newCollectionFactory = () => new TValueCollection() };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -350,8 +346,7 @@ namespace FclEx.Collections
             if (new TValueCollection().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary._newCollectionFactory = () => new TValueCollection();
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer) { _newCollectionFactory = () => new TValueCollection() };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -392,8 +387,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             return multiValueDictionary;
         }
 
@@ -429,8 +426,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity);
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity)
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             return multiValueDictionary;
         }
 
@@ -464,8 +463,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>) (Delegate) collectionFactory
+            };
             return multiValueDictionary;
         }
 
@@ -503,8 +504,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer);
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(capacity, comparer)
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             return multiValueDictionary;
         }
 
@@ -540,8 +543,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>();
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -581,8 +586,10 @@ namespace FclEx.Collections
             if (collectionFactory().IsReadOnly)
                 throw new InvalidOperationException();
 
-            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer);
-            multiValueDictionary._newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory;
+            var multiValueDictionary = new MultiValueDictionary<TKey, TValue>(comparer)
+            {
+                _newCollectionFactory = (Func<ICollection<TValue>>)(Delegate)collectionFactory
+            };
             foreach (var pair in enumerable)
                 multiValueDictionary.AddRange(pair.Key, pair.Value);
             return multiValueDictionary;
@@ -614,8 +621,7 @@ namespace FclEx.Collections
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            InnerCollectionView collection;
-            if (!_dictionary.TryGetValue(key, out collection))
+            if (!_dictionary.TryGetValue(key, out var collection))
             {
                 collection = new InnerCollectionView(key, _newCollectionFactory());
                 _dictionary.Add(key, collection);
@@ -643,8 +649,7 @@ namespace FclEx.Collections
             if (values == null)
                 throw new ArgumentNullException(nameof(values));
 
-            InnerCollectionView collection;
-            if (!_dictionary.TryGetValue(key, out collection))
+            if (!_dictionary.TryGetValue(key, out var collection))
             {
                 collection = new InnerCollectionView(key, _newCollectionFactory());
                 _dictionary.Add(key, collection);
@@ -668,8 +673,7 @@ namespace FclEx.Collections
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
-            InnerCollectionView collection;
-            if (_dictionary.TryGetValue(key, out collection) && _dictionary.Remove(key))
+            if (_dictionary.TryGetValue(key, out _) && _dictionary.Remove(key))
             {
                 _version++;
                 return true;
@@ -696,8 +700,7 @@ namespace FclEx.Collections
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
-            InnerCollectionView collection;
-            if (_dictionary.TryGetValue(key, out collection) && collection.RemoveValue(value))
+            if (_dictionary.TryGetValue(key, out var collection) && collection.RemoveValue(value))
             {
                 if (collection.Count == 0)
                     _dictionary.Remove(key);
@@ -720,8 +723,7 @@ namespace FclEx.Collections
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
-            InnerCollectionView collection;
-            return (_dictionary.TryGetValue(key, out collection) && collection.Contains(value));
+            return (_dictionary.TryGetValue(key, out var collection) && collection.Contains(value));
         }
 
         /// <summary>
@@ -731,10 +733,7 @@ namespace FclEx.Collections
         /// <returns><c>true</c> if the <see cref="MultiValueDictionary{TKey,TValue}"/> contains the <paramref name="value"/>; otherwise <c>false</c></returns>      
         public bool ContainsValue(TValue value)
         {
-            foreach (InnerCollectionView sublist in _dictionary.Values)
-                if (sublist.Contains(value))
-                    return true;
-            return false;
+            return _dictionary.Values.Any(sublist => sublist.Contains(value));
         }
 
         /// <summary>
@@ -753,19 +752,19 @@ namespace FclEx.Collections
         /*======================================================================
         ** Members implemented from IReadOnlyDictionary<TKey, IReadOnlyCollection<TValue>>
         ======================================================================*/
-
+        
         /// <summary>
-        /// Determines if the given <typeparamref name="TKey"/> exists within this <see cref="MultiValueDictionary{TKey,TValue}"/> and has
-        /// at least one <typeparamref name="TValue"/> associated with it.
+        /// Determines if the given <typeparamref name="TKey" /> exists within this <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> and has
+        /// at least one <typeparamref name="TValue" /> associated with it.
         /// </summary>
-        /// <param name="key">The <typeparamref name="TKey"/> to search the <see cref="MultiValueDictionary{TKey,TValue}"/> for</param>
-        /// <returns><c>true</c> if the <see cref="MultiValueDictionary{TKey,TValue}"/> contains the requested <typeparamref name="TKey"/>;
+        /// <param name="key">The <typeparamref name="TKey" /> to search the <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> for</param>
+        /// <returns><c>true</c> if the <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> contains the requested <typeparamref name="TKey" />;
         /// otherwise <c>false</c>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> must be non-null</exception>
         public bool ContainsKey(TKey key)
         {
             if (key == null)
-                throw new ArgumentNullException(nameof(key));
+                throw new ArgumentNullException("key");
             // Since modification to the MultiValueDictionary is only allowed through its own API, we
             // can ensure that if a collection is in the internal dictionary then it must have at least one
             // associated TValue, or else it would have been removed whenever its final TValue was removed.
@@ -773,78 +772,65 @@ namespace FclEx.Collections
         }
 
         /// <summary>
-        /// Gets each <typeparamref name="TKey"/> in this <see cref="MultiValueDictionary{TKey,TValue}"/> that
-        /// has one or more associated <typeparamref name="TValue"/>.
+        /// Gets each <typeparamref name="TKey" /> in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> that
+        /// has one or more associated <typeparamref name="TValue" />.
         /// </summary>
         /// <value>
-        /// An <see cref="IEnumerable{TKey}"/> containing each <typeparamref name="TKey"/> 
-        /// in this <see cref="MultiValueDictionary{TKey,TValue}"/> that has one or more associated 
-        /// <typeparamref name="TValue"/>.
+        /// An <see cref="T:System.Collections.Generic.IEnumerable`1" /> containing each <typeparamref name="TKey" /> 
+        /// in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> that has one or more associated 
+        /// <typeparamref name="TValue" />.
         /// </value>
-        public IEnumerable<TKey> Keys
-        {
-            get
-            {
-                return _dictionary.Keys;
-            }
-        }
+        public IEnumerable<TKey> Keys => _dictionary.Keys;
 
         /// <summary>
-        /// Attempts to get the <typeparamref name="TValue"/> associated with the given
-        /// <typeparamref name="TKey"/> and place it into <paramref name="value"/>.
+        /// Attempts to get the <typeparamref name="TValue" /> associated with the given
+        /// <typeparamref name="TKey" /> and place it into <paramref name="value" />.
         /// </summary>
-        /// <param name="key">The <typeparamref name="TKey"/> of the element to retrieve</param>
+        /// <param name="key">The <typeparamref name="TKey" /> of the element to retrieve</param>
         /// <param name="value">
-        /// When this method returns, contains the <typeparamref name="TValue"/> associated with the specified
-        /// <typeparamref name="TKey"/> if it is found; otherwise contains the default value of <typeparamref name="TValue"/>.
+        /// When this method returns, contains the <typeparamref name="TValue" /> associated with the specified
+        /// <typeparamref name="TKey" /> if it is found; otherwise contains the default value of <typeparamref name="TValue" />.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the <see cref="MultiValueDictionary{TKey,TValue}"/> contains an element with the specified 
-        /// <typeparamref name="TKey"/>; otherwise, <c>false</c>.
+        /// <c>true</c> if the <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> contains an element with the specified 
+        /// <typeparamref name="TKey" />; otherwise, <c>false</c>.
         /// </returns>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> must be non-null</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> must be non-null</exception>
         public bool TryGetValue(TKey key, out IReadOnlyCollection<TValue> value)
         {
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
-            InnerCollectionView collection;
-            var success = _dictionary.TryGetValue(key, out collection);
+            var success = _dictionary.TryGetValue(key, out var collection);
             value = collection;
             return success;
         }
 
         /// <summary>
-        /// Gets an enumerable of <see cref="IReadOnlyCollection{TValue}"/> from this <see cref="MultiValueDictionary{TKey,TValue}"/>,
-        /// where each <see cref="IReadOnlyCollection{TValue}" /> is the collection of every <typeparamref name="TValue"/> associated
-        /// with a <typeparamref name="TKey"/> present in the <see cref="MultiValueDictionary{TKey,TValue}"/>. 
+        /// Gets an enumerable of <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> from this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />,
+        /// where each <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> is the collection of every <typeparamref name="TValue" /> associated
+        /// with a <typeparamref name="TKey" /> present in the <see cref="T:FclEx.Collections.MultiValueDictionary`2" />. 
         /// </summary>
-        /// <value>An IEnumerable of each <see cref="IReadOnlyCollection{TValue}"/> in this 
-        /// <see cref="MultiValueDictionary{TKey,TValue}"/></value>
-        public IEnumerable<IReadOnlyCollection<TValue>> Values
-        {
-            get
-            {
-                return _dictionary.Values;
-            }
-        }
-
+        /// <value>An IEnumerable of each <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> in this 
+        /// <see cref="T:FclEx.Collections.MultiValueDictionary`2" /></value>
+        public IEnumerable<IReadOnlyCollection<TValue>> Values => _dictionary.Values;
+        
         /// <summary>
-        /// Get every <typeparamref name="TValue"/> associated with the given <typeparamref name="TKey"/>. If 
-        /// <paramref name="key"/> is not found in this <see cref="MultiValueDictionary{TKey,TValue}"/>, will 
-        /// throw a <see cref="KeyNotFoundException"/>.
+        /// Get every <typeparamref name="TValue" /> associated with the given <typeparamref name="TKey" />. If 
+        /// <paramref name="key" /> is not found in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />, will 
+        /// throw a <see cref="T:System.Collections.Generic.KeyNotFoundException" />.
         /// </summary>
-        /// <param name="key">The <typeparamref name="TKey"/> of the elements to retrieve.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="key"/> must be non-null</exception>
-        /// <exception cref="KeyNotFoundException"><paramref name="key"/> does not have any associated 
-        /// <typeparamref name="TValue"/>s in this <see cref="MultiValueDictionary{TKey,TValue}"/>.</exception>
+        /// <param name="key">The <typeparamref name="TKey" /> of the elements to retrieve.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key" /> must be non-null</exception>
+        /// <exception cref="T:System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not have any associated 
+        /// <typeparamref name="TValue" />s in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />.</exception>
         /// <value>
-        /// An <see cref="IReadOnlyCollection{TValue}"/> containing every <typeparamref name="TValue"/>
-        /// associated with <paramref name="key"/>.
+        /// An <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> containing every <typeparamref name="TValue" />
+        /// associated with <paramref name="key" />.
         /// </value>
         /// <remarks>
-        /// Note that the <see cref="IReadOnlyCollection{TValue}"/> returned will change alongside any changes 
-        /// to the <see cref="MultiValueDictionary{TKey,TValue}"/> 
+        /// Note that the <see cref="T:System.Collections.Generic.IReadOnlyCollection`1" /> returned will change alongside any changes 
+        /// to the <see cref="T:FclEx.Collections.MultiValueDictionary`2" /> 
         /// </remarks>
         public IReadOnlyCollection<TValue> this[TKey key]
         {
@@ -853,33 +839,26 @@ namespace FclEx.Collections
                 if (key == null)
                     throw new ArgumentNullException(nameof(key));
 
-                InnerCollectionView collection;
-                if (_dictionary.TryGetValue(key, out collection))
+                if (_dictionary.TryGetValue(key, out var collection))
                     return collection;
                 else
                     throw new KeyNotFoundException();
             }
         }
-
+        
         /// <summary>
-        /// Returns the number of <typeparamref name="TKey"/>s with one or more associated <typeparamref name="TValue"/>
-        /// in this <see cref="MultiValueDictionary{TKey,TValue}"/>.
+        /// Returns the number of <typeparamref name="TKey" />s with one or more associated <typeparamref name="TValue" />
+        /// in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />.
         /// </summary>
-        /// <value>The number of <typeparamref name="TKey"/>s in this <see cref="MultiValueDictionary{TKey,TValue}"/>.</value>
-        public int Count
-        {
-            get
-            {
-                return _dictionary.Count;
-            }
-        }
-
+        /// <value>The number of <typeparamref name="TKey" />s in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />.</value>
+        public int Count => _dictionary.Count;
+        
         /// <summary>
-        /// Get an Enumerator over the <typeparamref name="TKey"/>-<see cref="IReadOnlyCollection{TValue}"/>
-        /// pairs in this <see cref="MultiValueDictionary{TKey,TValue}"/>.
+        /// Get an Enumerator over the <typeparamref name="TKey" />-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1" />
+        /// pairs in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />.
         /// </summary>
-        /// <returns>an Enumerator over the <typeparamref name="TKey"/>-<see cref="IReadOnlyCollection{TValue}"/>
-        /// pairs in this <see cref="MultiValueDictionary{TKey,TValue}"/>.</returns>
+        /// <returns>an Enumerator over the <typeparamref name="TKey" />-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1" />
+        /// pairs in this <see cref="T:FclEx.Collections.MultiValueDictionary`2" />.</returns>
         public IEnumerator<KeyValuePair<TKey, IReadOnlyCollection<TValue>>> GetEnumerator()
         {
             return new Enumerator(this);
@@ -891,10 +870,10 @@ namespace FclEx.Collections
         }
 
         #endregion
-
+        
         /// <summary>
-        /// The Enumerator class for a <see cref="MultiValueDictionary{TKey, TValue}"/>
-        /// that iterates over <typeparamref name="TKey"/>-<see cref="IReadOnlyCollection{TValue}"/>
+        /// The Enumerator class for a <see cref="T:FclEx.Collections.MultiValueDictionary`2" />
+        /// that iterates over <typeparamref name="TKey" />-<see cref="T:System.Collections.Generic.IReadOnlyCollection`1" />
         /// pairs.
         /// </summary>
         private class Enumerator :
@@ -915,7 +894,7 @@ namespace FclEx.Collections
             {
                 _multiValueDictionary = multiValueDictionary;
                 _version = multiValueDictionary._version;
-                _current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                _current = default;
                 _enumerator = multiValueDictionary._dictionary.GetEnumerator();
                 _state = EnumerationState.BeforeFirst; ;
             }
@@ -938,13 +917,7 @@ namespace FclEx.Collections
                 }
             }
 
-            /// <summary>
-            /// Advances the enumerator to the next element of the collection.
-            /// </summary>
-            /// <returns>
-            /// true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.
-            /// </returns>
-            /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+            /// <inheritdoc />
             public bool MoveNext()
             {
                 if (_version != _multiValueDictionary._version)
@@ -953,32 +926,30 @@ namespace FclEx.Collections
                 }
                 else if (_enumerator.MoveNext())
                 {
-                    _current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(_enumerator.Current.Key, (IReadOnlyCollection<TValue>)_enumerator.Current.Value);
+                    _current = new KeyValuePair<TKey, IReadOnlyCollection<TValue>>(_enumerator.Current.Key, _enumerator.Current.Value);
                     _state = EnumerationState.During;
                     return true;
                 }
                 else
                 {
-                    _current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                    _current = default;
                     _state = EnumerationState.AfterLast;
                     return false;
                 }
             }
 
-            /// <summary>
-            /// Sets the enumerator to its initial position, which is before the first element in the collection.
-            /// </summary>
-            /// <exception cref="T:System.InvalidOperationException">The collection was modified after the enumerator was created. </exception>
+            /// <inheritdoc />
             public void Reset()
             {
                 if (_version != _multiValueDictionary._version)
                     throw new InvalidOperationException();
                 _enumerator.Dispose();
                 _enumerator = _multiValueDictionary._dictionary.GetEnumerator();
-                _current = default(KeyValuePair<TKey, IReadOnlyCollection<TValue>>);
+                _current = default;
                 _state = EnumerationState.BeforeFirst;
             }
 
+            /// <inheritdoc />
             /// <summary>
             /// Frees resources associated with this Enumerator
             /// </summary>
@@ -991,10 +962,12 @@ namespace FclEx.Collections
         /// <summary>
         /// An inner class that functions as a view of an ICollection within a MultiValueDictionary
         /// </summary>
-        private class InnerCollectionView : ICollection<TValue>, IReadOnlyCollection<TValue>
+        private class InnerCollectionView :
+            ICollection<TValue>,
+            IReadOnlyCollection<TValue>
         {
-            private readonly TKey _key;
-            private readonly ICollection<TValue> _collection;
+            private TKey _key;
+            private ICollection<TValue> _collection;
 
             #region Private Concrete API
             /*======================================================================
@@ -1038,7 +1011,7 @@ namespace FclEx.Collections
                 if (arrayIndex > array.Length)
                     throw new ArgumentOutOfRangeException(nameof(arrayIndex));
                 if (array.Length - arrayIndex < _collection.Count)
-                    throw new ArgumentException();
+                    throw new ArgumentException(nameof(arrayIndex));
 
                 _collection.CopyTo(array, arrayIndex);
             }
@@ -1057,7 +1030,7 @@ namespace FclEx.Collections
                 return GetEnumerator();
             }
 
-            // public TKey Key => _key;
+            public TKey Key => _key;
 
             #endregion
 
