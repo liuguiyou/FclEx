@@ -18,5 +18,23 @@ namespace FclEx.Logger
             factory.AddProvider(new SimpleConsoleLoggerProvider());
             return factory;
         }
+
+        public static void Log(this ILogger logger, string str, LogLevel level = LogLevel.Information)
+        {
+            switch (level)
+            {
+                case LogLevel.Trace: logger.LogTrace(str); break;
+                case LogLevel.Debug: logger.LogDebug(str); break;
+                case LogLevel.Information: logger.LogInformation(str); break;
+                case LogLevel.Warning: logger.LogWarning(str); break;
+                case LogLevel.Error: logger.LogError(str); break;
+                case LogLevel.Critical: logger.LogCritical(str); break;
+
+                case LogLevel.None:
+                default:
+                    break;
+            }
+        }
+
     }
 }
