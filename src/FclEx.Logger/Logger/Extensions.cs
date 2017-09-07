@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace FclEx.Logger
 {
     public static class Extensions
     {
-        public static ILoggerFactory AddEmpty(this ILoggerFactory factory)
+        public static ILoggerFactory AddSimpleConsole(this ILoggerFactory factory, LogLevel minLevel = LogLevel.Information)
         {
-            factory.AddProvider(EmptyLoggerProvider.Instance);
+            factory.AddProvider(new SimpleConsoleLoggerProvider(minLevel));
             return factory;
         }
 
-        public static ILoggerFactory AddSimpleConsole(this ILoggerFactory factory)
+        public static ILoggingBuilder AddConsole(this ILoggingBuilder builder, LogLevel minLevel = LogLevel.Information)
         {
-            factory.AddProvider(new SimpleConsoleLoggerProvider());
-            return factory;
+            builder.Services.AddSingleton<ILoggerProvider>(new SimpleConsoleLoggerProvider(minLevel));
+            return builder;
         }
 
         public static void Log(this ILogger logger, string str, LogLevel level = LogLevel.Information)
