@@ -14,7 +14,7 @@ namespace FclEx.Logger
             return factory;
         }
 
-        public static ILoggingBuilder AddConsole(this ILoggingBuilder builder, LogLevel minLevel = LogLevel.Information)
+        public static ILoggingBuilder AddSimpleConsole(this ILoggingBuilder builder, LogLevel minLevel = LogLevel.Information)
         {
             builder.Services.AddSingleton<ILoggerProvider>(new SimpleConsoleLoggerProvider(minLevel));
             return builder;
