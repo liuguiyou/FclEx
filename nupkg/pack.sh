@@ -3,22 +3,18 @@ packFolder=$PWD
 slnPath="$packFolder/.."
 srcPath="$slnPath/src"
 
-projects=(
-"FclEx" 
-"FclEx.Image" 
-"FclEx.Json" 
-"FclEx.Logger" 
-"FclEx.Mapper"
-)
+projects=("FclEx" "FclEx.Image" "FclEx.Json" "FclEx.Logger" "FclEx.Mapper")
 
-rm -f "$packFolder/*.nupkg"
+rm -f *.nupkg
 cd $slnPath
 
 dotnet restore
 dotnet clean -c Release
 dotnet msbuild /t:Rebuild /p:Configuration=Release
 
-for project in $projects; do
+echo "project count: ${#projects[@]}"
+for project in "${projects[@]}"; do 
+	echo "packing for [$project]"
 	projectFolder="$srcPath/$project"
     cd $projectFolder	
 	outputPath="$projectFolder/bin/Release"
