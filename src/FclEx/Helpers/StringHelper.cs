@@ -1,4 +1,6 @@
-﻿namespace FclEx.Helpers
+﻿using System;
+
+namespace FclEx.Helpers
 {
     public static class StringHelper
     {
@@ -25,6 +27,30 @@
                 result[i] = byte.Parse(hex.Substring(2 * i, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
             }
             return result;
+        }
+
+        public static string PadLeftWith(string source, int blockSize, char padChar) => PadWith(source, blockSize, padChar, true);
+
+        public static string PadRightWith(string source, int blockSize, char padChar) => PadWith(source, blockSize, padChar, false);
+
+        private static string PadWith(string source, int blockSize, char padChar, bool padLeft)
+        {
+            var padLength = blockSize - source.Length % blockSize;
+            if (padLength == 0) return source;
+            var totalWidth = padLength + source.Length;
+
+            return padLeft
+                ? source.PadLeft(totalWidth, padChar)
+                : source.PadRight(totalWidth, padChar);
+        }
+
+        public static class DateTimeHelpers
+        {
+            private static readonly DateTime _jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+            public static DateTime TimestampToDateTime(long timestamp) => _jan1St1970.AddSeconds(timestamp);
+
+            public static DateTime TimestampMilliToDateTime(long timestampMilli) => TimestampToDateTime((long)Math.Round(timestampMilli / 1000d));
         }
     }
 }
