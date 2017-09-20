@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace FclEx.Helpers
 {
@@ -20,13 +21,10 @@ namespace FclEx.Helpers
             {
                 hex = "0" + hex;
             }
-            var result = new byte[hex.Length / 2];
 
-            for (var i = 0; i < hex.Length / 2; i++)
-            {
-                result[i] = byte.Parse(hex.Substring(2 * i, 2), System.Globalization.NumberStyles.AllowHexSpecifier);
-            }
-            return result;
+            return Enumerable.Range(0, hex.Length / 2)
+                .Select(x => Convert.ToByte(hex.Substring(x * 2, 2), 16))
+                .ToArray();
         }
 
         public static string PadLeftWith(string source, int blockSize, char padChar) => PadWith(source, blockSize, padChar, true);

@@ -15,10 +15,8 @@ namespace FclEx.Extensions
 
         public static byte[] ToBytes(this Stream stream)
         {
-            var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
-            // 设置当前流的位置为流的开始
-            stream.Seek(0, SeekOrigin.Begin);
+            var bytes = new byte[stream.Length - stream.Position];
+            stream.Write(bytes, (int)stream.Position, bytes.Length);
             return bytes;
         }
 
