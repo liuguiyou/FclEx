@@ -17,31 +17,19 @@ namespace FclEx.Helpers
             return stream;
         }
 
-        public static Stream LoadFileResource(string name)
+        public static T LoadEmbededResource<T>(Assembly assembly, string name, Func<Stream, T> func)
         {
-            const string dir = "Resources";
-            var path = Path.Combine(dir, name);
-            var fs = File.Exists(path) ? File.Open(path, FileMode.Open) : null;
-            return fs;
-        }
-
-        public static T LoadLocalResource<T>(Assembly assembly, string name, Func<Stream, T> func)
-        {
-            var resource = LoadFileResource(name) ?? LoadEmbededResource(assembly, name);
-            using (resource)
+            using (var resource = LoadEmbededResource(assembly, name))
             {
                 return func(resource);
             }
         }
 
-        public static string LoadStringFromLocalResource(Assembly assembly, string name)
-        {
-            return LoadLocalResource(assembly, name, s => s.ToBytes().GetString());
-        }
+        public static string LoadStringFromEmbededResource(Assembly assembly, string name) => LoadEmbededResource(assembly, name, s => s.ToBytes().GetString());
 
-        public static string[] LoadLinesFromLocalResource(Assembly assembly, string name)
+        public static string[] LoadLinesFromEmbededResource(Assembly assembly, string name)
         {
-            return LoadStringFromLocalResource(assembly, name)
+            return LoadStringFromEmbededResource(assembly, name)
                 .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         }
     }

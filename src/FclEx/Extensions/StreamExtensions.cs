@@ -16,11 +16,17 @@ namespace FclEx.Extensions
         public static byte[] ToBytes(this Stream stream)
         {
             var bytes = new byte[stream.Length - stream.Position];
-            stream.Write(bytes, (int)stream.Position, bytes.Length);
+            stream.Read(bytes, (int)stream.Position, bytes.Length);
             return bytes;
         }
 
-        public static Stream ToStream(this byte[] bytes)
+        public static Stream SeekToBegin(this Stream stream)
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
+        }
+
+        public static MemoryStream ToStream(this byte[] bytes)
         {
             return new MemoryStream(bytes);
         }

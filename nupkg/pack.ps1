@@ -12,6 +12,8 @@ $projects = (
 	"FclEx.Image"
 )
 
+Remove-Item *.nupkg
+
 # Rebuild solution
 Set-Location $slnPath
 & dotnet restore
