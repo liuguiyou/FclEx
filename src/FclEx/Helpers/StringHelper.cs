@@ -5,7 +5,6 @@ namespace FclEx.Helpers
 {
     public static class StringHelper
     {
-
         /// <summary>
         /// 把十六进制字符串转在byte[]
         /// </summary>
@@ -40,15 +39,6 @@ namespace FclEx.Helpers
             return padLeft
                 ? source.PadLeft(totalWidth, padChar)
                 : source.PadRight(totalWidth, padChar);
-        }
-
-        public static class DateTimeHelpers
-        {
-            private static readonly DateTime _jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-            public static DateTime TimestampToDateTime(long timestamp) => _jan1St1970.AddSeconds(timestamp);
-
-            public static DateTime TimestampMilliToDateTime(long timestampMilli) => TimestampToDateTime((long)Math.Round(timestampMilli / 1000d));
         }
     }
 }
