@@ -32,6 +32,11 @@ namespace FclEx.Extensions
             }
         }
 
+        public static IEnumerable<T> Touch<T>(this IEnumerable<T> col)
+        {
+            return col ?? Array.Empty<T>();
+        }
+
         /// <summary>
         /// Splits a collection of objects into an unknown number of pages with n items per page 
         /// <para>(for example, if I have a list of 45 shoes and say 'shoes.Partition(10)' I will now have 4 pages of 10 shoes and 1 page of 5 shoes.</para>>
