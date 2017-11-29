@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FclEx.Extensions
 {
@@ -26,9 +27,8 @@ namespace FclEx.Extensions
             return stream;
         }
 
-        public static MemoryStream ToStream(this byte[] bytes)
-        {
-            return new MemoryStream(bytes);
-        }
+        public static void Write(this Stream stream, byte[] bytes) => stream.Write(bytes, 0, bytes.Length);
+
+        public static Task WriteAsync(this Stream stream, byte[] bytes) => stream.WriteAsync(bytes, 0, bytes.Length);
     }
 }

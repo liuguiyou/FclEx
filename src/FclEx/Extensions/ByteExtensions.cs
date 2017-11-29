@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FclEx.Extensions
 {
     public static class ByteExtensions
     {
+        public static MemoryStream ToStream(this byte[] bytes) => new MemoryStream(bytes);
+
         public static string GetString(this byte[] bytes, Encoding encoding) => encoding.GetString(bytes);
 
         public static string GetString(this byte[] bytes) => bytes.GetString(Encoding.UTF8);
@@ -177,5 +181,9 @@ namespace FclEx.Extensions
             Marshal.FreeHGlobal(ptr);
             return bufByte;
         }
+
+        public static void WriteTo(this byte[] bytes, Stream stream) => stream.Write(bytes, 0, bytes.Length);
+
+        public static Task WriteToAsync(this byte[] bytes, Stream stream) => stream.WriteAsync(bytes, 0, bytes.Length);
     }
 }
