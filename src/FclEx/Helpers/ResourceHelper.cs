@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using FclEx.Extensions;
 
 namespace FclEx.Helpers
 {
     public static class ResourceHelper
     {
+        private static readonly char[] _newLineChars = Environment.NewLine.ToCharArray();
+
         public static Stream LoadEmbededResource(Assembly assembly, string name)
         {
             var resourceName = assembly.GetManifestResourceNames().FirstOrDefault(p => p.EndsWith(name));
@@ -25,12 +25,24 @@ namespace FclEx.Helpers
             }
         }
 
-        public static string LoadStringFromEmbededResource(Assembly assembly, string name) => LoadEmbededResource(assembly, name, s => s.ToBytes().GetString());
-
-        public static string[] LoadLinesFromEmbededResource(Assembly assembly, string name)
+        public static string LoadStringFromEmbededResource(Assembly assembly, string resourceName, Encoding encoding) => LoadEmbededResource(assembly, resourceName, s =>
         {
-            return LoadStringFromEmbededResource(assembly, name)
-                .Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            using (var sr = new StreamReader(s, encoding))
+            {
+                return sr.ReadToEnd();
+            }
+        });
+
+        public static string LoadStringFromEmbededResource(Assembly assembly, string resourceName) =>
+            LoadStringFromEmbededResource(assembly, resourceName, Encoding.UTF8);
+
+        public static string[] LoadLinesFromEmbededResource(Assembly assembly, string resourceName, Encoding encoding)
+        {
+            return LoadStringFromEmbededResource(assembly, resourceName, encoding)
+                .Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries);
         }
+
+        public static string[] LoadLinesFromEmbededResource(Assembly assembly, string resourceName) =>
+            LoadLinesFromEmbededResource(assembly, resourceName, Encoding.UTF8);
     }
 }

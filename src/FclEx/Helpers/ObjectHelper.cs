@@ -1,6 +1,4 @@
-﻿using FclEx.Extensions;
-
-namespace FclEx.Helpers
+﻿namespace FclEx.Helpers
 {
     public static class ObjectHelper
     {
