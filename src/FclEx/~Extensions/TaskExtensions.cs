@@ -31,5 +31,11 @@ namespace FclEx
             task.ConfigureAwait(false);
             return task;
         }
+
+        public static Task<T> DonotCapture<T>(this Task<T> task)
+        {
+            task.ConfigureAwait(false);
+            return task;
+        }
     }
 }
