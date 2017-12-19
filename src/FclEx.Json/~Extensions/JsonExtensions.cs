@@ -6,9 +6,11 @@ namespace FclEx
 {
     public static class JsonExtensions
     {
-        public static string ToJson(this object obj, Formatting formatting = Formatting.None)
+        private static readonly JsonSerializerSettings _ignoreSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
+        public static string ToJson(this object obj, Formatting formatting = Formatting.None, bool ignoreNull = false)
         {
-            return JsonConvert.SerializeObject(obj, formatting);
+            return JsonConvert.SerializeObject(obj, formatting, ignoreNull ? _ignoreSettings : null);
         }
 
         public static JToken ToJToken(this string str)
@@ -41,7 +43,7 @@ namespace FclEx
             return token.ToObject<long>();
         }
 
-        public static T ToEnum<T>(this JToken token, T defaultVaule = default(T)) 
+        public static T ToEnum<T>(this JToken token, T defaultVaule = default(T))
             where T : struct, IConvertible
         {
             return token.ToString().ToEnum(defaultVaule);
