@@ -37,5 +37,11 @@ namespace FclEx
             task.ConfigureAwait(false);
             return task;
         }
+
+        public static Task<T> ToTask<T>(this T obj) => Task.FromResult(obj);
+
+        public static ValueTask<T> ToValueTask<T>(this T obj) => new ValueTask<T>(obj);
+
+        public static ValueTask<T> ToValueTask<T>(this Task<T> task) => new ValueTask<T>(task);
     }
 }
