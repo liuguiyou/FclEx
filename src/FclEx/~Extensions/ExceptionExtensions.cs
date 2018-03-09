@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ExceptionServices;
 
 namespace FclEx
 {
@@ -8,5 +9,7 @@ namespace FclEx
         {
             return ex.InnerException != null ? $"{ex.Message}[{GetAllMessages(ex.InnerException)}]" : ex.Message;
         }
+
+        public static void ReThrow(this Exception ex) => ExceptionDispatchInfo.Capture(ex).Throw();
     }
 }

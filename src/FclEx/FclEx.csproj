@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>0.3.6</Version>
+    <Version>0.3.7</Version>
     <Authors>huoshan12345</Authors>
     <Company />
     <Description>Some basic useful extensions and helpers for C# fundamental class libraries</Description>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="morelinq" Version="2.9.0" />
+    <PackageReference Include="morelinq" Version="2.10.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
   </ItemGroup>
 </Project>
