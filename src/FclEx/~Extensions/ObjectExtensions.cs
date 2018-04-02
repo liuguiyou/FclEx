@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace FclEx
 {
@@ -10,8 +12,13 @@ namespace FclEx
 
         public static bool IsNotNull<T>(this T obj) => obj != null;
 
-        public static TDestination CastTo<TSource, TDestination>(this TSource obj) where TSource : class
-            => (TDestination)(object)obj;
+        public static T CastTo<T>(this object obj)
+        {
+            var type = typeof(T);
+            return type.IsValueType 
+                ? (T) Convert.ChangeType(obj, type)
+                : (T) obj;
+        }
 
         public static string SafeToString<T>(this T obj) => obj == null ? string.Empty : obj.ToString();
     }
