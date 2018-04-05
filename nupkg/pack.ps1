@@ -8,8 +8,7 @@ $projects = (
     "FclEx",
     "FclEx.Logger",
     "FclEx.Json",
-	"FclEx.Mapper",
-	"FclEx.Image"
+	"FclEx.Mapper"
 )
 
 Remove-Item *.nupkg
