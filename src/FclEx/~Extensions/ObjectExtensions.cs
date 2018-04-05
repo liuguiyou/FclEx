@@ -15,9 +15,19 @@ namespace FclEx
         public static T CastTo<T>(this object obj)
         {
             var type = typeof(T);
-            return type.IsValueType 
-                ? (T) Convert.ChangeType(obj, type)
-                : (T) obj;
+            return type.IsValueType && !type.IsEnum
+                ? (T)ChangeType(obj, type)
+                : (T)obj;
+
+            object ChangeType(object value, Type t)
+            {
+                if (t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    if (value == null) return default;
+                    t = Nullable.GetUnderlyingType(t);
+                }
+                return Convert.ChangeType(value, t);
+            }
         }
 
         public static string SafeToString<T>(this T obj) => obj == null ? string.Empty : obj.ToString();
