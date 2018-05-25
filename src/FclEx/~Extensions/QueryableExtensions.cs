@@ -16,15 +16,5 @@ namespace FclEx
         {
             return condition ? source.Where(predicate) : source;
         }
-
-        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, Func<T, bool> predicate, bool condition)
-        {
-            return condition ? source.Where(predicate) : source;
-        }
-
-        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, Func<T, int, bool> predicate, bool condition)
-        {
-            return condition ? source.Where(predicate) : source;
-        }
     }
 }

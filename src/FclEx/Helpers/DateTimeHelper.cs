@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FclEx.Helpers
 {
-    public static class DateTimeHelpers
+    public static class DateTimeHelper
     {
         private static readonly DateTime _jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

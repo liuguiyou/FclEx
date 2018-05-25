@@ -5,19 +5,14 @@ $srcPath = Join-Path $slnPath "src"
 
 # List of projects
 $projects = (
-    "FclEx",
-    "FclEx.Logger",
-    "FclEx.Json",
-	"FclEx.Mapper"
+"FclEx",
+"FclEx.Image",
+"FclEx.Json",
+"FclEx.Logger"
 )
 
 Remove-Item *.nupkg
-
-# Rebuild solution
 Set-Location $slnPath
-& dotnet restore
-& dotnet msbuild /t:Rebuild /p:Configuration=Release
-
 # Copy all nuget packages to the pack folder
 foreach($project in $projects) {
     
@@ -25,16 +20,15 @@ foreach($project in $projects) {
 
     # Create nuget pack
     Set-Location $projectFolder
-    & dotnet msbuild /t:pack /p:Configuration=Release /p:IncludeSymbols=true
-
-    # Copy nuget package
-    $projectPackPath = Join-Path $projectFolder ("/bin/Release/" + $project + ".*.nupkg")
-    Move-Item $projectPackPath $packFolder
-
+    & dotnet pack -c Release --include-symbols -v m --output $packFolder
 }
 
 # Go back to the pack folder
 Set-Location $packFolder
+
+$PSGallerySourceUri = 'https://www.myget.org/F/huoshan12345/api/v2/package'
+$APIKey = 'fbc0486a-55ff-4760-b246-bef3e0ee952d'
+& dotnet nuget push *.nupkg -k $APIKey -s $PSGallerySourceUri
 
 Write-Output "Finished. Press any key to exit."
 Read-Host

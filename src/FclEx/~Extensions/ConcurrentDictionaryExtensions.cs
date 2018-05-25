@@ -6,8 +6,7 @@ namespace FclEx
     {
         public static void Remove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> dic, TKey key)
         {
-            TValue value;
-            dic.TryRemove(key, out value);
+            dic.TryRemove(key, out _);
         }
     }
 }
