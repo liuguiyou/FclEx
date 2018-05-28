@@ -30,6 +30,11 @@ namespace FclEx
             }
         }
 
-        public static string SafeToString<T>(this T obj) => obj == null ? string.Empty : obj.ToString();
+        public static string ToStringSafely<T>(this T obj) => obj == null ? string.Empty : obj.ToString();
+
+        public static int GetHashCodeSafely<T>(this T obj)
+        {
+            return obj == null ? 0 : obj.GetHashCode();
+        }
     }
 }

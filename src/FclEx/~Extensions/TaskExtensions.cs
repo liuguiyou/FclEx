@@ -26,21 +26,17 @@ namespace FclEx
 
         public static void Forget<T>(this ConfiguredTaskAwaitable<T> awaitable) { }
         
-        public static Task DonotCapture(this Task task)
+        public static ConfiguredTaskAwaitable DonotCapture(this Task task)
         {
-            task.ConfigureAwait(false);
-            return task;
+            return task.ConfigureAwait(false);
         }
 
-        public static Task<T> DonotCapture<T>(this Task<T> task)
+        public static ConfiguredTaskAwaitable<T> DonotCapture<T>(this Task<T> task)
         {
-            task.ConfigureAwait(false);
-            return task;
+            return task.ConfigureAwait(false);
         }
 
         public static Task<T> ToTask<T>(this T obj) => Task.FromResult(obj);
-
-        public static ValueTask<T> ToValueTask<T>(this T obj) => new ValueTask<T>(obj);
 
         public static ValueTask<T> ToValueTask<T>(this Task<T> task) => new ValueTask<T>(task);
     }

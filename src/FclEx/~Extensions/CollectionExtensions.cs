@@ -6,6 +6,11 @@ namespace FclEx
 {
     public static class CollectionExtensions
     {
+        public static bool IsEmpty<T>(this ICollection<T> col)
+        {
+            return col.Count == 0;
+        }
+
         public static bool IsNullOrEmpty<T>(this ICollection<T> col)
         {
             return col == null || col.Count == 0;

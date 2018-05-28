@@ -8,6 +8,10 @@ namespace FclEx
 {
     public static class EnumerableExtensions
     {
+        public static IEnumerable<T> NotNull<T>(this IEnumerable<T> col)
+        {
+            return col.Where(m => m != null);
+        }
 
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, Func<T, bool> predicate, bool condition)
         {
