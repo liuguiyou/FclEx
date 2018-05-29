@@ -14,7 +14,7 @@ namespace FclEx.Consumers
         protected BlockingCollection<ProcessingItem<T>> _items;
         protected ManualResetEvent _finish;
 
-        protected event AsyncEventHandler<TSelf, ConsumerExceptionEventArgs<ProcessingItem<T>>> OnExceptionInternal
+        protected event AsyncEventHandler<TSelf, ConsumerExArgs<ProcessingItem<T>>> OnExceptionInternal
             = (sender, args) => Task.CompletedTask;
 
         protected event AsyncEventHandler<TSelf, ProcessingItem<T>> OnConsumeInternal
@@ -50,7 +50,7 @@ namespace FclEx.Consumers
                 catch (Exception ex)
                 {
                     item.ErrorTimes++;
-                    var args = new ConsumerExceptionEventArgs<ProcessingItem<T>>(item, ex);
+                    var args = ConsumerExArgs.Create(item, ex);
                     await OnExceptionInternal((TSelf)this, args).DonotCapture(); ;
                 }
             }

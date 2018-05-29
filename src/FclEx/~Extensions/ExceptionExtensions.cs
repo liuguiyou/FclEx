@@ -31,6 +31,7 @@ namespace FclEx
             if (action == null) return;
 
             var q = new Queue<Exception>();
+            q.Enqueue(ex);
             var handled = new HashSet<Exception>();
             while (q.Any())
             {

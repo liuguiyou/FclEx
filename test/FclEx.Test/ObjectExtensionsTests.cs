@@ -11,7 +11,7 @@ namespace FclEx.Test
         Yes = 1,
     }
 
-    public class ObjectExtensionsTest
+    public class ObjectExtensionsTests
     {
         [Fact]
         public void ObjectToIntCastTest()
