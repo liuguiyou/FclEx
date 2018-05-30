@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
-namespace FclEx
+namespace FclEx.Helpers
 {
     public static class DebuggerHepler
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FclEx.Helpers
@@ -8,80 +9,45 @@ namespace FclEx.Helpers
     {
         public static Task<TResult[]> Repeat<TResult>(Func<TResult> action, int times)
         {
-            var tasks = new Task<TResult>[times];
-            for (var i = 0; i < times; i++)
-            {
-                tasks[i] = Task.Run(action);
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (times < 1) throw new ArgumentOutOfRangeException(nameof(times));
+
+            var tasks = Enumerable.Repeat(Task.Run(action), times);
             return Task.WhenAll(tasks);
         }
 
         public static Task Repeat(Action action, int times)
         {
-            var tasks = new Task[times];
-            for (var i = 0; i < times; i++)
-            {
-                tasks[i] = Task.Run(action);
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (times < 1) throw new ArgumentOutOfRangeException(nameof(times));
+
+            var tasks = Enumerable.Repeat(Task.Run(action), times);
             return Task.WhenAll(tasks);
         }
 
         public static Task<TResult[]> Repeat<TResult>(Func<Task<TResult>> action, int times)
         {
-            var tasks = new Task<TResult>[times];
-            for (var i = 0; i < times; i++)
-            {
-                tasks[i] = action();
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (times < 1) throw new ArgumentOutOfRangeException(nameof(times));
+
+            var tasks = Enumerable.Repeat(action, times).Select(m => m());
             return Task.WhenAll(tasks);
         }
 
         public static Task Repeat(Func<Task> action, int times)
         {
-            var tasks = new Task[times];
-            for (var i = 0; i < times; i++)
-            {
-                tasks[i] = action();
-            }
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (times < 1) throw new ArgumentOutOfRangeException(nameof(times));
+
+            var tasks = Enumerable.Repeat(action, times).Select(m => m());
             return Task.WhenAll(tasks);
         }
-        
-        public static async Task<TResult> Try<TResult>(Func<Task<TResult>> action, int times, 
-            Action<AggregateException> handleException = null, TResult defaultResult = default(TResult))
-        {
-            var exs = new List<Exception>();
-            for (var i = 0; i < times; ++i)
-            {
-                try
-                {
-                    return await action();
-                }
-                catch (Exception ex)
-                {
-                    exs.Add(ex);
-                    await Task.Delay(1000 * (i + 1) * (i + 1));
-                }
-            }
-            handleException?.Invoke(new AggregateException(exs));
-            return defaultResult;
-        }
 
-        public static async Task Try(Func<Task> action, int times, Action<AggregateException> handleException = null)
+        public static Task Delay(int seconds)
         {
-            var exs = new List<Exception>();
-            for (var i = 0; i < times; ++i)
-            {
-                try
-                {
-                    await action();
-                }
-                catch (Exception ex)
-                {
-                    exs.Add(ex);
-                    await Task.Delay(1000 * (i + 1) * (i + 1));
-                }
-            }
-            handleException?.Invoke(new AggregateException(exs));
+            return seconds > 0 
+                ? Task.Delay(seconds * 1000) 
+                : Task.CompletedTask;
         }
     }
 }
