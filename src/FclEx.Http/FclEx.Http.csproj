@@ -4,10 +4,10 @@
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
-    <PackageTags>extensions;helpers</PackageTags>
+    <PackageTags>http</PackageTags>
     <Version>0.8.0</Version>
     <Authors>huoshan12345</Authors>
-    <Description>Some basic useful extensions and helpers for C# fundamental class libraries</Description>
+    <Description>a simple http lib</Description>
     <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>https://github.com/huoshan12345/FclEx/blob/master/LICENSE.TXT</PackageLicenseUrl>
@@ -15,9 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="morelinq" Version="2.10.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="MimeTypeMap.Core" Version="1.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FclEx\FclEx.csproj" />
+  </ItemGroup>
+  
 </Project>

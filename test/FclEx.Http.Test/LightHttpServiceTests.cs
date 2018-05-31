@@ -1,0 +1,27 @@
+﻿using FclEx.Http.Proxy;
+using FclEx.Http.Services;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace FclEx.Http.Test
+{
+    public class LightHttpServiceTests
+    {
+        private readonly ITestOutputHelper _output;
+
+        public LightHttpServiceTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("http://localhost:1080")]
+        public void Constructor_Test(string proxy)
+        {
+            var http = new LightHttpService(proxy);
+            Assert.Equal(proxy.IsNullOrEmpty() ? WebProxy.None : new WebProxy(proxy), http.WebProxy);
+        }
+    }
+}

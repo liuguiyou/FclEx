@@ -3,7 +3,11 @@ packFolder=$PWD
 slnPath="$packFolder/.."
 srcPath="$slnPath/src"
 
-projects=("FclEx" "FclEx.Image" "FclEx.Json" "FclEx.Logger")
+projects=(
+"FclEx"
+"FclEx.Image"
+"FclEx.Http"
+)
 
 rm -f *.nupkg
 cd $slnPath
