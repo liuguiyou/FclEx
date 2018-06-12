@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FclEx
 {
@@ -59,6 +60,60 @@ namespace FclEx
                 for (var i = 0; i < numberOfPages; i++)
                     yield return superset.Skip(pageSize * i).Take(pageSize);
             }
+        }
+
+        public static async Task Parallel<T>(this ICollection<T> superset, int pageSize,
+            Action<T> action)
+        {
+            foreach (var items in superset.Partition(pageSize))
+            {
+                await items.Select(m => Task.Run(() => action(m))).WhenAll();
+            }
+        }
+
+        public static async Task<IReadOnlyList<TResult>> Parallel<T, TResult>(this ICollection<T> superset,
+            int pageSize, Func<T, TResult> action)
+        {
+            var list = new List<TResult>(superset.Count);
+            foreach (var items in superset.Partition(pageSize))
+            {
+                var r = await items.Select(m => Task.Run(() => action(m))).WhenAll();
+                list.AddRange(r);
+            }
+            return list;
+        }
+
+        public static async Task Parallel<T>(this ICollection<T> superset,
+            int pageSize, Func<T, Task> action)
+        {
+            foreach (var items in superset.Partition(pageSize))
+            {
+                await items.Select(action).WhenAll();
+            }
+        }
+
+        public static async Task<IReadOnlyList<TResult>> Parallel<T, TResult>(this ICollection<T> superset,
+            int pageSize, Func<T, Task<TResult>> action)
+        {
+            var list = new List<TResult>(superset.Count);
+            foreach (var items in superset.Partition(pageSize))
+            {
+                var r = await items.Select(action).WhenAll();
+                list.AddRange(r);
+            }
+            return list;
+        }
+
+        public static async ValueTask<IReadOnlyList<TResult>> Parallel<T, TResult>(this ICollection<T> superset,
+            int pageSize, Func<T, ValueTask<TResult>> action)
+        {
+            var list = new List<TResult>(superset.Count);
+            foreach (var items in superset.Partition(pageSize))
+            {
+                var r = await items.Select(action).WhenAll();
+                list.AddRange(r);
+            }
+            return list;
         }
     }
 }

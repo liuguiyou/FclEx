@@ -19,9 +19,19 @@ namespace FclEx
             return left.Compose(right, Expression.OrElse);
         }
 
+        public static Expression<Func<T, bool>> OrIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right)
+        {
+            return condition ? Or(left, right) : left;
+        }
+
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
         {
             return left.Compose(right, Expression.AndAlso);
+        }
+
+        public static Expression<Func<T, bool>> AndIf<T>(this Expression<Func<T, bool>> left, bool condition, Expression<Func<T, bool>> right)
+        {
+            return condition ? And(left, right) : left;
         }
 
         public static PropertyInfo GetPropertyInfo<TSource, TProperty>(this TSource source, Expression<Func<TSource, TProperty>> propertyLambda)
