@@ -6,30 +6,10 @@ namespace FclEx.Http.Actions
      /// </summary>
     public interface IActionFuture : IActor
     {
-        /// <summary>
-        /// 放入一个action到执行队列末尾
-        /// </summary>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        IActionFuture PushAction(IAction action);
+        int Count { get; }
 
         /// <summary>
-        /// 放入一个根据上一个action执行结果生成action的委托到执行队列末尾
-        /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
-        IActionFuture PushAction(Func<object, IAction> func);
-
-        /// <summary>
-        /// 放入一个根据第i个action执行结果生成action的委托到执行队列末尾
-        /// </summary>
-        /// <param name="func"></param>
-        /// <param name="dependentResultIndex"></param>
-        /// <returns></returns>
-        IActionFuture PushAction(Func<object, IAction> func, int dependentResultIndex);
-
-        /// <summary>
-        /// 放入一个根据前面所有action执行结果生成action的委托到执行队列末尾
+        /// 放入一个根据所有action执行结果生成action的委托到执行队列末尾
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>

@@ -55,21 +55,7 @@ namespace FclEx.Http.Actions
             return lastEvent;
         }
 
-        public virtual IActionFuture PushAction(IAction action)
-        {
-            return PushAction(o => action, 0);
-        }
-
-        public virtual IActionFuture PushAction(Func<object, IAction> func)
-        {
-            return PushAction(func, _queue.Count - 1);
-        }
-
-        public IActionFuture PushAction(Func<object, IAction> func, int dependentResultIndex)
-        {
-            _queue.Add(objs => func(objs[dependentResultIndex]));
-            return this;
-        }
+        public int Count => _queue.Count;
 
         public IActionFuture PushAction(Func<object[], IAction> func)
         {

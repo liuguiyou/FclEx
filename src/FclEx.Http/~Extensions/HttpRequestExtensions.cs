@@ -66,6 +66,16 @@ namespace FclEx.Http
             return req;
         }
 
+        public static HttpRequestItem AddDataIfNotEmpty(this HttpRequestItem req, bool condition, string key, string value)
+        {
+            return AddDataIf(req, !value.IsNullOrEmpty(), key, value);
+        }
+
+        public static HttpRequestItem AddDataIf(this HttpRequestItem req, bool condition, string key, string value)
+        {
+            return condition ? AddData(req, key, value) : req;
+        }
+
         public static HttpRequestItem AddData(this HttpRequestItem req, string key, string value)
         {
             return req.Method == HttpMethodType.Get
@@ -75,10 +85,7 @@ namespace FclEx.Http
 
         public static HttpRequestItem AddData<T>(this HttpRequestItem req, string key, T value)
         {
-            var str = value == null ? "" : value.ToString();
-            return req.Method == HttpMethodType.Get
-                ? req.AddQueryValue(key, str)
-                : req.AddFormValue(key, str);
+            return AddData(req, key, value.ToStringSafely());
         }
 
         public static HttpRequestItem AddData(this HttpRequestItem req,
