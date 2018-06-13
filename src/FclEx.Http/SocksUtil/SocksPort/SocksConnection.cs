@@ -47,11 +47,11 @@ namespace FclEx.Http.SocksUtil.SocksPort
 		private async Task ConnectToDestinationAsync(CancellationToken ctsToken = default(CancellationToken))
 		{
 			var sendBuffer = new ArraySegment<byte>(Util.BuildConnectToUri(_destination).Array);
-			await _socket.SendAsync(sendBuffer, SocketFlags.None).ConfigureAwait(false);
+			await _socket.SendAsync(sendBuffer, SocketFlags.None).DonotCapture();
 			ctsToken.ThrowIfCancellationRequested();
 
 			var recBuffer = new ArraySegment<byte>(new byte[_socket.ReceiveBufferSize]);
-			var recCnt = await _socket.ReceiveAsync(recBuffer, SocketFlags.None).ConfigureAwait(false);
+			var recCnt = await _socket.ReceiveAsync(recBuffer, SocketFlags.None).DonotCapture();
 			ctsToken.ThrowIfCancellationRequested();
 
 			Util.ValidateConnectToDestinationResponse(recBuffer.Array, recCnt);
@@ -85,7 +85,7 @@ namespace FclEx.Http.SocksUtil.SocksPort
 						new X509CertificateCollection(),
 						SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12,
 						checkCertificateRevocation: true)
-					.ConfigureAwait(false);
+					.DonotCapture();
 				stream = httpsStream;
 			}
 			_stream = stream;
@@ -119,7 +119,7 @@ namespace FclEx.Http.SocksUtil.SocksPort
 		{
 			try
 			{
-				await EnsureConnectedToTorAsync(ctsToken).ConfigureAwait(false);
+				await EnsureConnectedToTorAsync(ctsToken).DonotCapture();
 				ctsToken.ThrowIfCancellationRequested();
 
 				// https://tools.ietf.org/html/rfc7230#section-3.3.2
@@ -151,14 +151,14 @@ namespace FclEx.Http.SocksUtil.SocksPort
 					}
 				}
 
-				var requestString = await request.ToHttpStringAsync(ctsToken).ConfigureAwait(false);
+				var requestString = await request.ToHttpStringAsync(ctsToken).DonotCapture();
 				ctsToken.ThrowIfCancellationRequested();
 
-				await _stream.WriteAsync(Encoding.UTF8.GetBytes(requestString), 0, requestString.Length, ctsToken).ConfigureAwait(false);
-				await _stream.FlushAsync(ctsToken).ConfigureAwait(false);
+				await _stream.WriteAsync(Encoding.UTF8.GetBytes(requestString), 0, requestString.Length, ctsToken).DonotCapture();
+				await _stream.FlushAsync(ctsToken).DonotCapture();
 				ctsToken.ThrowIfCancellationRequested();
 
-				return await new HttpResponseMessage().CreateNewAsync(_stream, request.Method, ctsToken).ConfigureAwait(false);
+				return await new HttpResponseMessage().CreateNewAsync(_stream, request.Method, ctsToken).DonotCapture();
 			}
 			catch (SocketException)
 			{
@@ -174,7 +174,7 @@ namespace FclEx.Http.SocksUtil.SocksPort
 				DestroySocket();
 				ConnectSocket();
 				HandshakeTor();
-				await ConnectToDestinationAsync(ctsToken).ConfigureAwait(false);
+				await ConnectToDestinationAsync(ctsToken).DonotCapture();
 			}
 		}
 

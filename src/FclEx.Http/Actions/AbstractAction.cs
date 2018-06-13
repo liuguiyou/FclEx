@@ -107,14 +107,14 @@ namespace FclEx.Http.Actions
                 DebuggerHepler.WriteLine($"[Action={ActionName} Begin]");
                 var watch = new Stopwatch();
                 watch.Start();
-                var result = await ExecuteInternalAsync(token).ConfigureAwait(false);
+                var result = await ExecuteInternalAsync(token).DonotCapture();
                 watch.Stop();
                 DebuggerHepler.WriteLine($"[Action={ActionName} End, ResultType={result.Type.GetDescription()}. {watch.ElapsedMilliseconds} ms]");
                 return result;
             }
             else
             {
-                return await ExecuteInternalAsync(token).ConfigureAwait(false);
+                return await ExecuteInternalAsync(token).DonotCapture();
             }
         }
 

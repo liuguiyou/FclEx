@@ -31,20 +31,20 @@ namespace FclEx.Http.SocksUtil.Http.Extensions
 			//					[message - body]
 			
 			var position = 0;
-			string startLine = await HttpMessageHelper.ReadStartLineAsync(requestStream, ctsToken).ConfigureAwait(false);
+			string startLine = await HttpMessageHelper.ReadStartLineAsync(requestStream, ctsToken).DonotCapture();
 			position += startLine.Length;
 
 			var requestLine = RequestLine.CreateNew(startLine);
 			var request = new HttpRequestMessage(requestLine.Method, requestLine.URI);
 
-			string headers = await HttpMessageHelper.ReadHeadersAsync(requestStream, ctsToken).ConfigureAwait(false);
+			string headers = await HttpMessageHelper.ReadHeadersAsync(requestStream, ctsToken).DonotCapture();
 			position += headers.Length + 2;
 
 			var headerSection = HeaderSection.CreateNew(headers);
 			var headerStruct = headerSection.ToHttpRequestHeaders();
 
 			HttpMessageHelper.AssertValidHeaders(headerStruct.RequestHeaders, headerStruct.ContentHeaders);
-			request.Content = await HttpMessageHelper.GetContentAsync(requestStream, headerStruct, ctsToken).ConfigureAwait(false);
+			request.Content = await HttpMessageHelper.GetContentAsync(requestStream, headerStruct, ctsToken).DonotCapture();
 
 			HttpMessageHelper.CopyHeaders(headerStruct.RequestHeaders, request.Headers);
 			if (request.Content != null)
@@ -97,7 +97,7 @@ namespace FclEx.Http.SocksUtil.Http.Extensions
 				}
 
 				ctsToken.ThrowIfCancellationRequested();
-				messageBody = await me.Content.ReadAsStringAsync().ConfigureAwait(false);
+				messageBody = await me.Content.ReadAsStringAsync().DonotCapture();
 			}
 
 			return startLine + headers + Constants.CRLF + messageBody;

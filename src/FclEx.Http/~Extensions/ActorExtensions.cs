@@ -23,7 +23,7 @@ namespace FclEx.Http
             ActionEvent result;
             do
             {
-                result = await actor.ExecuteAsync(token).ConfigureAwait(false);
+                result = await actor.ExecuteAsync(token).DonotCapture();
             } while (!token.IsCancellationRequested
                      && (result.Type == ActionEventType.EvtRepeat || result.Type == ActionEventType.EvtRetry));
             return result;
@@ -40,7 +40,7 @@ namespace FclEx.Http
             ActionEvent result;
             do
             {
-                result = await actor.ExecuteAutoAsync().ConfigureAwait(false);
+                result = await actor.ExecuteAutoAsync().DonotCapture();
             } while (endCondition == null || !endCondition(result));
             return result;
         }
@@ -54,7 +54,7 @@ namespace FclEx.Http
             foreach (var group in actors.Partition(parallelism))
             {
                 if (token.IsCancellationRequested) break;
-                var groupResult = await group.Select(m => m.ExecuteAutoAsync(token)).WhenAll().ConfigureAwait(false);
+                var groupResult = await group.Select(m => m.ExecuteAutoAsync(token)).WhenAll().DonotCapture();
                 list.AddRange(groupResult);
             }
             return list.ToArray();

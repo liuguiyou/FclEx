@@ -129,11 +129,11 @@ namespace FclEx.Http.Services
                     if (response.ContentEncoding?.ToLowerInvariant() == "gzip")
                     {
                         using (var gZipStream = new GZipStream(stream, CompressionMode.Decompress))
-                            await gZipStream.CopyToAsync(mem).ConfigureAwait(false);
+                            await gZipStream.CopyToAsync(mem).DonotCapture();
                     }
                     else
                     {
-                        await stream.CopyToAsync(mem).ConfigureAwait(false);
+                        await stream.CopyToAsync(mem).DonotCapture();
                     }
                 }
 
@@ -176,7 +176,7 @@ namespace FclEx.Http.Services
                     req.ContentLength = data.Length;
                     //using (var stream = await req.GetRequestStreamAsync().ConfigureAwait(false))
                     //{
-                    //    await stream.WriteAsync(data, 0, data.Length, token).ConfigureAwait(false);
+                    //    await stream.WriteAsync(data, 0, data.Length, token).DonotCapture();
                     //}
 
                     // use GetRequestStream() instead of GetRequestStreamAsync() to avoid hangs.
@@ -211,7 +211,7 @@ namespace FclEx.Http.Services
                     ReadHeader(response, responseItem);
 
                 if (requestItem.ReadResultContent)
-                    await ReadContent(response, responseItem).ConfigureAwait(false);
+                    await ReadContent(response, responseItem).DonotCapture();
 
                 // response.EnsureSuccessStatusCode();
 

@@ -28,7 +28,7 @@ namespace FclEx.Http
             {
                 try
                 {
-                    var result = await http.ExecuteHttpRequestAsync(req, CancellationToken.None).ConfigureAwait(false);
+                    var result = await http.ExecuteHttpRequestAsync(req, CancellationToken.None).DonotCapture();
                     return result;
                 }
                 catch (Exception ex)

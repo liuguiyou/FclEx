@@ -30,7 +30,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			int read = 0;
 			while (read >= 0)
 			{
-				read = await stream.ReadByteAsync(ctsToken).ConfigureAwait(false);				
+				read = await stream.ReadByteAsync(ctsToken).DonotCapture();				
 				bab.Append((byte)read);
 				if (Encoding.ASCII.GetBytes(Constants.LF)[0] == (byte)read)
 				{
@@ -49,7 +49,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			var firstRead = true;
 			while (true)
 			{
-				string header = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken).ConfigureAwait(false);
+				string header = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken).DonotCapture();
 
 				if (header == null) throw new FormatException($"Malformed HTTP message: End of headers must be CRLF");
 				if (header == "")
@@ -89,12 +89,12 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			var bab = new ByteArrayBuilder();
 			while (true)
 			{
-				int ch = await stream.ReadByteAsync(ctsToken).ConfigureAwait(false);
+				int ch = await stream.ReadByteAsync(ctsToken).DonotCapture();
 				if (ch == -1) break;
 
 				if (ch == '\r')
 				{
-					var ch2 = await stream.ReadByteAsync(ctsToken).ConfigureAwait(false);
+					var ch2 = await stream.ReadByteAsync(ctsToken).DonotCapture();
 					if (ch2 == '\n')
 					{
 						return bab.ToString(encoding);
@@ -123,7 +123,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 				// All transfer-coding names are case-insensitive
 				if ("chunked".Equals(headerStruct.RequestHeaders.TransferEncoding.Last().Value, StringComparison.OrdinalIgnoreCase))
 				{
-					return await GetDecodedChunkedContent(stream, headerStruct, ctsToken).ConfigureAwait(false);
+					return await GetDecodedChunkedContent(stream, headerStruct, ctsToken).DonotCapture();
 				}
 				// https://tools.ietf.org/html/rfc7230#section-3.3.3
 				// If a Transfer - Encoding header field is present in a response and
@@ -136,7 +136,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 				// status code and then close the connection.
 				else
 				{
-					return await GetContentTillEndAsync(stream, ctsToken).ConfigureAwait(false);
+					return await GetContentTillEndAsync(stream, ctsToken).DonotCapture();
 				}
 			}
 			// https://tools.ietf.org/html/rfc7230#section-3.3.3
@@ -149,7 +149,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			else if (headerStruct.ContentHeaders.Contains("Content-Length"))
 			{
 				long? contentLength = headerStruct.ContentHeaders?.ContentLength;
-				return await GetContentTillLengthAsync(stream, contentLength, ctsToken).ConfigureAwait(false);
+				return await GetContentTillLengthAsync(stream, contentLength, ctsToken).DonotCapture();
 			}
 
 			// https://tools.ietf.org/html/rfc7230#section-3.3.3
@@ -203,7 +203,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 				// All transfer-coding names are case-insensitive
 				if ("chunked".Equals(headerStruct.ResponseHeaders.TransferEncoding.Last().Value, StringComparison.OrdinalIgnoreCase))
 				{
-					return await GetDecodedChunkedContent(stream, headerStruct, ctsToken).ConfigureAwait(false);
+					return await GetDecodedChunkedContent(stream, headerStruct, ctsToken).DonotCapture();
 				}
 				// https://tools.ietf.org/html/rfc7230#section-3.3.3
 				// If a Transfer - Encoding header field is present in a response and
@@ -216,7 +216,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 				// status code and then close the connection.
 				else
 				{
-					return await GetContentTillEndAsync(stream, ctsToken).ConfigureAwait(false);
+					return await GetContentTillEndAsync(stream, ctsToken).DonotCapture();
 				}
 			}
 			// https://tools.ietf.org/html/rfc7230#section-3.3.3
@@ -230,7 +230,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			{
 				long? contentLength = headerStruct.ContentHeaders?.ContentLength;
 
-				return await GetContentTillLengthAsync(stream, contentLength, ctsToken).ConfigureAwait(false);
+				return await GetContentTillLengthAsync(stream, contentLength, ctsToken).DonotCapture();
 			}
 
 			// https://tools.ietf.org/html/rfc7230#section-3.3.3
@@ -240,16 +240,16 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			// body length, so the message body length is determined by the
 			// number of octets received prior to the server closing the
 			// connection.
-			return await GetContentTillEndAsync(stream, ctsToken).ConfigureAwait(false);
+			return await GetContentTillEndAsync(stream, ctsToken).DonotCapture();
 		}
 
 		private static async Task<HttpContent> GetDecodedChunkedContent(Stream stream, HttpRequestContentHeaders headerStruct, CancellationToken ctsToken = default(CancellationToken))
 		{
-			return await GetDecodedChunkedContent(stream, headerStruct, null, ctsToken).ConfigureAwait(false);
+			return await GetDecodedChunkedContent(stream, headerStruct, null, ctsToken).DonotCapture();
 		}
 		private static async Task<HttpContent> GetDecodedChunkedContent(Stream stream, HttpResponseContentHeaders headerStruct, CancellationToken ctsToken = default(CancellationToken))
 		{
-			return await GetDecodedChunkedContent(stream, null, headerStruct, ctsToken).ConfigureAwait(false);
+			return await GetDecodedChunkedContent(stream, null, headerStruct, ctsToken).DonotCapture();
 		}
 		private static async Task<HttpContent> GetDecodedChunkedContent(Stream stream, HttpRequestContentHeaders requestHeaders, HttpResponseContentHeaders responseHeaders, CancellationToken ctsToken = default(CancellationToken))
 		{
@@ -286,7 +286,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			// Remove "chunked" from Transfer-Encoding
 			// Remove Trailer from existing header fields
 			long length = 0;
-			var firstChunkLine = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken: ctsToken).ConfigureAwait(false);
+			var firstChunkLine = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken: ctsToken).DonotCapture();
 			ParseFistChunkLine(firstChunkLine, out long chunkSize, out IEnumerable<string> chunkExtensions);
 			// We will not do anything with the chunk extensions, because:
 			// https://tools.ietf.org/html/rfc7230#section-4.1.1
@@ -299,7 +299,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			// by a trailer, and finally terminated by an empty line.
 			while (chunkSize > 0)
 			{
-				var chunkData = await ReadBytesTillLengthAsync(stream, chunkSize, ctsToken).ConfigureAwait(false);
+				var chunkData = await ReadBytesTillLengthAsync(stream, chunkSize, ctsToken).DonotCapture();
 				if (await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken).ConfigureAwait(false) != "")
 				{
 					throw new FormatException("Chunk does not end with CRLF");
@@ -312,7 +312,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 
 				length += chunkSize;
 
-				firstChunkLine = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken: ctsToken).ConfigureAwait(false);
+				firstChunkLine = await ReadCRLFLineAsync(stream, Encoding.ASCII, ctsToken: ctsToken).DonotCapture();
 				ParseFistChunkLine(firstChunkLine, out long cs, out IEnumerable<string> ces);
 				chunkSize = cs;
 				chunkExtensions = ces;
@@ -321,7 +321,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			// A trailer allows the sender to include additional fields at the end
 			// of a chunked message in order to supply metadata that might be
 			// dynamically generated while the message body is sent
-			string trailerHeaders = await ReadHeadersAsync(stream, ctsToken).ConfigureAwait(false);
+			string trailerHeaders = await ReadHeadersAsync(stream, ctsToken).DonotCapture();
 			var trailerHeaderSection = HeaderSection.CreateNew(trailerHeaders);
 			RemoveInvalidTrailers(trailerHeaderSection);
 			if (responseHeaders != null)
@@ -431,7 +431,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			var bab = new ByteArrayBuilder();
 			while(true)
 			{
-				var read = await stream.ReadByteAsync(ctsToken).ConfigureAwait(false);
+				var read = await stream.ReadByteAsync(ctsToken).DonotCapture();
 				if (read == -1) return new ByteArrayContent(bab.ToArray());
 			}
 		}
@@ -452,7 +452,7 @@ namespace FclEx.Http.SocksUtil.Http.Helpers
 			}
 
 			var allData = new byte[(int)length];
-			var num = await stream.ReadBlockAsync(allData, 0, (int)length).ConfigureAwait(false);
+			var num = await stream.ReadBlockAsync(allData, 0, (int)length).DonotCapture();
 			if (num < (int)length)
 			{
 				// https://tools.ietf.org/html/rfc7230#section-3.3.3

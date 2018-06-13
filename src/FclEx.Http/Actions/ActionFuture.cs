@@ -32,7 +32,7 @@ namespace FclEx.Http.Actions
                 if (action == null) continue;
 
                 action.OnActionEvent += _outerListener;
-                var result = await action.ExecuteAsync(token).ConfigureAwait(false);
+                var result = await action.ExecuteAsync(token).DonotCapture();
                 action.OnActionEvent -= _outerListener;
 
                 results[i] = result.Target;

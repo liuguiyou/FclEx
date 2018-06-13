@@ -66,7 +66,7 @@ namespace FclEx.Http
             return req;
         }
 
-        public static HttpRequestItem AddDataIfNotEmpty(this HttpRequestItem req, bool condition, string key, string value)
+        public static HttpRequestItem AddDataIfNotEmpty(this HttpRequestItem req, string key, string value)
         {
             return AddDataIf(req, !value.IsNullOrEmpty(), key, value);
         }

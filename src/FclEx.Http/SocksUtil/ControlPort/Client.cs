@@ -40,7 +40,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 		public async Task<bool> IsCircuitEstabilishedAsync(CancellationToken ctsToken = default(CancellationToken))
 		{
 			// Get info
-			var response = await SendCommandAsync("GETINFO status/circuit-established", ctsToken: ctsToken).ConfigureAwait(false);
+			var response = await SendCommandAsync("GETINFO status/circuit-established", ctsToken: ctsToken).DonotCapture();
 
 			if (response.Contains("status/circuit-established=1", StringComparison.OrdinalIgnoreCase))
 			{
@@ -59,18 +59,18 @@ namespace FclEx.Http.SocksUtil.ControlPort
 			{
 				OnCircuitChangeRequested();
 
-				await InitializeConnectSocketAsync(ctsToken).ConfigureAwait(false);
+				await InitializeConnectSocketAsync(ctsToken).DonotCapture();
 
-				await AuthenticateAsync(ctsToken).ConfigureAwait(false);
+				await AuthenticateAsync(ctsToken).DonotCapture();
 
 				// Subscribe to SIGNAL events
-				await SendCommandAsync("SETEVENTS SIGNAL", initAuthDispose: false, ctsToken: ctsToken).ConfigureAwait(false);
+				await SendCommandAsync("SETEVENTS SIGNAL", initAuthDispose: false, ctsToken: ctsToken).DonotCapture();
 
 				// Clear all existing circuits and build new ones
-				await SendCommandAsync("SIGNAL NEWNYM", initAuthDispose: false, ctsToken: ctsToken).ConfigureAwait(false);
+				await SendCommandAsync("SIGNAL NEWNYM", initAuthDispose: false, ctsToken: ctsToken).DonotCapture();
 
 				// Unsubscribe from all events
-				await SendCommandAsync("SETEVENTS", initAuthDispose: false, ctsToken: ctsToken).ConfigureAwait(false);
+				await SendCommandAsync("SETEVENTS", initAuthDispose: false, ctsToken: ctsToken).DonotCapture();
 			}
 			catch (Exception ex)
 			{
@@ -81,7 +81,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 				DisconnectDisposeSocket();
 
 				// safety delay, in case the tor client is not quick enough with the actions
-				await Task.Delay(100, ctsToken).ConfigureAwait(false);
+				await Task.Delay(100, ctsToken).DonotCapture();
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 			{
 				authString = Util.ByteArrayToString(File.ReadAllBytes(_cookieFilePath));
 			}
-			await SendCommandAsync($"AUTHENTICATE {authString}", initAuthDispose: false, ctsToken: ctsToken).ConfigureAwait(false);
+			await SendCommandAsync($"AUTHENTICATE {authString}", initAuthDispose: false, ctsToken: ctsToken).DonotCapture();
 		}
 
 		private static HashSet<string> _eventsSet = new HashSet<string>();
@@ -115,11 +115,11 @@ namespace FclEx.Http.SocksUtil.ControlPort
 				var bufferByteArraySegment = new ArraySegment<byte>(new byte[_socket.ReceiveBufferSize]);
 				Task<int> socketReceiveTask = _socket.ReceiveAsync(bufferByteArraySegment, SocketFlags.None);
 
-				var firstTask = await Task.WhenAny(socketReceiveTask, timeoutTask).ConfigureAwait(false);
+				var firstTask = await Task.WhenAny(socketReceiveTask, timeoutTask).DonotCapture();
 
 				if (firstTask == timeoutTask) throw new TimeoutException($"Did not receive the expected {nameof(eventStartsWith)} : {eventStartsWith} within the specified {nameof(timeout)} : {timeout}");
 
-				int receivedCount = await socketReceiveTask.ConfigureAwait(false);
+				int receivedCount = await socketReceiveTask.DonotCapture();
 
 				var response = Encoding.ASCII.GetString(bufferByteArraySegment.Array, 0, receivedCount);
 				if (response.StartsWith(eventStartsWith, StringComparison.OrdinalIgnoreCase))
@@ -131,7 +131,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 
 		public async Task<string> SendCommandAsync(string command, CancellationToken ctsToken = default(CancellationToken))
 		{
-			return await SendCommandAsync(command, initAuthDispose: true, ctsToken: ctsToken).ConfigureAwait(false);
+			return await SendCommandAsync(command, initAuthDispose: true, ctsToken: ctsToken).DonotCapture();
 		}
 
 		public async Task<string> SendCommandAsync(string command, bool initAuthDispose, CancellationToken ctsToken = default(CancellationToken))
@@ -140,9 +140,9 @@ namespace FclEx.Http.SocksUtil.ControlPort
 			{
 				if (initAuthDispose)
 				{
-					await InitializeConnectSocketAsync(ctsToken).ConfigureAwait(false);
+					await InitializeConnectSocketAsync(ctsToken).DonotCapture();
 
-					await AuthenticateAsync(ctsToken).ConfigureAwait(false);
+					await AuthenticateAsync(ctsToken).DonotCapture();
 				}
 
 				try
@@ -154,7 +154,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 					}
 
 					var commandByteArraySegment = new ArraySegment<byte>(Encoding.ASCII.GetBytes(command));
-					await _socket.SendAsync(commandByteArraySegment, SocketFlags.None).ConfigureAwait(false);
+					await _socket.SendAsync(commandByteArraySegment, SocketFlags.None).DonotCapture();
 					ctsToken.ThrowIfCancellationRequested();
 				}
 				catch (Exception ex)
@@ -165,7 +165,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 				var bufferByteArraySegment = new ArraySegment<byte>(new byte[_socket.ReceiveBufferSize]);
 				try
 				{
-					var receivedCount = await _socket.ReceiveAsync(bufferByteArraySegment, SocketFlags.None).ConfigureAwait(false);
+					var receivedCount = await _socket.ReceiveAsync(bufferByteArraySegment, SocketFlags.None).DonotCapture();
 					var response = Encoding.ASCII.GetString(bufferByteArraySegment.Array, 0, receivedCount);
 					var responseLines = new List<string>(response.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
 					
@@ -193,7 +193,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 								// NEWNYM may be rate-limited (usually around 10 seconds, the max I've seen is 2 minutes)
 								if (what.StartsWith("NEWNYM", StringComparison.OrdinalIgnoreCase))
 								{
-									await WaitForEventAsync("650 SIGNAL NEWNYM", TimeSpan.FromMinutes(3), ctsToken).ConfigureAwait(false);
+									await WaitForEventAsync("650 SIGNAL NEWNYM", TimeSpan.FromMinutes(3), ctsToken).DonotCapture();
 								}
 								else
 								{
@@ -232,7 +232,7 @@ namespace FclEx.Http.SocksUtil.ControlPort
 					DisconnectDisposeSocket();
 
 					// safety delay, in case the tor client is not quick enough with the actions
-					await Task.Delay(100).ConfigureAwait(false);
+					await Task.Delay(100).DonotCapture();
 				}
 			}
 		}
@@ -266,9 +266,9 @@ namespace FclEx.Http.SocksUtil.ControlPort
 		{
 			try
 			{
-				await Util.Semaphore.WaitAsync(ctsToken).ConfigureAwait(false);
+				await Util.Semaphore.WaitAsync(ctsToken).DonotCapture();
 				_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				await _socket.ConnectAsync(_controlEndPoint).ConfigureAwait(false);
+				await _socket.ConnectAsync(_controlEndPoint).DonotCapture();
 			}
 			catch (Exception ex)
 			{

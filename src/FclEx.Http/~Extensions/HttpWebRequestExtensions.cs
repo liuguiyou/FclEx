@@ -9,7 +9,7 @@ namespace FclEx.Http
         {
             try
             {
-                return (HttpWebResponse)await req.GetResponseAsync().ConfigureAwait(false);
+                return (HttpWebResponse)await req.GetResponseAsync().DonotCapture();
             }
             catch (WebException ex)
             {

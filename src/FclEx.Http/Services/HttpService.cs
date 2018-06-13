@@ -122,11 +122,11 @@ namespace FclEx.Http.Services
             switch (responseItem.RequestItem.ResultType)
             {
                 case HttpResultType.String:
-                    responseItem.ResponseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    responseItem.ResponseString = await response.Content.ReadAsStringAsync().DonotCapture();
                     break;
 
                 case HttpResultType.Byte:
-                    responseItem.ResponseBytes = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    responseItem.ResponseBytes = await response.Content.ReadAsByteArrayAsync().DonotCapture();
                     break;
             }
             foreach (var header in response.Content.Headers)
@@ -200,7 +200,7 @@ namespace FclEx.Http.Services
                 }
                 var responseItem = new HttpResponseItem { RequestItem = requestItem };
                 var httpRequest = GetHttpRequest(requestItem);
-                var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, token).DonotCapture();
                 responses.Add(response);
                 responseItem.RedirectUris.Add(response.RequestMessage.RequestUri);
 
@@ -219,7 +219,7 @@ namespace FclEx.Http.Services
                     var req = new HttpRequestMessage(HttpMethod.Get, uri);
                     var cookies = _cookieContainer.GetCookieHeader(uri);
                     if (!cookies.IsNullOrEmpty()) req.Headers.Add(HttpConstants.Cookie, cookies);
-                    response = await _httpClient.SendAsync(req, token).ConfigureAwait(false);
+                    response = await _httpClient.SendAsync(req, token).DonotCapture();
                     responses.Add(response);
                     responseItem.RedirectUris.Add(response.RequestMessage.RequestUri);
 
@@ -246,7 +246,7 @@ namespace FclEx.Http.Services
                         }
                         contentType.CharSet = requestItem.ResultChartSet;
                     }
-                    await ReadContentAsync(response, responseItem).ConfigureAwait(false);
+                    await ReadContentAsync(response, responseItem).DonotCapture();
                 }
 
                 return responseItem;

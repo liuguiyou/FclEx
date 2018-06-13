@@ -30,20 +30,20 @@ namespace FclEx.Http.Actions
         protected override async ValueTask<ActionEvent> ExecuteInternalAsync(CancellationToken token)
         {
             if (token.IsCancellationRequested)
-                return await NotifyCancelEventAsync().ConfigureAwait(false);
+                return await NotifyCancelEventAsync().DonotCapture();
 
             HttpRequestItem requestItem = null;
             try
             {
                 requestItem = BuildRequest();
-                var response = await HttpService.ExecuteHttpRequestAsync(requestItem, token).ConfigureAwait(false);
+                var response = await HttpService.ExecuteHttpRequestAsync(requestItem, token).DonotCapture();
                 PreCheckResponse(response);
-                var result = await HandleResponse(response).ConfigureAwait(false);
+                var result = await HandleResponse(response).DonotCapture();
                 return result;
             }
             catch (TaskCanceledException)
             {
-                return await NotifyCancelEventAsync().ConfigureAwait(false);
+                return await NotifyCancelEventAsync().DonotCapture();
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ namespace FclEx.Http.Actions
                 }
 
                 return await HandleExceptionAsync(ObjectException.Create(requestItem, ex.Message, ex))
-                    .ConfigureAwait(false);
+                    .DonotCapture();
             }
             finally
             {

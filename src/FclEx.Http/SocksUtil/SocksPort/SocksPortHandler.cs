@@ -70,7 +70,7 @@ namespace FclEx.Http.SocksUtil.SocksPort
 
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ctsToken)
 		{			
-			await Util.Semaphore.WaitAsync(ctsToken).ConfigureAwait(false);
+			await Util.Semaphore.WaitAsync(ctsToken).DonotCapture();
 
 			try
 			{
@@ -100,7 +100,7 @@ namespace FclEx.Http.SocksUtil.SocksPort
 
 				try
 				{
-					return await connection.SendRequestAsync(request, ctsToken).ConfigureAwait(false);
+					return await connection.SendRequestAsync(request, ctsToken).DonotCapture();
 				}
 				catch(Exception ex)
 				{
