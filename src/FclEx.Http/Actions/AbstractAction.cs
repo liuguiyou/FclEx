@@ -40,7 +40,7 @@ namespace FclEx.Http.Actions
                 case ActionEventType.EvtRetry:
                 {
                     var ex = (Exception)target;
-                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}, RetryTimes={ErrorTimes}][{ex}]");
+                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}, ErrorTimes={ErrorTimes}][{ex}]");
                     break;
                 }
 
@@ -54,13 +54,12 @@ namespace FclEx.Http.Actions
             }
         }
 
-
         protected virtual ValueTask<ActionEvent> NotifyActionEventAsync(ActionEvent actionEvent)
         {
             try
             {
                 LogActionEvent(actionEvent);
-                return OnActionEvent.Invoke(this, actionEvent);
+                return OnActionEvent(this, actionEvent);
             }
             catch (Exception ex)
             {
@@ -76,7 +75,7 @@ namespace FclEx.Http.Actions
                 var @event = ActionEvent.CreateEvent(ErrorTimes < MaxReTryTimes ?
                     ActionEventType.EvtRetry : ActionEventType.EvtError, ex);
                 LogActionEvent(@event);
-                return OnActionEvent.Invoke(this, @event);
+                return OnActionEvent(this, @event);
             }
             catch (Exception e)
             {

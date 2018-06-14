@@ -204,7 +204,7 @@ namespace FclEx.Http
             {
                 sb.AppendLine($"{pair.Key}: { pair.Value}");
             }
-            sb.AppendLine("Cookie: " + cookieHeader);
+            sb.Append("Cookie: " + cookieHeader);
             return sb.ToString();
         }
 

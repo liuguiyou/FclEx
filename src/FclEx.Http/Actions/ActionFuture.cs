@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Http.Event;
+using FclEx.Utils;
 
 namespace FclEx.Http.Actions
 {
@@ -21,18 +22,19 @@ namespace FclEx.Http.Actions
         public virtual async ValueTask<ActionEvent> ExecuteAsync(CancellationToken token)
         {
             var results = new object[_queue.Count];
+            var actions = new IAction[_queue.Count];
             var lastEvent = ActionEvent.EmptyOkEvent;
             for (var i = 0; i < _queue.Count; i++)
             {
                 if (token.IsCancellationRequested)
                     return ActionEvent.CreateCancelEvent(this);
 
-                var item = _queue[i];
-                var action = item(results);
+                actions[i] = actions[i] ?? _queue[i](results); // action只生成一次
+                var action = actions[i];
                 if (action == null) continue;
 
                 action.OnActionEvent += _outerListener;
-                var result = await action.ExecuteAsync(token).DonotCapture();
+                var result = await action.ExecuteAutoAsync(token).DonotCapture();
                 action.OnActionEvent -= _outerListener;
 
                 results[i] = result.Target;
@@ -59,7 +61,7 @@ namespace FclEx.Http.Actions
 
         public IActionFuture PushAction(Func<object[], IAction> func)
         {
-            func = func ?? (o => null);
+            Check.NotNull(func, nameof(func));
             _queue.Add(func);
             return this;
         }
