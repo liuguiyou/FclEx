@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FclEx.Http
+namespace FclEx
 {
     public class ObjectException
     {
@@ -20,7 +20,7 @@ namespace FclEx.Http
 
         public override string ToString()
         {
-            return StackTrace.IsNullOrEmpty() ? Message : base.ToString();
+            return StackTrace.IsNullOrEmpty() ? Message : Message + Environment.NewLine + StackTrace;
         }
     }
 }
