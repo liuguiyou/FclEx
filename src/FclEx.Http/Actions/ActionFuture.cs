@@ -27,7 +27,7 @@ namespace FclEx.Http.Actions
             for (var i = 0; i < _queue.Count; i++)
             {
                 if (token.IsCancellationRequested)
-                    return ActionEvent.CreateCancelEvent(this);
+                    return ActionEvent.Cancel(this);
 
                 actions[i] = actions[i] ?? _queue[i](results); // action只生成一次
                 var action = actions[i];

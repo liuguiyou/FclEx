@@ -72,7 +72,7 @@ namespace FclEx.Http.Actions
             ++ErrorTimes;
             try
             {
-                var @event = ActionEvent.CreateEvent(ErrorTimes < MaxReTryTimes ?
+                var @event = ActionEvent.Create(ErrorTimes < MaxReTryTimes ?
                     ActionEventType.EvtRetry : ActionEventType.EvtError, ex);
                 LogActionEvent(@event);
                 return OnActionEvent(this, @event);
@@ -83,13 +83,16 @@ namespace FclEx.Http.Actions
             }
         }
 
-        protected ValueTask<ActionEvent> NotifyActionEventAsync(ActionEventType type, object target = null) => NotifyActionEventAsync(ActionEvent.CreateEvent(type, target));
-        protected ValueTask<ActionEvent> NotifyOkEventAsync(object target = null) => NotifyActionEventAsync(ActionEventType.EvtOk, target);
+        protected ValueTask<ActionEvent> NotifyActionEventAsync(ActionEventType type, object target = null)
+            => NotifyActionEventAsync(ActionEvent.Create(type, target));
+
+        protected ValueTask<ActionEvent> NotifyOkEventAsync(object target = null)
+            => NotifyActionEventAsync(ActionEventType.EvtOk, target);
 
         protected ValueTask<ActionEvent> NotifyRetryEventAsync(Exception ex) => NotifyActionEventAsync(ActionEventType.EvtRetry, ex);
         protected ValueTask<ActionEvent> NotifyRetryEventAsync(string msg = "Unknown Error") => NotifyActionEventAsync(ActionEventType.EvtRetry, ObjectCache.CreateException(msg, true));
         protected ValueTask<ActionEvent> NotifyCancelEventAsync() => NotifyActionEventAsync(ActionEventType.EvtCanceled, this);
-        protected ValueTask<ActionEvent> NotifyErrorAsync(Exception ex) => NotifyActionEventAsync(ActionEvent.CreateEvent(ActionEventType.EvtError, ex));
+        protected ValueTask<ActionEvent> NotifyErrorAsync(Exception ex) => NotifyActionEventAsync(ActionEvent.Create(ActionEventType.EvtError, ex));
         protected ValueTask<ActionEvent> NotifyErrorAsync(string msg = "Unknown Error") => NotifyErrorAsync(ObjectCache.CreateException(msg, true));
         protected ValueTask<ActionEvent> NotifyObjectErrorAsync<T>(T obj, string msg = null, Exception innerException = null)
             => NotifyErrorAsync(ObjectException.Create(obj, msg, innerException));
