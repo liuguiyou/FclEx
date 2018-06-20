@@ -5,9 +5,9 @@ namespace FclEx.Http
 {
     public static class ActionEventExtensions
     {
-        public static T Get<T>(this ActionEvent e)
+        public static bool True<T>(this ActionEvent @event, Func<T, bool> predicate)
         {
-            return (T)e.Target;
+            return @event.TryGet<T>(out var result) && predicate(result);
         }
 
         public static bool TryGetFromObjEx<T>(this ActionEvent e, out T result)
@@ -24,6 +24,11 @@ namespace FclEx.Http
             }
         }
 
+        public static bool TrueFromObjEx<T>(this ActionEvent @event, Func<T, bool> predicate)
+        {
+            return @event.TryGetFromObjEx<T>(out var result) && predicate(result);
+        }
+
         public static bool TryGet<T>(this ActionEvent e, out T result)
         {
             if (e.IsOk && e.Target is T r)
@@ -36,11 +41,6 @@ namespace FclEx.Http
                 result = default;
                 return false;
             }
-        }
-
-        public static T GetOrDefault<T>(this ActionEvent e, T defaultValue = default)
-        {
-            return e.Target is T variable ? variable : defaultValue;
         }
     }
 }
