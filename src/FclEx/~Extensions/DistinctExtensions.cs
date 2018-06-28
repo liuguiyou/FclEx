@@ -9,7 +9,7 @@ namespace FclEx
     {
         public static IEnumerable<T> Distinct<T, V>(this IEnumerable<T> source, Func<T, V> keySelector, IEqualityComparer<V> comparer = null)
         {
-            return source.Distinct(EqualityHelper<T>.CreateComparer(keySelector, comparer));
+            return source.Distinct(EqualityComparerHelper.Create(keySelector, comparer));
         }
     }
 }

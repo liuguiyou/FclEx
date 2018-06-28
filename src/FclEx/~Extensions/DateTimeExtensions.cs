@@ -25,5 +25,6 @@ namespace FclEx
         public static string ToShort(this DateTime @this) => @this.ToString("yyyyMMddHHmmss");
 
         public static string ToCn(this DateTime @this) => @this.ToString("yyyy-MM-dd HH:mm:ss");
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FclEx.Utils;
 
 namespace FclEx
 {
@@ -62,28 +63,23 @@ namespace FclEx
 
         public static object CreateObject(this Type type, params object[] args)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            Check.NotNull(type, nameof(type));
+
+            if (args.IsNullOrEmpty()) return Activator.CreateInstance(type);
 
             var argsType = args.Select(a => a.GetType()).ToArray();
-            var ctor = type.GetTypeInfo().GetConstructors().FirstOrDefault(m => m.ArgumentListMatches(argsType));
+            var ctor = type.GetConstructors().FirstOrDefault(m => m.ArgumentListMatches(argsType));
             if (ctor != null)
             {
                 var paras = ctor.GetParameters();
-                if (paras.Length != args.Length)
+                if (paras.Length > args.Length)
                 {
-                    // paras.Length must be larger than args.Length
-                    var argsNew = new object[paras.Length];
-                    args.CopyTo(argsNew, 0);
-
-                    for (var i = args.Length; i < paras.Length; i++)
-                    {
-                        argsNew[i] = paras[i].RawDefaultValue;
-                    }
-                    args = argsNew;
+                    args = args.Concat(paras.Skip(args.Length).Select(m => m.RawDefaultValue)).ToArray();
                 }
+                return ctor.Invoke(args);
             }
-            else throw new MissingMethodException();
-            return ctor.Invoke(args);
+
+            throw new MissingMethodException();
         }
 
         public static bool IsInheritedFromGenericType(this Type type, Type genericType)
@@ -96,6 +92,25 @@ namespace FclEx
             return type.GetTypeInfo().GetInterfaces().FirstOrDefault(x =>
                 x.GetTypeInfo().IsGenericType &&
                 x.GetGenericTypeDefinition() == genericType);
+        }
+
+        public static Type GetAnyElementType(this Type type)
+        {
+            // Type is Array
+            // short-circuit if you expect lots of arrays 
+            if (type.IsArray)
+                return type.GetElementType();
+
+            // type is IEnumerable<T>;
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                return type.GenericTypeArguments[0];
+
+            // type implements/extends IEnumerable<T>;
+            var enumType = type.GetGenericInterface(typeof(IEnumerable<>));
+            if (enumType != null)
+                return enumType.GenericTypeArguments[0];
+
+            return null;
         }
     }
 }

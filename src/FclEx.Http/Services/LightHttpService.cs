@@ -28,9 +28,11 @@ namespace FclEx.Http.Services
             HttpConstants.ContentLength,
         };
 
-        public LightHttpService(Uri uri, bool useCookie = true) : this(uri == null ? WebProxy.None : new WebProxy(uri), useCookie) { }
+        public LightHttpService(Uri uri, bool useCookie = true)
+            : this(uri == null ? WebProxy.None : new WebProxy(uri), useCookie) { }
 
-        public LightHttpService(string url, bool useCookie = true) : this(url.IsNullOrEmpty() ? null : ObjectCache.CreateUri(url, true), useCookie) { }
+        public LightHttpService(string url, bool useCookie = true) 
+            : this(url.IsNullOrEmpty() ? null : ObjectCache.CreateUri(url, true), useCookie) { }
 
         public LightHttpService(WebProxy proxy = null, bool useCookie = true)
         {

@@ -15,11 +15,11 @@ namespace FclEx
                 return false;
 
             // Now, check compatibility of the first set of arguments.
-            return !args.Where((arg, i) => ! pInfo[i].ParameterType.GetTypeInfo().IsAssignableFrom(arg)).Any() 
+            return !args.Where((arg, i) => ! pInfo[i].ParameterType.IsAssignableFrom(arg)).Any() 
                 && pInfo.Skip(args.Length).All(p => p.IsOptional);  // And make sure the last set of arguments are actually default!
         }
 
-        public static bool IsAsyncMethod(this MethodInfo method)
+        public static bool IsAsync(this MethodInfo method)
         {
             // Obtain the custom attribute for the method.
             // The value returned contains the StateMachineType property.

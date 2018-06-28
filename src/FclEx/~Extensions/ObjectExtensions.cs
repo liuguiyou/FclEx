@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
+using FclEx;
 
 namespace FclEx
 {
+
     public static class ObjectExtensions
     {
         public static bool IsDefault<T>(this T obj) => EqualityComparer<T>.Default.Equals(obj, default);
@@ -38,5 +41,7 @@ namespace FclEx
         {
             return obj == null ? 0 : obj.GetHashCode();
         }
+
+
     }
 }

@@ -27,5 +27,17 @@ namespace FclEx
         {
             return Task.WhenAll(sequence.Select(action).ToArray());
         }
+
+        public static (T[] True, T[] False) PartitionToArray<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            var pair = source.Partition(predicate);
+            return (pair.True.ToArray(), pair.False.ToArray());
+        }
+
+        public static (List<T> True, List<T> False) PartitionToList<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            var pair = source.Partition(predicate);
+            return (pair.True.ToList(), pair.False.ToList());
+        }
     }
 }
