@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace FclEx.Test
+namespace FclEx.Test.TypeExtensions
 {
-    public class TypeExtensionsTests
+    public class GetAnyElementTypeTests
     {
         public static IEnumerable<object[]> Cases { get; } = new(object, Type)[]
         {
@@ -17,7 +17,7 @@ namespace FclEx.Test
 
         [Theory]
         [MemberData(nameof(Cases))]
-        public void GetElementType_Test(Type type, Type expected)
+        public void Test(Type type, Type expected)
         {
             var t = type.GetAnyElementType();
             Assert.Equal(expected, t);

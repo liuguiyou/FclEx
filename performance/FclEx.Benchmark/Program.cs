@@ -1,4 +1,5 @@
 ﻿using System;
+using BenchmarkDotNet.Running;
 
 namespace FclEx.Benchmark
 {
@@ -6,7 +7,8 @@ namespace FclEx.Benchmark
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            BenchmarkRunner.Run<GetDefaultTest>();
+            Console.Read();
         }
     }
 }

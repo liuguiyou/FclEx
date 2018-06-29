@@ -41,7 +41,7 @@ namespace FclEx.Json
             {
                 if (colType == typeof(ReadOnlyCollection<>)) return objectType.CreateObject(list);
 
-                var ctor = colType.GetConstructor(new[] { typeof(IEnumerable<>).MakeGenericType(eleType) });
+                var ctor = objectType.GetConstructor(new[] { typeof(IEnumerable<>).MakeGenericType(eleType) });
                 if (ctor != null) return ctor.Invoke(new object[] { list });
 
                 if (colType.IsInheritedFromGenericType(typeof(ICollection<>)))

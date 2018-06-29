@@ -5,7 +5,7 @@ namespace FclEx
 {
     public static class Md5Extensions
     {
-        private static readonly Regex RegMd5 = new Regex(@"^([a-fA-F0-9]{32})$");
+        private static readonly Regex _regMd5 = new Regex(@"^([a-fA-F0-9]{32})$");
 
         public static string ToMd5String(this byte[] input)
         {
@@ -19,7 +19,7 @@ namespace FclEx
         
         public static bool IsMd5String(this string input)
         {
-            return RegMd5.IsMatch(input);
+            return _regMd5.IsMatch(input);
         }
     }
 }

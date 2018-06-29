@@ -19,7 +19,7 @@ namespace FclEx
             return EnumDic.GetOrAdd(@enum, (key) =>
             {
                 var str = key.ToString();
-                var field = key.GetType().GetTypeInfo().GetField(str);
+                var field = key.GetType().GetField(str);
                 return field == null ? str : GetDescription(field);
             });
         }
@@ -37,7 +37,7 @@ namespace FclEx
         {
             return TypeDic.GetOrAdd(type, (key) =>
             {
-                var att = type.GetTypeInfo().GetCustomAttribute<DescriptionAttribute>(false);
+                var att = type.GetCustomAttribute<DescriptionAttribute>(false);
                 return att == null ? type.Name : att.Description;
             });
         }

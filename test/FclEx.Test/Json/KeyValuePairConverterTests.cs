@@ -15,6 +15,19 @@ namespace FclEx.Test.Json
 {
     public class KeyValuePairConverterTests
     {
+        private class MyList<T> : List<T>
+        {
+        }
+
+        private class MyListWithCtor<T> : List<T>
+        {
+            public MyListWithCtor(IEnumerable<T> collection) : base(collection)
+            {
+
+            }
+        }
+
+
         private static readonly MethodInfo _method = typeof(KeyValuePairConverterTests).GetMethod(
             nameof(ReadTestGeneric), BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -45,7 +58,9 @@ namespace FclEx.Test.Json
             t => typeof(List<>).MakeGenericType(t),
             t => typeof(IReadOnlyCollection<>).MakeGenericType(t),
             t => typeof(ReadOnlyCollection<>).MakeGenericType(t),
-            t => typeof(IReadOnlyList<>).MakeGenericType(t)
+            t => typeof(IReadOnlyList<>).MakeGenericType(t),
+            t => typeof(MyList<>).MakeGenericType(t),
+            t => typeof(MyListWithCtor<>).MakeGenericType(t),
         };
 
 

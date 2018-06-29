@@ -30,7 +30,7 @@ namespace FclEx.Helpers
             int val;
             if (int.TryParse(number, out val))
             {
-                if (typeof(T).GetTypeInfo().IsEnumDefined(val))
+                if (typeof(T).IsEnumDefined(val))
                     return (T)Enum.ToObject(typeof(T), val);
             }
             return defaultValueFunc(number);

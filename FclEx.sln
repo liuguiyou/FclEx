@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Http", "src\FclEx.Htt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Http.Test", "test\FclEx.Http.Test\FclEx.Http.Test.csproj", "{E62BB49F-1731-4C68-8654-20D2E49EB0A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx.Benchmark", "performance\FclEx.Benchmark\FclEx.Benchmark.csproj", "{A47C0FFA-3314-439F-9857-322FF6035A8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Benchmark", "performance\FclEx.Benchmark\FclEx.Benchmark.csproj", "{A47C0FFA-3314-439F-9857-322FF6035A8F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{82145F29-EBC3-49B3-A96C-0CA1F040E231}"
 EndProject

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using BenchmarkDotNet.Attributes;
+using FclEx;
 
 namespace FclEx.Benchmark
 {
-    public class CreateObject
+    [MemoryDiagnoser]
+    public class CreateObjectTest
     {
         private static readonly Type _type = typeof(List<>);
 
@@ -18,7 +20,14 @@ namespace FclEx.Benchmark
         [Benchmark]
         public void Ctor()
         {
-            
+            var ctor = _type.MakeGenericType(typeof(int)).GetConstructor(new[] { typeof(int) });
+            ctor.Invoke(new object[] { 4 });
+        }
+
+        [Benchmark]
+        public void CreateObject()
+        {
+            _type.MakeGenericType(typeof(int)).CreateObject(4);
         }
     }
 }
