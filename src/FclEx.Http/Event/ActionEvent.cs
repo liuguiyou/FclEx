@@ -1,14 +1,33 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace FclEx.Http.Event
 {
+    [Description("动作事件类型")]
+    public enum ActionEventType
+    {
+        [Description("成功")]
+        EvtOk,
+        [Description("错误")]
+        EvtError,
+        [Description("取消")]
+        EvtCanceled,
+        [Description("重试")]
+        EvtRetry,
+        [Description("再次执行")]
+        EvtRepeat
+    }
+
     /// <summary>
     /// 用来表示一个action的执行结果
     /// </summary>
     public struct ActionEvent
     {
         public ActionEventType Type { get; }
+
+        [JsonIgnore]
         public object Target { get; }
 
         public static ActionEvent Repeat() => new ActionEvent(ActionEventType.EvtRepeat, null);
@@ -33,23 +52,43 @@ namespace FclEx.Http.Event
             Target = target;
         }
 
+        [JsonIgnore]
         public static ActionEvent EmptyOkEvent { get; } = new ActionEvent(ActionEventType.EvtOk, null);
 
-
+        [JsonIgnore]
         public Exception Exception => IsError ? (Exception)Target : null;
+
+        [JsonIgnore]
         public string ExceptionMessage => Exception?.Message;
+
+        [JsonIgnore]
         public bool IsOk => Type == ActionEventType.EvtOk;
+
+        [JsonIgnore]
         public bool IsError => Type == ActionEventType.EvtError;
+
+        [JsonIgnore]
         public bool IsRetry => Type == ActionEventType.EvtRetry;
     }
 
     public struct ActionEvent<T>
     {
+        [JsonIgnore]
         public T Result => IsOk ? (T)Target : default;
+
+        [JsonIgnore]
         public Exception Exception => IsError ? (Exception)Target : null;
+
+        [JsonIgnore]
         public string ExceptionMessage => Exception?.Message;
+
+        [JsonIgnore]
         public bool IsOk => Type == ActionEventType.EvtOk;
+
+        [JsonIgnore]
         public bool IsError => Type == ActionEventType.EvtError;
+
+        [JsonIgnore]
         public bool IsRetry => Type == ActionEventType.EvtRetry;
 
         public ActionEvent(ActionEventType type, object target)
