@@ -21,7 +21,7 @@ namespace FclEx
             return task.ConfigureAwait(false);
         }
 
-        public static ConfiguredValueTaskAwaitable DonotCapture<T>(this ValueTask task)
+        public static ConfiguredValueTaskAwaitable DonotCapture(this ValueTask task)
         {
             return task.ConfigureAwait(false);
         }
