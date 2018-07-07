@@ -1,4 +1,7 @@
-﻿namespace FclEx.Helpers
+﻿using System;
+using System.Collections.Generic;
+
+namespace FclEx.Helpers
 {
     public static class ObjectHelper
     {
@@ -12,6 +15,24 @@
             var temp = a;
             a = b;
             b = temp;
+        }
+
+        public static void UpdateIf<T>(ref T obj, T newValue, Func<T, T, bool> condition)
+        {
+            if (condition(obj, newValue))
+                obj = newValue;
+        }
+
+        public static void UpdateIfLessThan<T>(ref T obj, T newValue)
+        {
+            var cmp = Comparer<T>.Default;
+            if (cmp.Compare(obj, newValue) < 0) obj = newValue;
+        }
+
+        public static void UpdateIfNotEqual<T>(ref T obj, T newValue)
+        {
+            var cmp = EqualityComparer<T>.Default;
+            if (!cmp.Equals(obj, newValue)) obj = newValue;
         }
     }
 }
