@@ -1,8 +1,9 @@
+$Env:DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER = 0
+
 # Paths
 $packFolder = (Get-Item -Path "./" -Verbose).FullName
 $slnPath = Join-Path $packFolder "../"
 $srcPath = Join-Path $slnPath "src"
-
 # List of projects
 $projects = (
 "FclEx",
@@ -27,7 +28,7 @@ Set-Location $packFolder
 
 $PSGallerySourceUri = 'https://www.myget.org/F/huoshan12345/api/v2/package'
 $APIKey = 'fbc0486a-55ff-4760-b246-bef3e0ee952d'
-& dotnet nuget push *.nupkg -k $APIKey -s $PSGallerySourceUri
+& dotnet nuget push *.nupkg -k $APIKey -s $PSGallerySourceUri --timeout 30
 
 Write-Output "Finished. Press any key to exit."
 Read-Host

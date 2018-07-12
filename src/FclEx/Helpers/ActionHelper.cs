@@ -10,13 +10,12 @@ namespace FclEx.Helpers
         internal static Action<Exception> EmptyExpAction { get; } = e => { };
 
         public static void Try(Action action, int retryTimes = 3, int delaySeconds = 0,
-            Action<AggregateException> onFail = null, bool throwOnFail = false)
+            Action<Exception> onFail = null, bool throwOnFail = false)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
-
+            var lastEx = default(Exception);
             onFail = onFail ?? EmptyExpAction;
             var times = Math.Max(0, retryTimes) + 1;
-            var exList = new List<Exception>();
             for (var i = 1; i <= times; i++)
             {
                 try
@@ -26,25 +25,23 @@ namespace FclEx.Helpers
                 }
                 catch (Exception ex)
                 {
-                    exList.Add(ex);
+                    lastEx = ex;
                     ThreadHelper.Sleep(delaySeconds);
                 }
             }
 
-            var e = new AggregateException(exList);
-            onFail(e);
+            if (lastEx == null) return;
 
-            if (throwOnFail) throw e;
+            onFail(lastEx);
+            if (throwOnFail) throw lastEx;
         }
 
         public static T Try<T>(Func<T> action, int retryTimes = 3, int delaySeconds = 0,
-            Action<AggregateException> onFail = null, bool throwOnFail = false)
+            Func<Exception, T> onFail = null, bool throwOnFail = false)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
-
-            onFail = onFail ?? EmptyExpAction;
             var times = Math.Max(0, retryTimes) + 1;
-            var exList = new List<Exception>();
+            var lastEx = default(Exception);
             for (var i = 1; i <= times; i++)
             {
                 try
@@ -53,27 +50,22 @@ namespace FclEx.Helpers
                 }
                 catch (Exception ex)
                 {
-                    exList.Add(ex);
+                    lastEx = ex;
                     ThreadHelper.Sleep(delaySeconds);
                 }
             }
-
-            var e = new AggregateException(exList);
-            onFail(e);
-
-            if (throwOnFail) throw e;
-
-            return default;
+            if (throwOnFail && lastEx != null) throw lastEx;
+            return onFail == null ? default : onFail(lastEx);
         }
 
         public static async Task TryAsync(Func<Task> func, int retryTimes = 3, int delaySeconds = 0,
-            Action<AggregateException> onFail = null, bool throwOnFail = false)
+            Action<Exception> onFail = null, bool throwOnFail = false)
         {
             if (func == null) throw new ArgumentNullException(nameof(func));
 
             onFail = onFail ?? EmptyExpAction;
             var times = Math.Max(0, retryTimes) + 1;
-            var exList = new List<Exception>();
+            var lastEx = default(Exception);
             for (var i = 1; i <= times; i++)
             {
                 try
@@ -83,23 +75,27 @@ namespace FclEx.Helpers
                 }
                 catch (Exception ex)
                 {
-                    exList.Add(ex);
+                    lastEx = ex;
                     await TaskHelper.Delay(delaySeconds);
                 }
             }
 
-            var e = new AggregateException(exList);
-            onFail(e);
+            if (lastEx == null) return;
 
-            if (throwOnFail) throw e;
+            onFail(lastEx);
+            if (throwOnFail) throw lastEx;
         }
 
+        public static async ValueTask TryAsync(Func<ValueTask> func, int retryTimes = 3, int delaySeconds = 0,
+            Action<Exception> onFail = null, bool throwOnFail = false)
+            => await TryAsync((Func<Task>)(async () => await func().DonotCapture()), retryTimes, delaySeconds,
+                onFail, throwOnFail).DonotCapture();
+
         public static async Task<T> TryAsync<T>(Func<Task<T>> func, int retryTimes = 3, int delaySeconds = 0,
-            Action<AggregateException> onFail = null, bool throwOnFail = false)
+            Func<Exception, T> onFail = null, bool throwOnFail = false, T defaultValue = default)
         {
             if (func == null) throw new ArgumentNullException(nameof(func));
-
-            onFail = onFail ?? EmptyExpAction;
+            var lastEx = default(Exception);
             var times = Math.Max(0, retryTimes) + 1;
             var exList = new List<Exception>();
             for (var i = 1; i <= times; i++)
@@ -110,17 +106,18 @@ namespace FclEx.Helpers
                 }
                 catch (Exception ex)
                 {
-                    exList.Add(ex);
+                    lastEx = ex;
                     await TaskHelper.Delay(delaySeconds);
                 }
             }
 
-            var e = new AggregateException(exList);
-            onFail(e);
-
-            if (throwOnFail) throw e;
-
-            return default;
+            if (throwOnFail && lastEx != null) throw lastEx;
+            return onFail == null ? default : onFail(lastEx);
         }
+
+        public static async ValueTask<T> TryAsync<T>(Func<ValueTask<T>> func, int retryTimes = 3, int delaySeconds = 0,
+            Func<Exception, T> onFail = null, bool throwOnFail = false, T defaultValue = default)
+            => await TryAsync((Func<Task<T>>)(async () => await func().DonotCapture()), retryTimes, delaySeconds,
+                onFail, throwOnFail, defaultValue).DonotCapture();
     }
 }

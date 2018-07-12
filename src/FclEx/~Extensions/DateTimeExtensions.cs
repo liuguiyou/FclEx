@@ -26,5 +26,9 @@ namespace FclEx
 
         public static string ToCn(this DateTime @this) => @this.ToString("yyyy-MM-dd HH:mm:ss");
 
+        public static DateTime AddWeeks(this DateTime dateTime, int numberOfWeeks)
+        {
+            return dateTime.AddDays(numberOfWeeks * 7);
+        }
     }
 }

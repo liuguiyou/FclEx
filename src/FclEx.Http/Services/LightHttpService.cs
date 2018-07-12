@@ -226,7 +226,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        public ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token)
+        public ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token = default)
         {
             // 本方法依赖的类成员只有_webProxy和_cookieContainer，前者状态不可变，后者线程安全
             return ExecuteAsync(requestItem, _webProxy, _cookieContainer, token);

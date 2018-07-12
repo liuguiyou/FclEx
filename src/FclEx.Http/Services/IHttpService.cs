@@ -13,7 +13,7 @@ namespace FclEx.Http.Services
         /// <summary>
         /// 执行一个HTTP请求
         /// </summary>
-        ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem request, CancellationToken token);
+        ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem request, CancellationToken token = default);
 
         /// <summary>
         /// 获取一个cookie

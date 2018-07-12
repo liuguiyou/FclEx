@@ -188,7 +188,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        public async ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token)
+        public async ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpResponseMessage>();

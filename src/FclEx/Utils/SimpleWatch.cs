@@ -13,7 +13,15 @@ namespace FclEx.Utils
             return end - start;
         }
 
-        public static async Task<TimeSpan> Do(Func<Task> action)
+        public static async Task<TimeSpan> DoAsync(Func<Task> action)
+        {
+            var start = DateTime.UtcNow;
+            await action();
+            var end = DateTime.UtcNow;
+            return end - start;
+        }
+
+        public static async ValueTask<TimeSpan> DoAsync(Func<ValueTask> action)
         {
             var start = DateTime.UtcNow;
             await action();

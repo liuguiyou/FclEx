@@ -4,7 +4,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using FclEx.Http.Core;
+using FclEx.Http.Services;
 using MoreLinq;
 
 namespace FclEx.Http
@@ -149,13 +151,13 @@ namespace FclEx.Http
             return req;
         }
 
-        public static HttpRequestItem Timeout(this HttpRequestItem req, int timeout)
+        public static HttpRequestItem Timeout(this HttpRequestItem req, int? timeout)
         {
             req.Timeout = timeout;
             return req;
         }
 
-        public static HttpRequestItem TryTimeout(this HttpRequestItem req, int timeout)
+        public static HttpRequestItem TryTimeout(this HttpRequestItem req, int? timeout)
         {
             req.Timeout = req.Timeout ?? timeout;
             return req;
@@ -196,6 +198,8 @@ namespace FclEx.Http
             req.ReadResultContent = read;
             return req;
         }
+
+
 
         public static string GetRequestHeader(this HttpRequestItem req, string cookieHeader)
         {
@@ -284,6 +288,12 @@ namespace FclEx.Http
             return ObjectCache.GetQueryPair(query, useCache);
         }
 
-
+        public static async ValueTask<HttpResponseItem> SendAsync(this HttpRequestItem req, int retryTimes = 3)
+        {
+            using (var http = new LightHttpService(useCookie: false))
+            {
+                return await http.SendAsync(req, retryTimes).DonotCapture();
+            }
+        }
     }
 }
