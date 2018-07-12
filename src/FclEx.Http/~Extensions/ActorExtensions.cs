@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Http.Actions;
 using FclEx.Http.Event;
+using MoreLinq;
 
 namespace FclEx.Http
 {
@@ -51,7 +52,7 @@ namespace FclEx.Http
         {
             parallelism = parallelism < 1 ? Environment.ProcessorCount : parallelism;
             var list = new List<ActionEvent>(actors.Count);
-            foreach (var group in actors.Partition(parallelism))
+            foreach (var group in actors.Batch(parallelism))
             {
                 if (token.IsCancellationRequested) break;
                 var groupResult = await group.Select(m => m.ExecuteAutoAsync(token)).WhenAll().DonotCapture();

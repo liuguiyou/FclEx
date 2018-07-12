@@ -22,6 +22,7 @@ foreach($project in $projects) {
 		$minor = [int32]$m.Groups[2].Value
 		$build = [int32]$m.Groups[3].Value
 		If ($build -gt 10) { $minor++; $build = 0} Else { $build++ }
+		If ($minor -gt 10) { $major++; $minor = 0} Else { $minor++ }
 		"$major.$minor.$build"
 	}
 	foreach ($i in $l){
