@@ -21,18 +21,18 @@ namespace FclEx.Http.Actions
             _url = url;
         }
 
-        protected override HttpRequestItem BuildRequest()
+        protected override HttpReq BuildRequest()
         {
-            var req = HttpRequestItem.CreateGetRequest(_url);
+            var req = HttpReq.Get(_url);
             req.Compress();
             req.ResultType = HttpResultType.Byte;
             ModifyRequest(req);
             return req;
         }
 
-        protected virtual void ModifyRequest(HttpRequestItem req) { }
+        protected virtual void ModifyRequest(HttpReq req) { }
 
-        protected override ValueTask<ActionEvent> HandleResponse(HttpResponseItem response)
+        protected override ValueTask<ActionEvent> HandleResponse(HttpRes response)
         {
             return NotifyOkEventAsync(response.ResponseBytes);
         }

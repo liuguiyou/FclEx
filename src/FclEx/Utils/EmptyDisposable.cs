@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace FclEx
+namespace FclEx.Utils
 {
     public class EmptyDisposable : IDisposable
     {

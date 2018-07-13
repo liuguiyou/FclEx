@@ -5,6 +5,8 @@ namespace FclEx
 {
     public static class ArrayExtensions
     {
+        private static readonly Random _random = new Random();
+
         public static int IndexOf<T>(this T[] items, T item)
         {
             return items != null ? Array.IndexOf(items, item) : -1;
@@ -26,6 +28,12 @@ namespace FclEx
         public static T GetAtOrDefault<T>(this IList<T> list, int index, T defaultValue = default(T))
         {
             return list != null && list.Count > index ? list[index] : defaultValue;
+        }
+
+        public static T Random<T>(this IList<T> col)
+        {
+            var i = _random.Next(0, col.Count - 1);
+            return col[i];
         }
     }
 }

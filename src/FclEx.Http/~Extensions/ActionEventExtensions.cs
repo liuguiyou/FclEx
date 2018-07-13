@@ -1,5 +1,6 @@
 ﻿using System;
 using FclEx.Http.Event;
+using FclEx.Utils;
 
 namespace FclEx.Http
 {

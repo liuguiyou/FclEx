@@ -24,8 +24,8 @@ namespace FclEx.Http
 
         public static NameValueCollection GetQueryPair(string url, bool useCache = false)
         {
-            return useCache ? _urlQueryDic.GetOrAdd(url, HttpRequestExtensions.ParseQueryStringInternal)
-                : HttpRequestExtensions.ParseQueryStringInternal(url);
+            return useCache ? _urlQueryDic.GetOrAdd(url, HttpReqExtensions.ParseQueryStringInternal)
+                : HttpReqExtensions.ParseQueryStringInternal(url);
         }
     }
 }

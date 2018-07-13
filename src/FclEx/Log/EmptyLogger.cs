@@ -1,4 +1,5 @@
 ﻿using System;
+using FclEx.Utils;
 using Microsoft.Extensions.Logging;
 
 namespace FclEx.Log

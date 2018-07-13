@@ -34,5 +34,16 @@ namespace FclEx.Helpers
             var cmp = EqualityComparer<T>.Default;
             if (!cmp.Equals(obj, newValue)) obj = newValue;
         }
+
+        public static void UpdateIfDefault<T>(ref T obj, T newValue)
+        {
+            var cmp = EqualityComparer<T>.Default;
+            if (!cmp.Equals(obj, default)) obj = newValue;
+        }
+
+        public static void UpdateIfEmpty(ref string obj, string newValue)
+        {
+            if (obj.IsNullOrEmpty()) obj = newValue;
+        }
     }
 }

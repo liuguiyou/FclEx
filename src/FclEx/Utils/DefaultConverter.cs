@@ -5,7 +5,8 @@ namespace FclEx.Utils
 {
     public static class DefaultConverter<TOutput>
     {
-        public static TOutput ConvertExpression<TInput>(TInput from) { return DefaultConverter<TInput, TOutput>.Instance.Invoke(from); }
+        public static TOutput ConvertExpression<TInput>(TInput from) 
+            => DefaultConverter<TInput, TOutput>.Instance.Invoke(from);
         // public static TOutput ConvertDynamic(dynamic from) => from;
     }
 

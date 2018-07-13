@@ -18,11 +18,15 @@ foreach($project in $projects) {
 	$reg =  [regex]"(?<=<Version>)(\d+)\.(\d+)\.(\d+)(?=</Version>)";
 	$callback = {
 		$m = $args[0]
-		$major = [int32]$m.Groups[1].Value
-		$minor = [int32]$m.Groups[2].Value
-		$build = [int32]$m.Groups[3].Value
-		If ($build -gt 10) { $minor++; $build = 0} Else { $build++ }
-		If ($minor -gt 10) { $major++; $minor = 0} Else { $minor++ }
+		$major = [int]$m.Groups[1].Value
+		$minor = [int]$m.Groups[2].Value
+		$build = [int]$m.Groups[3].Value
+		$ver = $major * 100 + $minor * 10 + $build
+		$ver++
+		$major = ($ver - $ver % 100) / 100
+		$minor = ($ver % 100 - $ver % 10) / 10
+		$build = $ver % 10
+
 		"$major.$minor.$build"
 	}
 	foreach ($i in $l){

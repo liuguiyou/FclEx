@@ -4,7 +4,7 @@ namespace FclEx.Utils
 {
     public static class Singleton<T> where T : class
     {
-        private static T _instance;
+        private static volatile T _instance;
         private static readonly object _lock = new object();
         
         public static T GetOrInit(Func<T> func)

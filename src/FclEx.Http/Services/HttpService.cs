@@ -88,7 +88,7 @@ namespace FclEx.Http.Services
             return httpClient;
         }
 
-        private HttpRequestMessage GetHttpRequest(HttpRequestItem item)
+        private HttpRequestMessage GetHttpRequest(HttpReq item)
         {
             var request = new HttpRequestMessage(new HttpMethod(item.Method.ToString().ToUpper()), item.GetUrl())
             {
@@ -109,29 +109,29 @@ namespace FclEx.Http.Services
             return request;
         }
 
-        private static void ReadHeader(HttpResponseMessage response, HttpResponseItem responseItem)
+        private static void ReadHeader(HttpResponseMessage response, HttpRes res)
         {
             foreach (var header in response.Headers)
             {
-                responseItem.Headers.AddRange(header.Key, header.Value);
+                res.Headers.AddRange(header.Key, header.Value);
             }
         }
 
-        private static async Task ReadContentAsync(HttpResponseMessage response, HttpResponseItem responseItem)
+        private static async Task ReadContentAsync(HttpResponseMessage response, HttpRes res)
         {
-            switch (responseItem.RequestItem.ResultType)
+            switch (res.Req.ResultType)
             {
                 case HttpResultType.String:
-                    responseItem.ResponseString = await response.Content.ReadAsStringAsync().DonotCapture();
+                    res.ResponseString = await response.Content.ReadAsStringAsync().DonotCapture();
                     break;
 
                 case HttpResultType.Byte:
-                    responseItem.ResponseBytes = await response.Content.ReadAsByteArrayAsync().DonotCapture();
+                    res.ResponseBytes = await response.Content.ReadAsByteArrayAsync().DonotCapture();
                     break;
             }
             foreach (var header in response.Content.Headers)
             {
-                responseItem.Headers.AddRange(header.Key, header.Value);
+                res.Headers.AddRange(header.Key, header.Value);
             }
         }
 
@@ -188,7 +188,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        public async ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token = default)
+        public async ValueTask<HttpRes> ExecuteHttpRequestAsync(HttpReq requestItem, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpResponseMessage>();
@@ -198,7 +198,7 @@ namespace FclEx.Http.Services
                 {
                     token = new CancellationTokenSource(requestItem.Timeout.Value).Token;
                 }
-                var responseItem = new HttpResponseItem { RequestItem = requestItem };
+                var responseItem = new HttpRes { Req = requestItem };
                 var httpRequest = GetHttpRequest(requestItem);
                 var response = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead, token).DonotCapture();
                 responses.Add(response);

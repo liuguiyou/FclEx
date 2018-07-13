@@ -7,14 +7,22 @@ namespace FclEx
 {
     public static class DictionaryExtensions
     {
+        public static bool TryGetAndDo<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key,
+            Action<TValue> action)
+        {
+            var result = dic.TryGetValue(key, out var value);
+            if (result) action(value);
+            return result;
+        }
+
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key, 
-            TValue defaultValue = default(TValue))
+            TValue defaultValue = default)
         {
             return dic.TryGetValue(key, out var value) ? value : defaultValue;
         }
 
         public static TValue GetFirstOrDefault<TKey, TValue>(this MultiValueDictionary<TKey, TValue> dic, TKey key,
-            TValue defaultValue = default(TValue))
+            TValue defaultValue = default)
         {
             return dic.TryGetValue(key, out var list) && list.Count > 0 ? list.First() : defaultValue;
         }

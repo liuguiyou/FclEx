@@ -12,18 +12,18 @@ namespace FclEx.Http
 {
     public static class HttpServiceExtensions
     {
-        public static ValueTask<HttpResponseItem> GetAsync(this IHttpService http, string url, string charSet = null, int? timeout = 10 * 1000, int retryTimes = 3, int delaySeconds = 0)
+        public static ValueTask<HttpRes> GetAsync(this IHttpService http, string url, string charSet = null, int? timeout = 10 * 1000, int retryTimes = 3, int delaySeconds = 0)
         {
-            var req = HttpRequestItem.CreateGetRequest(url)
+            var req = HttpReq.Get(url)
                 .Compress()
                 .Timeout(timeout)
                 .ChartSet(charSet);
             return SendAsync(http, req, retryTimes, delaySeconds);
         }
 
-        public static ValueTask<HttpResponseItem> SendAsync(this IHttpService http, HttpRequestItem req, int retryTimes = 3, int delaySeconds = 0)
+        public static ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 3, int delaySeconds = 0)
         {
-            return ActionHelper.TryAsync(() => http.ExecuteHttpRequestAsync(req), retryTimes, delaySeconds, HttpResponseItem.CreateError);
+            return ActionHelper.TryAsync(() => http.ExecuteHttpRequestAsync(req), retryTimes, delaySeconds, HttpRes.CreateError);
         }
 
         public static void AddCookies(this IHttpService http, IEnumerable<Cookie> cookies, string url = null)

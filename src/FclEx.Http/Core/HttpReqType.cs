@@ -1,6 +1,6 @@
 ﻿namespace FclEx.Http.Core
 {
-    public enum EnumRequestType
+    public enum HttpReqType
     {
         Get,
         Form,

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using FclEx.Helpers;
+using FclEx.Http.Core.Cookies;
 
 namespace FclEx.Http.Core
 {

@@ -2,18 +2,16 @@
 using System.Globalization;
 using System.Net;
 
-namespace FclEx.Http.Core
+namespace FclEx.Http.Core.Cookies
 {
     //
     // support class for Validation related stuff.
     //
     internal static class ValidationHelper
     {
-
-        public static string[] EmptyArray = new string[0];
-
-        internal static readonly char[] InvalidMethodChars =
-            new char[]{
+        internal static char[] InvalidMethodChars { get; } =
+            new char[]
+            {
                 ' ',
                 '\r',
                 '\n',
@@ -21,7 +19,7 @@ namespace FclEx.Http.Core
             };
 
         // invalid characters that cannot be found in a valid method-verb or http header
-        internal static readonly char[] InvalidParamChars =
+        internal static char[] InvalidParamChars { get; } =
             new char[]{
                 '(',
                 ')',
@@ -45,27 +43,15 @@ namespace FclEx.Http.Core
                 '\t',
                 '\r',
                 '\n'};
+
         public static string[] MakeEmptyArrayNull(string[] stringArray)
         {
-            if (stringArray == null || stringArray.Length == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return stringArray;
-            }
+            return stringArray.IsNullOrEmpty() ? null : stringArray;
         }
+
         public static string MakeStringNull(string stringValue)
         {
-            if (stringValue == null || stringValue.Length == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return stringValue;
-            }
+            return string.IsNullOrEmpty(stringValue) ? null : stringValue;
         }
         /*
         // Consider removing.
@@ -147,7 +133,7 @@ public static int HashCode(object objectValue) {
 
         public static bool IsBlankString(string stringValue)
         {
-            return stringValue == null || stringValue.Length == 0;
+            return string.IsNullOrEmpty(stringValue);
         }
 
         /*
@@ -184,13 +170,13 @@ public static int HashCode(object objectValue) {
         {
             if (/*segment == null ||*/ segment.Array == null)
             {
-                throw new ArgumentNullException("segment");
+                throw new ArgumentNullException(nameof(segment));
             }
             // Length zero is explicitly allowed
             if (segment.Offset < 0 || segment.Count < 0
                 || segment.Count > (segment.Array.Length - segment.Offset))
             {
-                throw new ArgumentOutOfRangeException("segment");
+                throw new ArgumentOutOfRangeException(nameof(segment));
             }
         }
     }

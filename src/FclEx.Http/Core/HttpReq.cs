@@ -3,26 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using FclEx.Utils;
 
 namespace FclEx.Http.Core
 {
-    public struct HttpFileInfo
+    public class HttpReq
     {
-        public HttpFileInfo(string name, string fileName, string contentType)
-        {
-            Name = name;
-            FileName = fileName;
-            ContentType = contentType;
-        }
-
-        public string Name { get; }
-        public string FileName { get; }
-        public string ContentType { get; }
-    }
-
-    public class HttpRequestItem
-    {
-        public Uri RawUri { get; }
+        public Uri RawUri { get; private set; }
         public string RawUrl => RawUri.ToString();
         public string StringData { get; set; }
         public byte[] ByteArrayData { get; set; }
@@ -81,7 +69,21 @@ namespace FclEx.Http.Core
         public string Host
         {
             get => HeaderMap.GetOrDefault(HttpConstants.Host);
-            set => HeaderMap[HttpConstants.Host] = value;
+            set
+            {
+                var m = CommonRegex.HostPort.Match(value);
+                if(!m.Success) throw new ArgumentException("Not a valid host: " + value);
+
+                var h = m.Groups[1].Value;
+                var p = m.TryGetInt(2, 80);
+
+                if (h != RawUri.Host || p != RawUri.Port)
+                {
+                    HeaderMap[HttpConstants.Host] = value;
+                    var uriBuilder = new UriBuilder(RawUri.Scheme, h, p, RawUri.LocalPath);
+                    RawUri = uriBuilder.Uri;
+                }
+            }
         }
 
         public string Boundary
@@ -90,11 +92,11 @@ namespace FclEx.Http.Core
             set => HeaderMap[HttpConstants.Boundary] = value;
         }
 
-        public HttpRequestItem(Uri rawUrl, HttpMethodType method) : this(rawUrl.ToString(), method) { }
+        public HttpReq(Uri rawUrl, HttpMethodType method) : this(rawUrl.ToString(), method) { }
 
-        public HttpRequestItem(HttpMethodType method, string rawUrl) : this(rawUrl, method) { }
+        public HttpReq(HttpMethodType method, string rawUrl) : this(rawUrl, method) { }
 
-        public HttpRequestItem(string rawUrl, HttpMethodType method)
+        public HttpReq(string rawUrl, HttpMethodType method)
         {
             var parts = rawUrl.Split('?');
             RawUri = new Uri(parts[0]);
@@ -109,40 +111,40 @@ namespace FclEx.Http.Core
             }
             ContentType = method == HttpMethodType.Get ? HttpConstants.DefaultGetContentType : HttpConstants.DefaultPostContentType;
             Method = method;
-            AddHeader(HttpConstants.Host, RawUri.Host);
+            AddHeader(HttpConstants.Host, RawUri.Authority);
             AddHeader(HttpConstants.UserAgent, HttpConstants.DefaultUserAgent);
         }
 
-        public static HttpRequestItem CreateJsonRequest(string url) => new HttpRequestItem(url, HttpMethodType.Post) { ContentType = HttpConstants.JsonContentType };
-        public static HttpRequestItem CreateJsonRequest(Uri url) => CreateJsonRequest(url.ToString());
+        public static HttpReq Json(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.JsonContentType };
+        public static HttpReq Json(Uri url) => Json(url.ToString());
 
-        public static HttpRequestItem CreateFormRequest(string url) => new HttpRequestItem(url, HttpMethodType.Post) { ContentType = HttpConstants.FormContentType };
-        public static HttpRequestItem CreateFormRequest(Uri url) => CreateFormRequest(url.ToString());
+        public static HttpReq Form(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.FormContentType };
+        public static HttpReq Form(Uri url) => Form(url.ToString());
 
-        public static HttpRequestItem CreateGetRequest(string url) => new HttpRequestItem(url, HttpMethodType.Get) { ContentType = HttpConstants.DefaultGetContentType };
-        public static HttpRequestItem CreateGetRequest(Uri url) => CreateGetRequest(url.ToString());
+        public static HttpReq Get(string url) => new HttpReq(url, HttpMethodType.Get) { ContentType = HttpConstants.DefaultGetContentType };
+        public static HttpReq Get(Uri url) => Get(url.ToString());
 
-        public static HttpRequestItem CreateUploadRequest(string url) => new HttpRequestItem(url, HttpMethodType.Post) { ContentType = HttpConstants.ByteArrayContentType };
-        public static HttpRequestItem CreateUploadRequest(Uri url) => CreateUploadRequest(url.ToString());
+        public static HttpReq Upload(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.ByteArrayContentType };
+        public static HttpReq Upload(Uri url) => Upload(url.ToString());
 
-        public static HttpRequestItem CreateMultiPartRequest(string url) => new HttpRequestItem(url, HttpMethodType.Post)
+        public static HttpReq MultiPart(string url) => new HttpReq(url, HttpMethodType.Post)
         {
             Boundary = "----WebKitFormBoundaryImw0tVH7wlMdFALP",
             ContentType = HttpConstants.MultiPartContentType,
         };
 
-        public static HttpRequestItem CreateMultiPartRequest(Uri url) => CreateMultiPartRequest(url.ToString());
+        public static HttpReq MultiPart(Uri url) => MultiPart(url.ToString());
 
-        public static HttpRequestItem CreateRequest(string url, EnumRequestType requestType)
+        public static HttpReq Create(string url, HttpReqType reqType)
         {
-            switch (requestType)
+            switch (reqType)
             {
-                case EnumRequestType.Get: return CreateGetRequest(url);
-                case EnumRequestType.Form: return CreateFormRequest(url);
-                case EnumRequestType.Json: return CreateJsonRequest(url);
-                case EnumRequestType.Upload: return CreateUploadRequest(url);
-                case EnumRequestType.MultiPart: return CreateMultiPartRequest(url);
-                default: throw new ArgumentOutOfRangeException(nameof(requestType), requestType, null);
+                case HttpReqType.Get: return Get(url);
+                case HttpReqType.Form: return Form(url);
+                case HttpReqType.Json: return Json(url);
+                case HttpReqType.Upload: return Upload(url);
+                case HttpReqType.MultiPart: return MultiPart(url);
+                default: throw new ArgumentOutOfRangeException(nameof(reqType), reqType, null);
             }
         }
 
@@ -150,25 +152,25 @@ namespace FclEx.Http.Core
 
         public string GetUrl() => !HasQuery ? RawUrl : $"{RawUrl}?{QueryMap.Select(m => $"{m.Key.UrlEncode()}={m.Value.UrlEncode()}").JoinWith("&")}";
 
-        public HttpRequestItem AddQueryValue(string key, string value)
+        public HttpReq AddQueryValue(string key, string value)
         {
             QueryMap[key] = value ?? "";
             return this;
         }
 
-        public HttpRequestItem AddFormValue(string key, string value)
+        public HttpReq AddFormValue(string key, string value)
         {
             FormMap[key] = value ?? "";
             return this;
         }
 
-        public HttpRequestItem AddHeader(string key, string value)
+        public HttpReq AddHeader(string key, string value)
         {
             HeaderMap[key] = value ?? "";
             return this;
         }
 
-        public HttpRequestItem TryAddHeader(string key, string value)
+        public HttpReq TryAddHeader(string key, string value)
         {
             if (!HeaderMap.ContainsKey(key))
                 HeaderMap[key] = value ?? "";

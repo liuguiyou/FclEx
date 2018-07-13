@@ -45,7 +45,7 @@ namespace FclEx.Http.Services
         {
         }
 
-        private static HttpWebRequest BuildRequest(HttpRequestItem request, WebProxy proxy, CookieContainer cc)
+        private static HttpWebRequest BuildRequest(HttpReq request, WebProxy proxy, CookieContainer cc)
         {
             var req = (HttpWebRequest)WebRequest.Create(request.GetUrl());
             req.AllowAutoRedirect = false;
@@ -110,18 +110,18 @@ namespace FclEx.Http.Services
             }
         }
 
-        private static void ReadHeader(HttpWebResponse response, HttpResponseItem responseItem)
+        private static void ReadHeader(HttpWebResponse response, HttpRes res)
         {
             foreach (var key in response.Headers.AllKeys)
             {
                 var headers = response.Headers.GetValues(key);
-                responseItem.Headers.AddRange(key, headers);
+                res.Headers.AddRange(key, headers);
             }
         }
 
-        private static async Task ReadContent(HttpWebResponse response, HttpResponseItem responseItem)
+        private static async Task ReadContent(HttpWebResponse response, HttpRes res)
         {
-            responseItem.ResponseChartSet = response.CharacterSet;
+            res.ResponseChartSet = response.CharacterSet;
 
             // 不能依赖content-length
             using (var mem = new MemoryStream())
@@ -139,12 +139,12 @@ namespace FclEx.Http.Services
                     }
                 }
 
-                switch (responseItem.RequestItem.ResultType)
+                switch (res.Req.ResultType)
                 {
                     case HttpResultType.String:
-                        var charset = responseItem.RequestItem.ResultChartSet.IsNullOrEmpty()
+                        var charset = res.Req.ResultChartSet.IsNullOrEmpty()
                             ? response.CharacterSet
-                            : responseItem.RequestItem.ResultChartSet;
+                            : res.Req.ResultChartSet;
 
                         var contentEncoding = charset.IsNullOrEmpty()
                             ? Encoding.UTF8
@@ -153,18 +153,18 @@ namespace FclEx.Http.Services
                         mem.Seek(0, SeekOrigin.Begin);
                         using (var sr = new StreamReader(mem, contentEncoding))
                         {
-                            responseItem.ResponseString = sr.ReadToEnd();
+                            res.ResponseString = sr.ReadToEnd();
                         }
                         break;
 
                     case HttpResultType.Byte:
-                        responseItem.ResponseBytes = mem.ToArray();
+                        res.ResponseBytes = mem.ToArray();
                         break;
                 }
             }
         }
 
-        private static async ValueTask<HttpResponseItem> ExecuteAsync(HttpRequestItem requestItem, WebProxy proxy, CookieContainer cc, CancellationToken token)
+        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, WebProxy proxy, CookieContainer cc, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpWebResponse>();
@@ -187,7 +187,7 @@ namespace FclEx.Http.Services
                         await stream.WriteAsync(data, 0, data.Length, token).DonotCapture();
                     }
                 }
-                var responseItem = new HttpResponseItem { RequestItem = requestItem };
+                var responseItem = new HttpRes { Req = requestItem };
                 var response = await req.GetHttpResponseAsync().DonotCapture();
 
                 responses.Add(response);
@@ -199,7 +199,7 @@ namespace FclEx.Http.Services
                 while (response.IfRedirect())
                 {
                     var uri = response.GetRedirectUri();
-                    var tempReq = BuildRequest(HttpRequestItem.CreateGetRequest(uri), proxy, cc);
+                    var tempReq = BuildRequest(HttpReq.Get(uri), proxy, cc);
                     response = await tempReq.GetHttpResponseAsync().DonotCapture();
                     responses.Add(response);
                     responseItem.RedirectUris.Add(response.ResponseUri);
@@ -226,10 +226,10 @@ namespace FclEx.Http.Services
             }
         }
 
-        public ValueTask<HttpResponseItem> ExecuteHttpRequestAsync(HttpRequestItem requestItem, CancellationToken token = default)
+        public ValueTask<HttpRes> ExecuteHttpRequestAsync(HttpReq req, CancellationToken token = default)
         {
             // 本方法依赖的类成员只有_webProxy和_cookieContainer，前者状态不可变，后者线程安全
-            return ExecuteAsync(requestItem, _webProxy, _cookieContainer, token);
+            return ExecuteAsync(req, _webProxy, _cookieContainer, token);
         }
 
         public Cookie GetCookie(string name, string url)

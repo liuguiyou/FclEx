@@ -11,17 +11,17 @@ namespace FclEx.Http.Actions
     {
         protected abstract string Url { get; }
 
-        protected abstract EnumRequestType RequestType { get; }
+        protected abstract HttpReqType ReqType { get; }
 
-        protected override HttpRequestItem BuildRequest()
+        protected override HttpReq BuildRequest()
         {
-            var req = HttpRequestItem.CreateRequest(Url, RequestType)
+            var req = HttpReq.Create(Url, ReqType)
                 .Compress();
             ModifyRequest(req);
             return req;
         }
 
-        protected virtual void ModifyRequest(HttpRequestItem req) { }
+        protected virtual void ModifyRequest(HttpReq req) { }
 
         protected string GetUrl(ConcurrentDictionary<Type, string> apiDic, Type apiType)
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FclEx
+namespace FclEx.Utils
 {
     public class ObjectException
     {

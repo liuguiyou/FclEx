@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Event;
+using FclEx.Utils;
 
 namespace FclEx.Http.Actions
 {
