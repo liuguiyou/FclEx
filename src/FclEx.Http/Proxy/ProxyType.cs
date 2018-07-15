@@ -1,6 +1,6 @@
 ﻿namespace FclEx.Http.Proxy
 {
-    public enum EnumProxyType
+    public enum ProxyType
     {
         None, 
         Http,

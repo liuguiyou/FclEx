@@ -10,13 +10,12 @@ using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
-using WebProxy = FclEx.Http.Proxy.WebProxy;
 
 namespace FclEx.Http.Services
 {
     public class LightHttpService : IHttpService
     {
-        private WebProxy _webProxy = WebProxy.None;
+        private IWebProxyExt _webProxy = HttpProxy.None;
         private readonly CookieContainer _cookieContainer;
         private static readonly string[] _notAddHeaderNames =
         {
@@ -29,12 +28,12 @@ namespace FclEx.Http.Services
         };
 
         public LightHttpService(Uri uri, bool useCookie = true)
-            : this(uri == null ? WebProxy.None : new WebProxy(uri), useCookie) { }
+            : this(uri == null ? HttpProxy.None : new HttpProxy(uri), useCookie) { }
 
         public LightHttpService(string url, bool useCookie = true) 
-            : this(url.IsNullOrEmpty() ? null : ObjectCache.CreateUri(url, true), useCookie) { }
+            : this(url.IsNullOrEmpty() ? null : new Uri(url), useCookie) { }
 
-        public LightHttpService(WebProxy proxy = null, bool useCookie = true)
+        public LightHttpService(IWebProxyExt proxy = null, bool useCookie = true)
         {
             if (useCookie)
                 _cookieContainer = new CookieContainer();
@@ -45,7 +44,7 @@ namespace FclEx.Http.Services
         {
         }
 
-        private static HttpWebRequest BuildRequest(HttpReq request, WebProxy proxy, CookieContainer cc)
+        private static HttpWebRequest BuildRequest(HttpReq request, IWebProxyExt proxy, CookieContainer cc)
         {
             var req = (HttpWebRequest)WebRequest.Create(request.GetUrl());
             req.AllowAutoRedirect = false;
@@ -58,7 +57,7 @@ namespace FclEx.Http.Services
             if (request.Timeout.HasValue)
                 req.Timeout = request.Timeout.Value;
 
-            if (proxy?.ProxyType == EnumProxyType.Http)
+            if (proxy?.ProxyType == ProxyType.Http)
                 req.Proxy = proxy;
 
             foreach (var header in request.HeaderMap.Where(h => !_notAddHeaderNames.Contains(h.Key)))
@@ -164,7 +163,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, WebProxy proxy, CookieContainer cc, CancellationToken token)
+        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, IWebProxyExt proxy, CookieContainer cc, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpWebResponse>();
@@ -235,14 +234,14 @@ namespace FclEx.Http.Services
         public Cookie GetCookie(string name, string url)
         {
             if (_cookieContainer == null) return null;
-            var uri = ObjectCache.CreateUri(url, true);
+            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri)[name];
         }
 
         public CookieCollection GetCookies(string url)
         {
             if (_cookieContainer == null) return null;
-            var uri = ObjectCache.CreateUri(url, true);
+            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri);
         }
         
@@ -252,7 +251,7 @@ namespace FclEx.Http.Services
             if (url == null) _cookieContainer.Add(cookie);
             else
             {
-                var uri = ObjectCache.CreateUri(url, true);
+                var uri = new Uri(url);
                 _cookieContainer.Add(uri, cookie);
             }
         }
@@ -281,7 +280,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        public WebProxy WebProxy
+        public IWebProxyExt WebProxy
         {
             get => _webProxy;
             set => _webProxy = value ?? _webProxy;

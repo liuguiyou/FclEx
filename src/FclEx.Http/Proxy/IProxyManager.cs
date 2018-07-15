@@ -2,6 +2,6 @@
 {
     public interface IProxyManager
     {
-        WebProxy Pop(bool putBack = true, int timeout = -1);
+        IWebProxyExt Pop(bool putBack = true, int timeout = -1);
     }
 }

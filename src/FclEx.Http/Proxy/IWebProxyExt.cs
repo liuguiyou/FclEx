@@ -4,7 +4,7 @@ namespace FclEx.Http.Proxy
 {
     public interface IWebProxyExt : IWebProxy
     {
-        EnumProxyType ProxyType { get; }
+        ProxyType ProxyType { get; }
         string Host { get; }
         int Port { get; }
     }

@@ -4,7 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Http.Core;
-using WebProxy = FclEx.Http.Proxy.WebProxy;
+using FclEx.Http.Proxy;
 
 namespace FclEx.Http.Services
 {
@@ -33,6 +33,6 @@ namespace FclEx.Http.Services
 
         void ClearAllCookies();
 
-        WebProxy WebProxy { get; set; }
+        IWebProxyExt WebProxy { get; set; }
     }
 }

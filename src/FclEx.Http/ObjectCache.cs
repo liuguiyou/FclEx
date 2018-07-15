@@ -6,14 +6,9 @@ namespace FclEx.Http
 {
     public class ObjectCache
     {
-        private static readonly ConcurrentDictionary<string, Exception> _exceptionDic = new ConcurrentDictionary<string, Exception>();
         private static readonly ConcurrentDictionary<string, Uri> _uriDic = new ConcurrentDictionary<string, Uri>();
         private static readonly ConcurrentDictionary<string, NameValueCollection> _urlQueryDic = new ConcurrentDictionary<string, NameValueCollection>();
 
-        public static Exception CreateException(string msg, bool useCache = false)
-        {
-            return useCache ? _exceptionDic.GetOrAdd(msg, k => new Exception(k)) : new Exception(msg);
-        }
 
         public static Uri CreateUri(string url, bool useCache = false)
         {

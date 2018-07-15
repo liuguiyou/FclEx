@@ -11,7 +11,7 @@ using FclEx.Helpers;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
 using FclEx.Http.SocksUtil.SocksPort;
-using WebProxy = FclEx.Http.Proxy.WebProxy;
+using HttpProxy = FclEx.Http.Proxy.HttpProxy;
 
 namespace FclEx.Http.Services
 {
@@ -21,24 +21,24 @@ namespace FclEx.Http.Services
         public static IHttpService GlobalService { get; } = new HttpService();
         private readonly CookieContainer _cookieContainer = new CookieContainer();
         private HttpClient _httpClient;
-        private WebProxy _webProxy = WebProxy.None;
+        private IWebProxyExt _webProxy = HttpProxy.None;
 
         private static readonly string[] _notAddHeaderNames = { HttpConstants.ContentType, HttpConstants.Cookie, HttpConstants.UserAgent };
         private static readonly Regex _rexCharset = new Regex(@"charset=(?<charset>.+?)""", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        public HttpService() : this((WebProxy)null)
+        public HttpService() : this((HttpProxy)null)
         {
         }
 
-        public HttpService(WebProxy proxy)
+        public HttpService(IWebProxyExt proxy)
         {
             WebProxy = proxy;
             _httpClient = CreateHttpClient(_cookieContainer, proxy);
         }
 
-        public HttpService(Uri uri) : this(new WebProxy(uri)) { }
+        public HttpService(Uri uri) : this(new HttpProxy(uri)) { }
 
-        public HttpService(string url) : this(ObjectCache.CreateUri(url, true)) { }
+        public HttpService(string url) : this(new Uri(url)) { }
 
         public HttpService(HttpClientHandler handler)
         {
@@ -47,7 +47,7 @@ namespace FclEx.Http.Services
             _httpClient = new HttpClient(handler);
         }
 
-        private static HttpClient CreateHttpClient(CookieContainer cc, IWebProxy proxy = null)
+        private static HttpClient CreateHttpClient(CookieContainer cc, IWebProxyExt proxy = null)
         {
             var handler = new HttpClientHandler
             {
@@ -135,29 +135,29 @@ namespace FclEx.Http.Services
             }
         }
 
-        private void SetProxy(WebProxy proxy)
+        private void SetProxy(IWebProxyExt proxy)
         {
-            if (_webProxy == proxy) return;
+            if (Equals(_webProxy, proxy)) return;
 
             switch (proxy.ProxyType)
             {
-                case EnumProxyType.None:
-                case EnumProxyType.Http:
+                case ProxyType.None:
+                case ProxyType.Http:
                     _httpClient = CreateHttpClient(_cookieContainer, proxy);
                     break;
 
-                case EnumProxyType.Socks:
+                case ProxyType.Socks:
                     _httpClient = CreateSockClient(proxy.Host, proxy.Port);
                     break;
 
-                case EnumProxyType.Https:
+                case ProxyType.Https:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(proxy.ProxyType), proxy.ProxyType, null);
             }
             _webProxy = proxy;
         }
 
-        private void SetHttpProxy(IWebProxy proxy)
+        private void SetHttpProxy(IWebProxyExt proxy)
         {
             var client = CreateHttpClient(_cookieContainer, proxy);
             var oldClient = _httpClient;
@@ -260,13 +260,13 @@ namespace FclEx.Http.Services
 
         public Cookie GetCookie(string name, string url)
         {
-            var uri = ObjectCache.CreateUri(url, true);
+            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri)[name];
         }
 
         public CookieCollection GetCookies(string url)
         {
-            var uri = ObjectCache.CreateUri(url, true);
+            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri);
         }
 
@@ -280,7 +280,7 @@ namespace FclEx.Http.Services
             if (url == null) _cookieContainer.Add(cookie);
             else
             {
-                var uri = ObjectCache.CreateUri(url, true);
+                var uri = new Uri(url);
                 _cookieContainer.Add(uri, cookie);
             }
         }
@@ -306,10 +306,10 @@ namespace FclEx.Http.Services
             }
         }
 
-        public WebProxy WebProxy
+        public IWebProxyExt WebProxy
         {
             get => _webProxy;
-            set => SetProxy(value ?? WebProxy.None);
+            set => SetProxy(value ?? HttpProxy.None);
         }
     }
 }

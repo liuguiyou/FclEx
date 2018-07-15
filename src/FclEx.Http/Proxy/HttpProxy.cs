@@ -5,13 +5,14 @@ namespace FclEx.Http.Proxy
 {
     public sealed class HttpProxy : IWebProxyExt, IEquatable<HttpProxy>
     {
-        public EnumProxyType ProxyType { get; }
+        public ProxyType ProxyType { get; }
         public string Host { get; }
         public int Port { get; }
         private readonly Uri _uri;
         private ICredentials _credentials;
 
-        public HttpProxy(Uri uri, ICredentials credentials = null) : this(uri.Scheme == "https" ? EnumProxyType.Https : EnumProxyType.Http, credentials)
+        public HttpProxy(Uri uri, ICredentials credentials = null)
+            : this(uri.Scheme == "https" ? ProxyType.Https : ProxyType.Http, credentials)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri));
             Host = uri.Host;
@@ -19,17 +20,18 @@ namespace FclEx.Http.Proxy
             _uri = uri;
         }
 
-        public HttpProxy(string url, ICredentials credentials = null) : this(ObjectCache.CreateUri(url, true), credentials)
+        public HttpProxy(string url, ICredentials credentials = null) 
+            : this(new Uri(url), credentials)
         {
         }
 
-        private HttpProxy(EnumProxyType proxyType, ICredentials credentials)
+        private HttpProxy(ProxyType proxyType, ICredentials credentials)
         {
             ProxyType = proxyType;
             _credentials = credentials;
         }
 
-        private HttpProxy() : this(EnumProxyType.None, null)
+        private HttpProxy() : this(ProxyType.None, null)
         {
         }
 
@@ -44,7 +46,7 @@ namespace FclEx.Http.Proxy
             get => _credentials;
             set
             {
-                if (ProxyType == EnumProxyType.None) throw new NotSupportedException();
+                if (ProxyType == ProxyType.None) throw new NotSupportedException();
                 _credentials = value;
             }
         }

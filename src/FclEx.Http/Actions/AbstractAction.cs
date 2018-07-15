@@ -15,6 +15,8 @@ namespace FclEx.Http.Actions
         protected int ExcuteTimes { get; set; }
         protected int ErrorTimes { get; set; }
 
+        private static Exception DefaultException { get; } = new Exception("Unknown Error");
+
         protected AbstractAction(ActionEventListener listener = null)
         {
             OnActionEvent += listener;
@@ -91,12 +93,14 @@ namespace FclEx.Http.Actions
             => NotifyActionEventAsync(ActionEventType.EvtOk, target);
 
         protected ValueTask<ActionEvent> NotifyRetryEventAsync(Exception ex) => NotifyActionEventAsync(ActionEventType.EvtRetry, ex);
-        protected ValueTask<ActionEvent> NotifyRetryEventAsync(string msg = "Unknown Error") => NotifyActionEventAsync(ActionEventType.EvtRetry, ObjectCache.CreateException(msg, true));
+        protected ValueTask<ActionEvent> NotifyRetryEventAsync(string msg = null) => NotifyActionEventAsync(ActionEventType.EvtRetry, CreateEx(msg));
         protected ValueTask<ActionEvent> NotifyCancelEventAsync() => NotifyActionEventAsync(ActionEventType.EvtCanceled, this);
         protected ValueTask<ActionEvent> NotifyErrorAsync(Exception ex) => NotifyActionEventAsync(ActionEvent.Create(ActionEventType.EvtError, ex));
-        protected ValueTask<ActionEvent> NotifyErrorAsync(string msg = "Unknown Error") => NotifyErrorAsync(ObjectCache.CreateException(msg, true));
+        protected ValueTask<ActionEvent> NotifyErrorAsync(string msg = null) => NotifyErrorAsync(CreateEx(msg));
         protected ValueTask<ActionEvent> NotifyObjectErrorAsync<T>(T obj, string msg = null, Exception innerException = null)
             => NotifyErrorAsync(ObjectException.Create(obj, msg, innerException));
+
+        private static Exception CreateEx(string msg) => msg.IsNullOrEmpty() ? DefaultException : new Exception(msg);
 
         protected virtual ValueTask<ActionEvent> ExecuteInternalAsync(CancellationToken token)
         {

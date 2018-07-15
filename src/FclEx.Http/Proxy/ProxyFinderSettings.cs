@@ -4,22 +4,22 @@ namespace FclEx.Http.Proxy
 {
     public class ProxyFinderSettings
     {
-        private readonly HashSet<EnumProxyType> _proxyTypes = new HashSet<EnumProxyType>();
+        private readonly HashSet<ProxyType> _proxyTypes = new HashSet<ProxyType>();
 
-        public ProxyFinderSettings(string globalProxy, IEnumerable<EnumProxyType> proxyTypes)
+        public ProxyFinderSettings(string globalProxy, IEnumerable<ProxyType> proxyTypes)
         {
             GlobalProxy = globalProxy;
             _proxyTypes.AddRangeSafely(proxyTypes);
         }
 
-        public ProxyFinderSettings(string globalProxy, EnumProxyType proxyType) : this(globalProxy, new[] { proxyType })
+        public ProxyFinderSettings(string globalProxy, ProxyType proxyType) : this(globalProxy, new[] { proxyType })
         {
         }
 
         public string GlobalProxy { get; }
 
-        public IReadOnlyCollection<EnumProxyType> ProxyTypes => _proxyTypes;
+        public IReadOnlyCollection<ProxyType> ProxyTypes => _proxyTypes;
 
-        public static ProxyFinderSettings Default { get; } = new ProxyFinderSettings(null, EnumProxyType.Http);
+        public static ProxyFinderSettings Default { get; } = new ProxyFinderSettings(null, ProxyType.Http);
     }
 }
