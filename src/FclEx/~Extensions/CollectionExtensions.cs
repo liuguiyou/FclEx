@@ -8,6 +8,16 @@ namespace FclEx
 {
     public static class CollectionExtensions
     {
+        public static int Remove<T>(this ICollection<T> col, Func<T, bool> filter)
+        {
+            return col.Count(item => filter(item) && col.Remove(item));
+        }
+
+        public static int Remove<T>(this ICollection<T> col, Predicate<T> filter)
+        {
+            return Remove(col, (Func<T, bool>)(m => filter(m)));
+        }
+
         public static bool IsEmpty<T>(this ICollection<T> col)
         {
             return col.Count == 0;
@@ -18,7 +28,7 @@ namespace FclEx
             return col == null || col.Count == 0;
         }
 
-        public static void AddWhenNotNull<T>(this ICollection<T> col, T item)
+        public static void AddIfNotNull<T>(this ICollection<T> col, T item)
         {
             if (item != null) col.Add(item);
         }
