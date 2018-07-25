@@ -17,7 +17,7 @@ namespace FclEx
         }
 
         public static byte[] Base64StringToBytes(this string base64String) => Convert.FromBase64String(base64String);
-        
+
         public static byte[] ToUtf8Bytes(this string input) => Encoding.UTF8.GetBytes(input);
 
         public static byte[] ToBytes(this string input, Encoding encoding) => encoding.GetBytes(input);
@@ -48,8 +48,12 @@ namespace FclEx
             return str.Split(separators, StringSplitOptions.RemoveEmptyEntries)[0];
         }
 
-        public static bool ContainsAny(this string src, IEnumerable<string> items) => items.Any(src.Contains);
+        public static bool ContainsAny(this string src, IEnumerable<string> items,
+            StringComparison comp = StringComparison.CurrentCulture)
+            => items.Any(m => src.Contains(m, comp));
 
-        public static bool ContainsAll(this string src, IEnumerable<string> items) => items.All(src.Contains);
+        public static bool ContainsAll(this string src, IEnumerable<string> items,
+            StringComparison comp = StringComparison.CurrentCulture)
+            => items.Any(m => src.Contains(m, comp));
     }
 }

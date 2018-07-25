@@ -21,7 +21,7 @@ namespace FclEx.Http.Test
         public void Constructor_Test(string proxy)
         {
             var http = new LightHttpService(proxy);
-            Assert.Equal(proxy.IsNullOrEmpty() ? WebProxy.None : new WebProxy(proxy), http.WebProxy);
+            Assert.Equal(proxy.IsNullOrEmpty() ? HttpProxy.None : new HttpProxy(proxy), http.WebProxy);
         }
     }
 }

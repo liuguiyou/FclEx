@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace FclEx
 {
     public static class JsonExtensions
     {
         private static readonly JsonSerializerSettings _ignoreSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-
+        
         public static string ToJson(this object obj, Formatting formatting = Formatting.None, bool ignoreNull = false)
         {
             return JsonConvert.SerializeObject(obj, formatting, ignoreNull ? _ignoreSettings : null);
@@ -47,6 +52,32 @@ namespace FclEx
             where T : struct, IConvertible
         {
             return token.ToString().ToEnum(defaultVaule);
+        }
+
+        public static XmlDocument ToXmlNode(this JToken token, string deserializeRootElementName, bool writeArrayAttribute)
+        {
+            var converter = new XmlNodeConverter
+            {
+                DeserializeRootElementName = deserializeRootElementName,
+                WriteArrayAttribute = writeArrayAttribute
+            };
+            return token.ToObject<XmlDocument>(JsonSerializer.Create(new JsonSerializerSettings
+            {
+                Converters = new JsonConverter[] { converter }
+            }));
+        }
+
+        public static XDocument ToXNode(this JToken token, string deserializeRootElementName, bool writeArrayAttribute)
+        {
+            var converter = new XmlNodeConverter
+            {
+                DeserializeRootElementName = deserializeRootElementName,
+                WriteArrayAttribute = writeArrayAttribute
+            };
+            return token.ToObject<XDocument>(JsonSerializer.Create(new JsonSerializerSettings
+            {
+                Converters = new JsonConverter[] { converter }
+            }));
         }
     }
 }

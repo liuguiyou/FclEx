@@ -5,7 +5,7 @@ namespace FclEx
 {
     public static class ArrayExtensions
     {
-        private static readonly Random _random = new Random();
+        private static readonly Lazy<Random> _random = new Lazy<Random>(() => new Random());
 
         public static int IndexOf<T>(this T[] items, T item)
         {
@@ -30,9 +30,10 @@ namespace FclEx
             return list != null && list.Count > index ? list[index] : defaultValue;
         }
 
-        public static T Random<T>(this IList<T> col)
+        public static T Random<T>(this IList<T> col, Random random = null)
         {
-            var i = _random.Next(0, col.Count - 1);
+            var r = random ?? _random.Value;
+            var i = r.Next(0, col.Count - 1);
             return col[i];
         }
     }

@@ -39,5 +39,11 @@ namespace FclEx
             var pair = source.Partition(predicate);
             return (pair.True.ToList(), pair.False.ToList());
         }
+
+        public static IEnumerable<TResult> SelectMany<TSource, TResult>(this IEnumerable<TSource> source,
+            Func<TSource, TSource, TResult> resultSelector)
+        {
+            return source.SelectMany(m => source, resultSelector);
+        }
     }
 }
