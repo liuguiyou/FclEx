@@ -52,22 +52,7 @@ namespace FclEx.Http
             var pair = queryPair.Split(sepetator);
             return req.AddFormValue(pair[0], pair.Length > 1 ? pair[1] : "");
         }
-
-        public static HttpReq AddHeader(this HttpReq req, IEnumerable<KeyValuePair<string, string>> paras)
-        {
-            paras?.ForEach(m => req.AddHeader(m));
-            return req;
-        }
-
-        public static HttpReq AddHeader(this HttpReq req, KeyValuePair<string, string> pair) => req.AddHeader(pair.Key, pair.Value);
-
-        public static HttpReq AddHeaderPair(this HttpReq req, string queryPair, char sepetator = ':')
-        {
-            var pair = queryPair.Split(sepetator);
-            req.AddHeader(pair[0], pair.Length > 1 ? pair[1] : "");
-            return req;
-        }
-
+        
         public static HttpReq AddDataIfNotEmpty(this HttpReq req, string key, string value)
         {
             return AddDataIf(req, !value.IsNullOrEmpty(), key, value);
@@ -90,78 +75,14 @@ namespace FclEx.Http
             return AddData(req, key, value.ToStringSafely());
         }
 
-        public static HttpReq AddData(this HttpReq req,
-            IEnumerable<KeyValuePair<string, string>> paras)
+        public static HttpReq AddData(this HttpReq req, IEnumerable<KeyValuePair<string, string>> paras)
         {
             return req.Method == HttpMethodType.Get
                 ? req.AddQueryValue(paras)
                 : req.AddFormValue(paras);
         }
 
-        public static HttpReq AcceptUtf8(this HttpReq req)
-        {
-            return req.AddHeader("Accept-Charset", "utf-8");
-        }
-
-        public static HttpReq AcceptCn(this HttpReq req)
-        {
-            return req.AddHeader("Accept-Language", "zh-CN,zh;q=0.8");
-        }
-
-        public static HttpReq Ajax(this HttpReq req)
-        {
-            return req.AddHeader("X-Requested-With", "XMLHttpRequest");
-        }
-
-        public static HttpReq Compress(this HttpReq req) => req.AddHeader(HttpConstants.AcceptEncoding, "gzip, deflate");
-
-        public static HttpReq Referrer(this HttpReq req, string referrer)
-        {
-            req.Referrer = referrer;
-            return req;
-        }
-
-        public static HttpReq TryReferrer(this HttpReq req, string referrer)
-        {
-            req.Referrer = req.Referrer ?? referrer;
-            return req;
-        }
-
-        public static HttpReq UserAgent(this HttpReq req, string userAgent)
-        {
-            req.UserAgent = userAgent;
-            return req;
-        }
-
-        public static HttpReq TryUserAgent(this HttpReq req, string userAgent)
-        {
-            req.UserAgent = req.UserAgent ?? userAgent;
-            return req;
-        }
-
-        public static HttpReq ChartSet(this HttpReq req, string chartSet)
-        {
-            req.ResultChartSet = chartSet;
-            return req;
-        }
-
-        public static HttpReq TryChartSet(this HttpReq req, string chartSet)
-        {
-            req.ResultChartSet = req.ResultChartSet ?? chartSet;
-            return req;
-        }
-
-        public static HttpReq Timeout(this HttpReq req, int? timeout)
-        {
-            req.Timeout = timeout;
-            return req;
-        }
-
-        public static HttpReq TryTimeout(this HttpReq req, int? timeout)
-        {
-            req.Timeout = req.Timeout ?? timeout;
-            return req;
-        }
+        
 
         public static HttpReq SetData(this HttpReq req, string data)
         {
@@ -180,47 +101,7 @@ namespace FclEx.Http
             req.FileMap[file] = fileBytes;
             return req;
         }
-
-        public static HttpReq ReadResultCookie(this HttpReq req, bool read)
-        {
-            req.ReadResultCookie = read;
-            return req;
-        }
-
-        public static HttpReq ReadResultHeader(this HttpReq req, bool read)
-        {
-            req.ReadResultHeader = read;
-            return req;
-        }
-
-        public static HttpReq ReadResultContent(this HttpReq req, bool read)
-        {
-            req.ReadResultContent = read;
-            return req;
-        }
-
-        public static HttpReq Host(this HttpReq req, string host)
-        {
-            req.Host = host;
-            return req;
-        }
-
-        public static string GetRequestHeader(this HttpReq req, string cookieHeader)
-        {
-            var sb = new StringBuilder();
-            foreach (var pair in req.HeaderMap)
-            {
-                sb.AppendLine($"{pair.Key}: { pair.Value}");
-            }
-            sb.Append("Cookie: " + cookieHeader);
-            return sb.ToString();
-        }
-
-        public static string GetRequestHeader(this HttpReq req, CookieCollection cookies)
-        {
-            return GetRequestHeader(req, cookies.OfType<Cookie>().Select(m => m.ToString()).JoinWith("; "));
-        }
-
+     
         internal static NameValueCollection ParseQueryStringInternal(string query)
         {
             var result = new NameValueCollection();

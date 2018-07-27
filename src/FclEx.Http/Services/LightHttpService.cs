@@ -66,7 +66,7 @@ namespace FclEx.Http.Services
             }
 
             var cookies = request.HeaderMap.GetOrDefault(HttpConstants.Cookie)
-                            ?? cc?.GetCookieHeader(request.RawUri);
+                            ?? cc?.GetCookieHeader(req.RequestUri);
 
             if (!cookies.IsNullOrEmpty())
                 req.Headers.Add(HttpConstants.Cookie, cookies);

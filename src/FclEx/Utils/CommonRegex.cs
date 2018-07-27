@@ -8,5 +8,6 @@ namespace FclEx.Utils
     public static class CommonRegex
     {
         public static Regex HostPort { get; } = new Regex(@"([^:]+)(?::(\d+))?", RegexOptions.Compiled);
+        public static Regex Ipv6HostPort { get; } = new Regex(@"\[[^\[^\]]+\](?::(\d+))?", RegexOptions.Compiled);
     }
 }

@@ -51,8 +51,8 @@ namespace FclEx.Consumers
                 catch (Exception ex)
                 {
                     item.ErrorTimes++;
-                    var args = ConsumerExArgs.Create(item, ex);
-                    await OnExceptionInternal((TSelf)this, args).DonotCapture(); ;
+                    var args = ConsumerExArgs.Create(item, ex, item.ErrorTimes);
+                    await OnExceptionInternal((TSelf)this, args).DonotCapture();
                 }
             }
             _finish.Set();

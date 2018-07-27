@@ -53,7 +53,7 @@ namespace FclEx.Http.Actions
                     if (req != null)
                     {
                         var url = req.GetUrl();
-                        var header = req.GetRequestHeader(HttpService.GetCookies(req.RawUrl));
+                        var header = req.GetRequestHeader(HttpService.GetCookies(req.Uri.ToString()));
                         DebuggerHepler.WriteLine(ex.ToString());
                         DebuggerHepler.WriteLine(url);
                         DebuggerHepler.WriteLine(header);

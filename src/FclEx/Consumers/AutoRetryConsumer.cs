@@ -30,7 +30,7 @@ namespace FclEx.Consumers
             OnExceptionInternal += (sender, args) =>
             {
                 var item = args.Item;
-                OnException(sender, ConsumerExArgs.Create(item.Item, args.Exception));
+                OnException(sender, ConsumerExArgs.Create(item.Item, args.Exception, args.ErrorTimes));
 
                 // 以下是失败后的补救措施
                 if (item.ErrorTimes++ < _maxRetryTimes)

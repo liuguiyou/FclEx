@@ -16,7 +16,7 @@ namespace FclEx.Consumers
             OnConsumeInternal += (sender, item) => OnConsume(sender, item.Item);
             OnExceptionInternal += (sender, args) =>
             {
-                OnException(sender, new ConsumerExArgs<T>(args.Item.Item, args.Exception));
+                OnException(sender, new ConsumerExArgs<T>(args.Item.Item, args.Exception, args.ErrorTimes));
                 return Task.CompletedTask;
             };
         }
