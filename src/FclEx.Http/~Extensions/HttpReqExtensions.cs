@@ -82,8 +82,6 @@ namespace FclEx.Http
                 : req.AddFormValue(paras);
         }
 
-        
-
         public static HttpReq SetData(this HttpReq req, string data)
         {
             req.StringData = data;
@@ -163,14 +161,12 @@ namespace FclEx.Http
             return result;
         }
 
-        public static NameValueCollection ParseQueryString(this string query, bool useCache = false)
+        public static NameValueCollection ParseQueryString(this string query)
         {
             if (query == null) throw new ArgumentNullException(nameof(query));
-
             var index = query.IndexOf("?", StringComparison.Ordinal);
             if (index >= 0) query = query.Substring(index + 1);
-
-            return ObjectCache.GetQueryPair(query, useCache);
+            return ParseQueryStringInternal(query);
         }
 
         public static async ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 3)

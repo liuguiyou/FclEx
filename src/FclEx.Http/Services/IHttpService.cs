@@ -13,23 +13,17 @@ namespace FclEx.Http.Services
         /// <summary>
         /// 执行一个HTTP请求
         /// </summary>
-        ValueTask<HttpRes> ExecuteHttpRequestAsync(HttpReq request, CancellationToken token = default);
+        ValueTask<HttpRes> ExecuteAsync(HttpReq request, CancellationToken token = default);
 
-        /// <summary>
-        /// 获取一个cookie
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        Cookie GetCookie(string name, string url);
+        Cookie GetCookie(Uri uri, string name);
 
-        CookieCollection GetCookies(string url);
+        CookieCollection GetCookies(Uri uri);
         
-        void AddCookie(Cookie cookie, string url = null);
+        void AddCookie(Cookie cookie, Uri uri = null);
 
         List<Cookie> GetAllCookies();
 
-        void ClearCookies(string url);
+        void ClearCookies(Uri uri);
 
         void ClearAllCookies();
 

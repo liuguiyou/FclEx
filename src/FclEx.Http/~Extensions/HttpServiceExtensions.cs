@@ -23,14 +23,47 @@ namespace FclEx.Http
 
         public static ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 3, int delaySeconds = 0)
         {
-            return ActionHelper.TryAsync(() => http.ExecuteHttpRequestAsync(req), retryTimes, delaySeconds, HttpRes.CreateError);
+            return ActionHelper.TryAsync(() => http.ExecuteAsync(req), retryTimes, delaySeconds, HttpRes.CreateError);
+        }
+
+        public static void AddCookie(this IHttpService http, Cookie cookie, string url = null)
+        {
+            var uri = url == null ? null : new Uri(url);
+            http.AddCookie(cookie, uri);
+        }
+
+        public static Cookie GetCookie(this IHttpService http, string url, string name)
+        {
+            var uri = new Uri(url);
+            return http.GetCookie(uri, name);
+        }
+
+        public static CookieCollection GetCookies(this IHttpService http, string url)
+        {
+            var uri = new Uri(url);
+            return http.GetCookies(uri);
+        }
+
+        public static void ClearCookies(this IHttpService http, string url)
+        {
+            var uri = new Uri(url);
+            http.ClearCookies(uri);
         }
 
         public static void AddCookies(this IHttpService http, IEnumerable<Cookie> cookies, string url = null)
         {
+            var uri = url == null ? null : new Uri(url);
             foreach (var cookie in cookies)
             {
-                http.AddCookie(cookie, url);
+                http.AddCookie(cookie, uri);
+            }
+        }
+
+        public static void AddCookies(this IHttpService http, IEnumerable<Cookie> cookies, Uri uri = null)
+        {
+            foreach (var cookie in cookies)
+            {
+                http.AddCookie(cookie, uri);
             }
         }
 

@@ -36,7 +36,7 @@ namespace FclEx.Http.Actions
             try
             {
                 req = BuildRequest();
-                var response = await HttpService.ExecuteHttpRequestAsync(req, token).DonotCapture();
+                var response = await HttpService.ExecuteAsync(req, token).DonotCapture();
                 PreCheckResponse(response);
                 var result = await HandleResponse(response).DonotCapture();
                 return result;

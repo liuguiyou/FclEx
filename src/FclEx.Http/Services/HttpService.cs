@@ -188,7 +188,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        public async ValueTask<HttpRes> ExecuteHttpRequestAsync(HttpReq requestItem, CancellationToken token = default)
+        public async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpResponseMessage>();
@@ -258,31 +258,28 @@ namespace FclEx.Http.Services
             }
         }
 
-        public Cookie GetCookie(string name, string url)
+        public Cookie GetCookie(Uri uri, string name)
         {
-            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri)[name];
         }
 
-        public CookieCollection GetCookies(string url)
+        public CookieCollection GetCookies(Uri uri)
         {
-            var uri = new Uri(url);
             return _cookieContainer.GetCookies(uri);
         }
 
+        public void AddCookie(Cookie cookie, Uri uri = null)
+        {
+            if (uri == null) _cookieContainer.Add(cookie);
+            else
+            {
+                _cookieContainer.Add(uri, cookie);
+            }
+        }
+        
         public void Dispose()
         {
             _httpClient.Dispose();
-        }
-
-        public void AddCookie(Cookie cookie, string url = null)
-        {
-            if (url == null) _cookieContainer.Add(cookie);
-            else
-            {
-                var uri = new Uri(url);
-                _cookieContainer.Add(uri, cookie);
-            }
         }
 
         public List<Cookie> GetAllCookies()
@@ -290,9 +287,9 @@ namespace FclEx.Http.Services
             return _cookieContainer.GetAllCookies();
         }
 
-        public void ClearCookies(string url)
+        public void ClearCookies(Uri uri)
         {
-            foreach (Cookie cookie in GetCookies(url))
+            foreach (Cookie cookie in GetCookies(uri))
             {
                 cookie.Expired = true;
             }
@@ -300,7 +297,7 @@ namespace FclEx.Http.Services
 
         public void ClearAllCookies()
         {
-            foreach (Cookie cookie in GetAllCookies())
+            foreach (var cookie in GetAllCookies())
             {
                 cookie.Expired = true;
             }

@@ -225,33 +225,28 @@ namespace FclEx.Http.Services
             }
         }
 
-        public ValueTask<HttpRes> ExecuteHttpRequestAsync(HttpReq req, CancellationToken token = default)
+        public ValueTask<HttpRes> ExecuteAsync(HttpReq req, CancellationToken token = default)
         {
             // 本方法依赖的类成员只有_webProxy和_cookieContainer，前者状态不可变，后者线程安全
             return ExecuteAsync(req, _webProxy, _cookieContainer, token);
         }
 
-        public Cookie GetCookie(string name, string url)
+        public Cookie GetCookie(Uri uri, string name)
         {
-            if (_cookieContainer == null) return null;
-            var uri = new Uri(url);
-            return _cookieContainer.GetCookies(uri)[name];
+            return _cookieContainer?.GetCookies(uri)[name];
         }
 
-        public CookieCollection GetCookies(string url)
+        public CookieCollection GetCookies(Uri uri)
         {
-            if (_cookieContainer == null) return null;
-            var uri = new Uri(url);
-            return _cookieContainer.GetCookies(uri);
+            return _cookieContainer?.GetCookies(uri);
         }
-        
-        public void AddCookie(Cookie cookie, string url = null)
+
+        public void AddCookie(Cookie cookie, Uri uri = null)
         {
             if (_cookieContainer == null) return;
-            if (url == null) _cookieContainer.Add(cookie);
+            if (uri == null) _cookieContainer.Add(cookie);
             else
             {
-                var uri = new Uri(url);
                 _cookieContainer.Add(uri, cookie);
             }
         }
@@ -261,15 +256,15 @@ namespace FclEx.Http.Services
             return _cookieContainer.GetAllCookies();
         }
 
-        public void ClearCookies(string url)
+        public void ClearCookies(Uri uri)
         {
-            var cookies = GetCookies(url);
+            var cookies = GetCookies(uri);
             foreach (Cookie cookie in cookies)
             {
                 cookie.Expired = true;
             }
         }
-
+        
         public void ClearAllCookies()
         {
             if (_cookieContainer == null) return;
