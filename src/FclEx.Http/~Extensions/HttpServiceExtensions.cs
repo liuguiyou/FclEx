@@ -59,7 +59,7 @@ namespace FclEx.Http
             }
         }
 
-        public static void AddCookies(this IHttpService http, IEnumerable<Cookie> cookies, Uri uri = null)
+        public static void AddCookies(this IHttpService http, IEnumerable<Cookie> cookies, Uri uri)
         {
             foreach (var cookie in cookies)
             {

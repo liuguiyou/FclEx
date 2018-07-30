@@ -51,13 +51,5 @@ namespace FclEx
 
             return list;
         }
-
-        public static void AddRange(this CookieContainer cc, Uri uri, IEnumerable<Cookie> cookies)
-        {
-            foreach (var cookie in cookies)
-            {
-                cc.Add(uri, cookie);
-            }
-        }
     }
 }

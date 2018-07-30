@@ -19,7 +19,7 @@ namespace FclEx.Http.Services
 
         CookieCollection GetCookies(Uri uri);
         
-        void AddCookie(Cookie cookie, Uri uri = null);
+        void AddCookie(Cookie cookie, Uri uri);
 
         List<Cookie> GetAllCookies();
 

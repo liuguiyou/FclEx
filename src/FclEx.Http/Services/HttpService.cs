@@ -268,7 +268,7 @@ namespace FclEx.Http.Services
             return _cookieContainer.GetCookies(uri);
         }
 
-        public void AddCookie(Cookie cookie, Uri uri = null)
+        public void AddCookie(Cookie cookie, Uri uri)
         {
             if (uri == null) _cookieContainer.Add(cookie);
             else

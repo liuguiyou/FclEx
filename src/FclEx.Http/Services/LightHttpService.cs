@@ -42,6 +42,7 @@ namespace FclEx.Http.Services
 
         public void Dispose()
         {
+            ClearAllCookies();
         }
 
         private static HttpWebRequest BuildRequest(HttpReq request, IWebProxyExt proxy, CookieContainer cc)
@@ -241,7 +242,7 @@ namespace FclEx.Http.Services
             return _cookieContainer?.GetCookies(uri);
         }
 
-        public void AddCookie(Cookie cookie, Uri uri = null)
+        public void AddCookie(Cookie cookie, Uri uri)
         {
             if (_cookieContainer == null) return;
             if (uri == null) _cookieContainer.Add(cookie);
