@@ -91,8 +91,7 @@ namespace FclEx.Http
 
         public static HttpReq RawData(this HttpReq req, string data)
         {
-            req.StringData = data;
-            return req;
+            return RawData(req, data.ToBytes(req.Encoding));
         }
 
         public static HttpReq RawData(this HttpReq req, byte[] data)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Environment;
 
 namespace FclEx
 {
@@ -55,5 +56,17 @@ namespace FclEx
         public static bool ContainsAll(this string src, IEnumerable<string> items,
             StringComparison comp = StringComparison.CurrentCulture)
             => items.Any(m => src.Contains(m, comp));
+
+        public static string EnsureEndWithNewLine(this string str)
+        {
+            return str.EndsWith(NewLine)
+                ? str
+                : str + NewLine;
+        }
+
+        public static string EnsureNotNull(this string str)
+        {
+            return str ?? "";
+        }
     }
 }

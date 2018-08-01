@@ -10,16 +10,20 @@ namespace FclEx.Http.Core
 {
     public class HttpReq
     {
-        public bool UseDefaultProxy { get; set; } = false;
+        private Encoding _encoding = Encoding.UTF8;
         private readonly UriBuilder _uriBuilder;
         public Uri Uri => _uriBuilder.Uri;
-        public string StringData { get; set; }
-        public byte[] ByteArrayData { get; set; }
 
-        public Encoding Encoding { get; set; } = Encoding.UTF8;
+        public Encoding Encoding
+        {
+            get => _encoding;
+            set => _encoding = value ?? throw new ArgumentNullException(nameof(Encoding));
+        }
+
+        public bool UseDefaultProxy { get; set; } = false;
+        public byte[] ByteArrayData { get; set; }
         public HttpMethodType Method { get; set; }
         public int? Timeout { get; set; } = 5 * 1000;
-
         public string ResultChartSet { get; set; }
         public HttpResultType ResultType { get; set; }
         public bool ReadResultCookie { get; set; } = true;
@@ -197,38 +201,42 @@ namespace FclEx.Http.Core
 
         public HttpReq AddQueryValue(string key, string value)
         {
-            QueryMap[key] = value ?? "";
+            Check.NotNull(key, nameof(key));
+            QueryMap[key.Trim()] = value.EnsureNotNull().Trim();
             return this;
         }
 
         public HttpReq AddFormValue(string key, string value)
         {
-            FormMap[key] = value ?? "";
+            Check.NotNull(key, nameof(key));
+            FormMap[key.Trim()] = value.EnsureNotNull().Trim();
             return this;
         }
 
         public HttpReq AddHeader(string key, string value)
         {
-            HeaderMap[key] = value ?? "";
+            Check.NotNull(key, nameof(key));
+            HeaderMap[key.Trim()] = value.EnsureNotNull().Trim();
             return this;
         }
 
         public HttpReq TryAddHeader(string key, string value)
         {
-            if (!HeaderMap.ContainsKey(key))
-                HeaderMap[key] = value ?? "";
+            Check.NotNull(key, nameof(key));
+            var k = key.Trim();
+            if (!HeaderMap.ContainsKey(k))
+                HeaderMap[k] = value.EnsureNotNull().Trim();
             return this;
         }
 
         public byte[] GetBinaryData()
         {
+            if (!ByteArrayData.IsNullOrEmpty()) return ByteArrayData;
+
             var type = HeaderMap.GetOrDefault(HttpConstants.ContentType);
             switch (type)
             {
-                case HttpConstants.JsonContentType: return StringData.ToBytes(Encoding);
-
                 case HttpConstants.FormContentType: return FormMap.ToQueryString().ToBytes(Encoding);
-
                 case HttpConstants.MultiPartContentType:
                 {
                     using (var mem = new MemoryStream())
@@ -257,9 +265,9 @@ namespace FclEx.Http.Core
                         return mem.ToArray();
                     }
                 }
-
-                default:
+                case HttpConstants.JsonContentType:
                 case HttpConstants.ByteArrayContentType:
+                default:
                     return ByteArrayData ?? Array.Empty<byte>();
             }
         }
