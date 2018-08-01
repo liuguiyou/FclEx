@@ -97,7 +97,6 @@ namespace FclEx.Helpers
             if (func == null) throw new ArgumentNullException(nameof(func));
             var lastEx = default(Exception);
             var times = Math.Max(0, retryTimes) + 1;
-            var exList = new List<Exception>();
             for (var i = 1; i <= times; i++)
             {
                 try

@@ -10,6 +10,7 @@ namespace FclEx.Http.Core
 {
     public class HttpReq
     {
+        public bool UseDefaultProxy { get; set; } = false;
         private readonly UriBuilder _uriBuilder;
         public Uri Uri => _uriBuilder.Uri;
         public string StringData { get; set; }
@@ -17,7 +18,7 @@ namespace FclEx.Http.Core
 
         public Encoding Encoding { get; set; } = Encoding.UTF8;
         public HttpMethodType Method { get; set; }
-        public int? Timeout { get; set; } = 10 * 1000;
+        public int? Timeout { get; set; } = 5 * 1000;
 
         public string ResultChartSet { get; set; }
         public HttpResultType ResultType { get; set; }
@@ -72,16 +73,11 @@ namespace FclEx.Http.Core
             set => HeaderMap[HttpConstants.Boundary] = value;
         }
 
-        public HttpReq(Uri rawUrl, HttpMethodType method) : this(rawUrl.ToString(), method) { }
-
-        public HttpReq(HttpMethodType method, string rawUrl) : this(rawUrl, method) { }
-
-        public HttpReq(string rawUrl, HttpMethodType method)
+        public HttpReq(Uri rawUrl, HttpMethodType method)
         {
-            var tryUri = new Uri(rawUrl, UriKind.RelativeOrAbsolute);
-            _uriBuilder = tryUri.IsAbsoluteUri 
-                ? new UriBuilder(tryUri) 
-                : new UriBuilder(Uri.UriSchemeHttp, "localhost", 80, tryUri.ToString());
+            _uriBuilder = rawUrl.IsAbsoluteUri
+                ? new UriBuilder(rawUrl)
+                : new UriBuilder(Uri.UriSchemeHttp, "localhost", 80, rawUrl.ToString());
 
             if (!_uriBuilder.Query.IsNullOrEmpty())
             {
@@ -98,27 +94,32 @@ namespace FclEx.Http.Core
             AddHeader(HttpConstants.UserAgent, HttpConstants.DefaultUserAgent);
         }
 
-        public static HttpReq Json(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.JsonContentType };
-        public static HttpReq Json(Uri url) => Json(url.ToString());
+        public HttpReq(HttpMethodType method, string rawUrl)
+            : this(rawUrl, method) { }
 
-        public static HttpReq Form(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.FormContentType };
-        public static HttpReq Form(Uri url) => Form(url.ToString());
+        public HttpReq(string rawUrl, HttpMethodType method)
+            : this(new Uri(rawUrl, UriKind.RelativeOrAbsolute), method) { }
 
-        public static HttpReq Get(string url) => new HttpReq(url, HttpMethodType.Get) { ContentType = HttpConstants.DefaultGetContentType };
-        public static HttpReq Get(Uri url) => Get(url.ToString());
+        public static HttpReq Json(Uri url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.JsonContentType };
+        public static HttpReq Json(string url) => Json(new Uri(url, UriKind.RelativeOrAbsolute));
 
-        public static HttpReq Upload(string url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.ByteArrayContentType };
-        public static HttpReq Upload(Uri url) => Upload(url.ToString());
+        public static HttpReq Form(Uri url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.FormContentType };
+        public static HttpReq Form(string url) => Form(new Uri(url, UriKind.RelativeOrAbsolute));
 
-        public static HttpReq MultiPart(string url) => new HttpReq(url, HttpMethodType.Post)
+        public static HttpReq Get(Uri url) => new HttpReq(url, HttpMethodType.Get) { ContentType = HttpConstants.DefaultGetContentType };
+        public static HttpReq Get(string url) => Get(new Uri(url, UriKind.RelativeOrAbsolute));
+
+        public static HttpReq Upload(Uri url) => new HttpReq(url, HttpMethodType.Post) { ContentType = HttpConstants.ByteArrayContentType };
+        public static HttpReq Upload(string url) => Upload(new Uri(url, UriKind.RelativeOrAbsolute));
+
+        public static HttpReq MultiPart(Uri url) => new HttpReq(url, HttpMethodType.Post)
         {
             Boundary = "----WebKitFormBoundaryImw0tVH7wlMdFALP",
             ContentType = HttpConstants.MultiPartContentType,
         };
+        public static HttpReq MultiPart(string url) => MultiPart(new Uri(url, UriKind.RelativeOrAbsolute));
 
-        public static HttpReq MultiPart(Uri url) => MultiPart(url.ToString());
-
-        public static HttpReq Create(string url, HttpReqType reqType)
+        public static HttpReq Create(Uri url, HttpReqType reqType)
         {
             switch (reqType)
             {
@@ -130,6 +131,7 @@ namespace FclEx.Http.Core
                 default: throw new ArgumentOutOfRangeException(nameof(reqType), reqType, null);
             }
         }
+        public static HttpReq Create(string url, HttpReqType reqType) => Create(new Uri(url, UriKind.RelativeOrAbsolute), reqType);
 
         public string Fragment
         {

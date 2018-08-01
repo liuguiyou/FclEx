@@ -52,7 +52,7 @@ namespace FclEx.Http
             var pair = queryPair.Split(sepetator);
             return req.AddFormValue(pair[0], pair.Length > 1 ? pair[1] : "");
         }
-        
+
         public static HttpReq AddDataIfNotEmpty(this HttpReq req, string key, string value)
         {
             return AddDataIf(req, !value.IsNullOrEmpty(), key, value);
@@ -82,13 +82,20 @@ namespace FclEx.Http
                 : req.AddFormValue(paras);
         }
 
-        public static HttpReq SetData(this HttpReq req, string data)
+        public static HttpReq AddDataPair(this HttpReq req, string queryPair, char sepetator = ':')
+        {
+            return req.Method == HttpMethodType.Get
+                ? req.AddQueryPair(queryPair, sepetator)
+                : req.AddFormPair(queryPair, sepetator);
+        }
+
+        public static HttpReq RawData(this HttpReq req, string data)
         {
             req.StringData = data;
             return req;
         }
 
-        public static HttpReq SetData(this HttpReq req, byte[] data)
+        public static HttpReq RawData(this HttpReq req, byte[] data)
         {
             req.ByteArrayData = data;
             return req;
@@ -99,7 +106,7 @@ namespace FclEx.Http
             req.FileMap[file] = fileBytes;
             return req;
         }
-     
+
         internal static NameValueCollection ParseQueryStringInternal(string query)
         {
             var result = new NameValueCollection();
@@ -169,11 +176,11 @@ namespace FclEx.Http
             return ParseQueryStringInternal(query);
         }
 
-        public static async ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 3)
+        public static async ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 0)
         {
             using (var http = new LightHttpService(useCookie: false))
             {
-                return await http.SendAsync(req, retryTimes).DonotCapture();
+                return await http.SendAsync(req, retryTimes, 0).DonotCapture();
             }
         }
     }

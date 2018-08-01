@@ -58,8 +58,11 @@ namespace FclEx.Http.Services
             if (request.Timeout.HasValue)
                 req.Timeout = request.Timeout.Value;
 
-            if (proxy?.ProxyType == ProxyType.Http)
+            if (proxy.ProxyType != ProxyType.None)
                 req.Proxy = proxy;
+            else
+                req.Proxy = request.UseDefaultProxy ? WebRequest.DefaultWebProxy : null;
+
 
             foreach (var header in request.HeaderMap.Where(h => !_notAddHeaderNames.Contains(h.Key)))
             {
