@@ -21,7 +21,7 @@ namespace FclEx.Http.Event
             if (reader.TokenType == JsonToken.Null) return null;
             var token = JToken.ReadFrom(reader);
             var type = token[nameof(ActionEvent<object>.Type)].ToObject<ActionEventType>();
-            var obj = token[nameof(ActionEvent<object>.Result)];
+            var obj = token[nameof(ActionEvent<object>.Target)];
             var resultType = objectType.GenericTypeArguments[0];
             switch (type)
             {

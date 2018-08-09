@@ -20,9 +20,9 @@ namespace FclEx.Http.Test
         {
             var action = ActionEvent.Ok(new Test());
             var json = action.ToJson();
-            var obj = json.ToJToken().ToObject<ActionEvent<DateTime>>();
-            Assert.True(obj.IsOk);
-            Assert.Equal(action.Result.Start, action.Result.Start);
+            var obj = json.ToJToken().ToObject<ActionEvent<Test>>();
+            Assert.True(obj.IsOk());
+            Assert.Equal(action.Result.Start, obj.Result.Start);
         }
     }
 }
