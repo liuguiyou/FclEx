@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using FclEx.Utils;
@@ -193,7 +194,8 @@ namespace FclEx.Http.Core
 
         public string GetUrl()
         {
-            _uriBuilder.Query = QueryMap.Select(m => $"{m.Key.UrlEncode()}={m.Value.UrlEncode()}").JoinWith("&");
+            if (!HasQuery) return Uri.ToString();
+            _uriBuilder.Query = _queryMap.Select(m => $"{m.Key.UrlEncode()}={m.Value.UrlEncode()}").JoinWith("&");
             var url = Uri.ToString();
             _uriBuilder.Query = string.Empty;
             return url;
