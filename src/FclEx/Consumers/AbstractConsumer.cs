@@ -11,17 +11,18 @@ namespace FclEx.Consumers
     public abstract class AbstractConsumer<TSelf, T> : IDisposable
         where TSelf : AbstractConsumer<TSelf, T>
     {
+        protected bool _isDisposed;
         protected CancellationTokenSource _cts;
-        protected BlockingCollection<ProcessingItem<T>> _items;
+        protected BlockingCollection<ProcItem<T>> _items;
         protected ManualResetEvent _finish;
 
-        protected event AsyncEventHandler<TSelf, ConsumerExArgs<ProcessingItem<T>>> OnExceptionInternal
+        protected event AsyncEventHandler<TSelf, ProcExItem<ProcItem<T>>> OnExceptionInternal
             = (sender, args) => Task.CompletedTask;
 
-        protected event AsyncEventHandler<TSelf, ProcessingItem<T>> OnConsumeInternal
+        protected event AsyncEventHandler<TSelf, ProcItem<T>> OnConsumeInternal
             = (sender, e) => Task.CompletedTask;
 
-        private bool TryGetItem(out ProcessingItem<T> item)
+        private bool TryGetItem(out ProcItem<T> item)
         {
             try
             {
@@ -34,7 +35,6 @@ namespace FclEx.Consumers
             item = default;
             return false;
         }
-
 
         protected virtual async Task Process()
         {
@@ -51,7 +51,7 @@ namespace FclEx.Consumers
                 catch (Exception ex)
                 {
                     item.ErrorTimes++;
-                    var args = ConsumerExArgs.Create(item, ex, item.ErrorTimes);
+                    var args = ProcItem.CreateEx(item, ex, item.ErrorTimes);
                     await OnExceptionInternal((TSelf)this, args).DonotCapture();
                 }
             }
@@ -60,15 +60,17 @@ namespace FclEx.Consumers
 
         public Task Start()
         {
+            CheckDisposed();
             _cts = new CancellationTokenSource();
             _finish = new ManualResetEvent(true);
-            _items = new BlockingCollection<ProcessingItem<T>>();
+            _items = new BlockingCollection<ProcItem<T>>();
             return Task.Run(Process);
         }
 
         public virtual void Add(T item)
         {
-            _items.Add(new ProcessingItem<T>(item));
+            CheckDisposed();
+            _items.Add(new ProcItem<T>(item));
         }
 
         public virtual void Dispose()
@@ -76,6 +78,13 @@ namespace FclEx.Consumers
             _cts.Cancel();
             _finish.WaitOne();
             _items?.Dispose();
+            _isDisposed = true;
+        }
+
+        protected void CheckDisposed()
+        {
+            if (_isDisposed)
+                throw new ObjectDisposedException(nameof(AbstractConsumer<TSelf, T>));
         }
     }
 }

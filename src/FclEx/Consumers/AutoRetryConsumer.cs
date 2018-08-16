@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FclEx.Helpers;
 using FclEx.Utils;
 
 namespace FclEx.Consumers
@@ -9,7 +10,7 @@ namespace FclEx.Consumers
         private readonly int _maxRetryTimes;
         private readonly Func<int, int> _retryDelay;
 
-        public event EventHandler<AutoRetryConsumer<T>, ConsumerExArgs<T>> OnException = (sender, args) => { };
+        public event EventHandler<AutoRetryConsumer<T>, ProcExItem<T>> OnException = (sender, args) => { };
         public event AsyncEventHandler<AutoRetryConsumer<T>, T> OnConsume = (sender, e) => Task.CompletedTask;
         public event EventHandler<AutoRetryConsumer<T>, T> OnDiscard = (sender, e) => { };
 
@@ -22,15 +23,14 @@ namespace FclEx.Consumers
             OnConsumeInternal += async (sender, item) =>
             {
                 var delay = _retryDelay(item.ErrorTimes);
-                if (delay > 0)
-                    await Task.Delay(delay * 1000);
+                await TaskHelper.Delay(delay);
                 await OnConsume(sender, item.Item).DonotCapture();
             };
 
             OnExceptionInternal += (sender, args) =>
             {
                 var item = args.Item;
-                OnException(sender, ConsumerExArgs.Create(item.Item, args.Exception, args.ErrorTimes));
+                OnException(sender, ProcItem.CreateEx(item.Item, args.Exception, args.ErrorTimes));
 
                 // 以下是失败后的补救措施
                 if (item.ErrorTimes++ < _maxRetryTimes)
