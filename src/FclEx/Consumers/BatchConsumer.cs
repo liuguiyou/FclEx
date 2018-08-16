@@ -69,6 +69,7 @@ namespace FclEx.Consumers
                 if (items.IsNullOrEmpty()) return;
                 var list = items.Select(m => m.Item).ToArray();
                 await OnConsume(this, list).DonotCapture();
+                return;
             }
             catch (Exception ex)
             {
