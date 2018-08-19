@@ -30,7 +30,7 @@ namespace FclEx.Consumers
             OnExceptionInternal += (sender, args) =>
             {
                 var item = args.Item;
-                OnException(sender, ProcItem.CreateEx(item.Item, args.Exception, args.ErrorTimes));
+                OnException.Invoke(sender, ProcItem.CreateEx(item.Item, args.Exception, args.ErrorTimes));
 
                 // 以下是失败后的补救措施
                 if (item.ErrorTimes++ < _maxRetryTimes)
@@ -39,7 +39,7 @@ namespace FclEx.Consumers
                 }
                 else
                 {
-                    OnDiscard(sender, item.Item);
+                    OnDiscard.Invoke(sender, item.Item);
                 }
 
                 return Task.CompletedTask;

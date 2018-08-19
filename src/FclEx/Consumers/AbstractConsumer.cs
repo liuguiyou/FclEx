@@ -45,14 +45,14 @@ namespace FclEx.Consumers
 
                 try
                 {
-                    await OnConsumeInternal((TSelf)this, item).DonotCapture();
+                    await OnConsumeInternal.InvokeAsync((TSelf)this, item).DonotCapture();
                     item.ErrorTimes = 0;
                 }
                 catch (Exception ex)
                 {
                     item.ErrorTimes++;
                     var args = ProcItem.CreateEx(item, ex, item.ErrorTimes);
-                    await OnExceptionInternal((TSelf)this, args).DonotCapture();
+                    await OnExceptionInternal.InvokeAsync((TSelf)this, args).DonotCapture();
                 }
             }
             _finish.Set();

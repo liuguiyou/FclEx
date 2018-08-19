@@ -68,13 +68,13 @@ namespace FclEx.Consumers
             {
                 if (items.IsNullOrEmpty()) return;
                 var list = items.Select(m => m.Item).ToArray();
-                await OnConsume(this, list).DonotCapture();
+                await OnConsume.InvokeAsync(this, list).DonotCapture();
                 return;
             }
             catch (Exception ex)
             {
                 var list = items.CastTo<IReadOnlyList<ProcItem<T>>>();
-                OnException(this, ProcItem.CreateEx(list, ex, -1));
+                OnException.Invoke(this, ProcItem.CreateEx(list, ex, -1));
             }
 
             var (retry, discard) = items.Partition(m => m.ErrorTimes < _maxRetryTimes);
@@ -85,7 +85,7 @@ namespace FclEx.Consumers
             });
             var toDiscard = discard.Select(m => m.Item).ToArray();
             if (toDiscard.Any())
-                OnDiscard(this, toDiscard);
+                OnDiscard.Invoke(this, toDiscard);
         }
 
         protected override async Task Process()
