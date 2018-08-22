@@ -21,7 +21,7 @@ namespace FclEx.Utils
 
         public override string ToString()
         {
-            var sb = new StringBuilder(GetType().SimpleName(), 128);
+            var sb = new StringBuilder(GetType().ShortName(), 256);
             sb.AppendIf(() => ": " + Message, !Message.IsNullOrEmpty());
             sb.AppendLineIf(() => " ---> " + InnerException, InnerException != null);
             sb.AppendIfNotEmpty(StackTrace);

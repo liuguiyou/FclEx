@@ -21,7 +21,7 @@ namespace FclEx
 
         public static StringBuilder AppendIfNotEmpty(this StringBuilder sb, string value)
         {
-            return AppendIf(sb, value, value.IsNullOrEmpty());
+            return AppendIf(sb, value, !value.IsNullOrEmpty());
         }
 
         public static StringBuilder AppendIf(this StringBuilder sb, Func<string> value, bool condition)
