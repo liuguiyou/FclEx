@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace FclEx.Utils
 {
@@ -8,7 +9,7 @@ namespace FclEx.Utils
             => new ObjectException<T>(obj, msg, inner);
     }
 
-    public class ObjectException<T> : Exception
+    public class ObjectException<T> : SimpleException
     {
         public T Target { get; set; }
 
@@ -20,7 +21,11 @@ namespace FclEx.Utils
 
         public override string ToString()
         {
-            return StackTrace.IsNullOrEmpty() ? Message : Message + Environment.NewLine + StackTrace;
+            var sb = new StringBuilder(GetType().SimpleName(), 128);
+            sb.AppendIf(() => ": " + Message, !Message.IsNullOrEmpty());
+            sb.AppendLineIf(() => " ---> " + InnerException, InnerException != null);
+            sb.AppendIfNotEmpty(StackTrace);
+            return sb.ToString();
         }
     }
 }

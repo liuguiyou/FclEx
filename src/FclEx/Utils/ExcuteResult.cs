@@ -1,39 +1,42 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace FclEx.Utils
 {
     public struct ExcuteResult
     {
-        public ExcuteResult(Exception ex)
-            : this(-1, ex.Message, ex.StackTrace)
+        public ExcuteResult(Exception ex) : this(-1, ex)
         {
+        }
+
+        public ExcuteResult(int code, Exception ex)
+        {
+            Code = code;
+            Exception = code == 0 ? null : ex;
         }
 
         public ExcuteResult(int code, string msg, string stackTrace)
+            : this(code, msg == null ? null : new SimpleException(msg, stackTrace))
         {
-            Code = code;
-            Msg = msg;
-            StackTrace = stackTrace;
         }
 
         public ExcuteResult(bool successful, string msg)
-            : this(successful ? 0 : -1, msg, null)
+            : this(successful ? 0 : -1, new SimpleException(msg))
         {
         }
 
         public bool Success => Code == 0;
         public int Code { get; }
-        public string Msg { get; }
-        public string StackTrace { get; }
+        public Exception Exception { get; }
 
         public static ExcuteResult SuccessResult { get; } = new ExcuteResult(true, null);
 
-        public ExcuteResult<T> ToExplicit<T>() => new ExcuteResult<T>(Code, Msg, StackTrace);
+        public ExcuteResult<T> ToExplicit<T>() => new ExcuteResult<T>(Code, Exception);
 
         public static implicit operator ExcuteResult(Exception ex)
         {
-            return new ExcuteResult(ex);
+            return new ExcuteResult(-1, ex);
         }
 
         public static implicit operator ExcuteResult(string error)
@@ -115,46 +118,37 @@ namespace FclEx.Utils
     {
         public bool Success => Code == 0;
         public int Code { get; }
-        public string Msg { get; }
-        public string StackTrace { get; private set; }
+        public Exception Exception { get; }
         public T Result { get; }
 
-        public ExcuteResult(Exception ex)
-            : this(-1, ex.Message, ex.StackTrace)
+        public ExcuteResult(Exception ex) : this(-1, ex)
         {
         }
 
-        public ExcuteResult(int code, string msg, string stackTrace)
+        public ExcuteResult(int code, Exception ex)
         {
             Code = code;
-            Msg = msg;
-            StackTrace = stackTrace;
+            Exception = code == 0 ? null : ex;
             Result = default;
         }
 
-        public ExcuteResult(int code, string msg, T result)
+        public ExcuteResult(T result)
         {
-            Code = code;
-            Msg = msg;
-            StackTrace = null;
             Result = result;
-        }
-
-        public ExcuteResult(bool successful, string msg, T result)
-            : this(successful ? 0 : -1, msg, result)
-        {
+            Code = 0;
+            Exception = null;
         }
 
         public static implicit operator ExcuteResult(ExcuteResult<T> result)
         {
-            return new ExcuteResult(result.Code, result.Msg, result.StackTrace);
+            return new ExcuteResult(result.Code, result.Exception);
         }
 
         public static implicit operator ExcuteResult<T>(T item)
         {
             return item == null
-                ? new ExcuteResult<T>(-1, "结果为空", default(T))
-                : new ExcuteResult<T>(0, null, item);
+                ? new ExcuteResult<T>(-1, new SimpleException("结果为空"))
+                : new ExcuteResult<T>(item);
         }
 
         public static implicit operator ExcuteResult<T>(Exception ex)
@@ -164,17 +158,17 @@ namespace FclEx.Utils
 
         public static implicit operator ExcuteResult<T>(string error)
         {
-            return new ExcuteResult<T>(-1, error, default(T));
+            return CreateError(error);
         }
 
         public static ExcuteResult<T> CreateSuccess(T item)
         {
-            return new ExcuteResult<T>(true, null, item);
+            return new ExcuteResult<T>(item);
         }
 
         public static ExcuteResult<T> CreateError(string error)
         {
-            return new ExcuteResult<T>(false, error, default);
+            return new ExcuteResult<T>(-1, new SimpleException(error));
         }
     }
 }
