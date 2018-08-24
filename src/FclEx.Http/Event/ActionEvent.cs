@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FclEx.Utils;
 using Newtonsoft.Json;
 
 namespace FclEx.Http.Event
@@ -24,11 +25,11 @@ namespace FclEx.Http.Event
         public static ActionEvent Create(ActionEventType type, object target) => new ActionEvent(type, target);
         public static ActionEvent Ok(object target) => Create(ActionEventType.EvtOk, target);
         public static ActionEvent Error(Exception ex) => Create(ActionEventType.EvtError, ex);
-        public static ActionEvent Error(string msg) => Create(ActionEventType.EvtError, new Exception(msg));
+        public static ActionEvent Error(string msg) => Create(ActionEventType.EvtError, new SimpleException(msg));
         public static ActionEvent Cancel(object target) => Create(ActionEventType.EvtCanceled, target);
         public static ActionEvent<T> Ok<T>(T target) => new ActionEvent<T>(ActionEventType.EvtOk, target);
         public static ActionEvent<T> Error<T>(Exception ex) => new ActionEvent<T>(ActionEventType.EvtError, ex);
-        public static ActionEvent<T> Error<T>(string msg) => new ActionEvent<T>(ActionEventType.EvtError, new Exception(msg));
+        public static ActionEvent<T> Error<T>(string msg) => new ActionEvent<T>(ActionEventType.EvtError, new SimpleException(msg));
         public ActionEvent<T> ToExplicit<T>() => new ActionEvent<T>(Type, Target);
         public static implicit operator ActionEvent(Exception ex) => Error(ex);
         public static implicit operator Task<ActionEvent>(ActionEvent actionEvent) => actionEvent.ToTask();

@@ -15,8 +15,6 @@ namespace FclEx.Http.Actions
         protected int ExcuteTimes { get; set; }
         protected int ErrorTimes { get; set; }
 
-        private static Exception DefaultException { get; } = new Exception("Unknown Error");
-
         protected AbstractAction(ActionEventListener listener = null)
         {
             OnActionEvent += listener;
@@ -100,7 +98,7 @@ namespace FclEx.Http.Actions
         protected ValueTask<ActionEvent> NotifyObjectErrorAsync<T>(T obj, string msg = null, Exception innerException = null)
             => NotifyErrorAsync(ObjectException.Create(obj, msg, innerException));
 
-        private static Exception CreateEx(string msg) => msg.IsNullOrEmpty() ? DefaultException : new Exception(msg);
+        private static Exception CreateEx(string msg) => new SimpleException(msg);
 
         protected virtual ValueTask<ActionEvent> ExecuteInternalAsync(CancellationToken token)
         {
