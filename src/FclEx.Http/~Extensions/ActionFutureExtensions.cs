@@ -39,6 +39,21 @@ namespace FclEx.Http
             return PushAction<TResult>(future, func, future.Count - 1);
         }
 
+        public static IActionFuture PushActionIf(this IActionFuture future, Func<object, bool> predicate,
+            Func<object, IAction> func)
+        {
+            Check.NotNull(predicate, nameof(predicate));
+            return PushAction(future, o => predicate(o) ? func(o) : null);
+        }
+
+        public static IActionFuture PushActionIf<TResult>(this IActionFuture future, Func<TResult, bool> predicate,
+            Func<TResult, IAction> func)
+        {
+            Check.NotNull(predicate, nameof(predicate));
+            return PushAction<TResult>(future, o => predicate(o) ? func(o) : null);
+        }
+
+
         public static IActionFuture PushActions(this IActionFuture future, IEnumerable<IAction> actions)
         {
             foreach (var action in actions)
