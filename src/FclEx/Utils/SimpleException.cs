@@ -26,5 +26,14 @@ namespace FclEx.Utils
         }
 
         public override string StackTrace { get; }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder(GetType().ShortName(), 256);
+            sb.AppendIf(() => ": " + Message, !Message.IsNullOrEmpty());
+            sb.AppendLineIf(() => " ---> " + InnerException, InnerException != null);
+            sb.AppendIfNotEmpty(StackTrace);
+            return sb.ToString();
+        }
     }
 }
