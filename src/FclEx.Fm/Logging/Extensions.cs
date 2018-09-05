@@ -1,19 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FclEx.Log
+namespace FclEx.Fm.Logging
 {
     public static class Extensions
     {
-        public static ILoggerFactory AddSimpleConsole(this ILoggerFactory factory, LogLevel minLevel = LogLevel.Information)
+        public static ILoggerFactory AddColorConsole(this ILoggerFactory factory, LogLevel minLevel = LogLevel.Information)
         {
-            factory.AddProvider(new SimpleConsoleLoggerProvider(minLevel));
+            factory.AddProvider(new ColorConsoleLoggerProvider(minLevel));
             return factory;
         }
 
-        public static ILoggingBuilder AddSimpleConsole(this ILoggingBuilder builder, LogLevel minLevel = LogLevel.Information)
+        public static ILoggingBuilder AddColorConsole(this ILoggingBuilder builder, LogLevel minLevel = LogLevel.Information)
         {
-            builder.Services.AddSingleton<ILoggerProvider>(new SimpleConsoleLoggerProvider(minLevel));
+            builder.Services.AddSingleton<ILoggerProvider>(new ColorConsoleLoggerProvider(minLevel));
             return builder;
         }
 

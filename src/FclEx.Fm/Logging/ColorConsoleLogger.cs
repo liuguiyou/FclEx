@@ -1,15 +1,15 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace FclEx.Log
+namespace FclEx.Fm.Logging
 {
-    public class SimpleConsoleLogger : ILogger
+    public class ColorConsoleLogger : ILogger
     {
         private static readonly object _syncObj = new object();
         private readonly LogLevel _minLevel;
         public string Name { get; }
 
-        public SimpleConsoleLogger(string name, LogLevel minLevel = LogLevel.Information)
+        public ColorConsoleLogger(string name, LogLevel minLevel = LogLevel.Information)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             _minLevel = minLevel;
@@ -36,7 +36,7 @@ namespace FclEx.Log
         {
             if (state == null) throw new ArgumentNullException(nameof(state));
 
-            return SimpleConsoleLogScope.Push(Name, state);
+            return ColorConsoleLoggerScope.Push(Name, state);
         }
 
         protected virtual ConsoleColor GetColor(LogLevel logLevel)

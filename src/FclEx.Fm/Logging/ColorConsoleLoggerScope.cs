@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Threading;
 
-namespace FclEx.Log
+namespace FclEx.Fm.Logging
 {
-    public class SimpleConsoleLogScope
+    public class ColorConsoleLoggerScope
     {
-        private static readonly AsyncLocal<SimpleConsoleLogScope> _scope = new AsyncLocal<SimpleConsoleLogScope>();
+        private static readonly AsyncLocal<ColorConsoleLoggerScope> _scope = new AsyncLocal<ColorConsoleLoggerScope>();
         private readonly string _name;
         private readonly object _state;
 
-        public SimpleConsoleLogScope Parent { get; private set; }
+        public ColorConsoleLoggerScope Parent { get; private set; }
 
-        public static SimpleConsoleLogScope Current
+        public static ColorConsoleLoggerScope Current
         {
             get => _scope.Value;
             set => _scope.Value = value;
         }
 
-        internal SimpleConsoleLogScope(string name, object state)
+        internal ColorConsoleLoggerScope(string name, object state)
         {
             _name = name;
             _state = state;
@@ -26,7 +26,7 @@ namespace FclEx.Log
         public static IDisposable Push(string name, object state)
         {
             var current = Current;
-            Current = new SimpleConsoleLogScope(name, state) {Parent = current};
+            Current = new ColorConsoleLoggerScope(name, state) {Parent = current};
             return new DisposableScope();
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FclEx.Utils;
 using MoreLinq;
 
 namespace FclEx
@@ -54,25 +55,6 @@ namespace FclEx
             return col ?? Array.Empty<T>();
         }
 
-        ///// <summary>
-        ///// Splits a collection of objects into an unknown number of pages with n items per page 
-        ///// <para>(for example, if I have a list of 45 shoes and say 'shoes.Partition(10)' I will now have 4 pages of 10 shoes and 1 page of 5 shoes.</para>>
-        ///// </summary>
-        ///// <typeparam name="T">The type of object the collection should contain.</typeparam>
-        ///// <param name="superset">The collection of objects to be divided into subsets.</param>
-        ///// <param name="pageSize">The maximum number of items each page may contain.</param>
-        ///// <returns>A subset of this collection of objects, split into pages of maximum size n.</returns>
-        //public static IEnumerable<IEnumerable<T>> Partition<T>(this ICollection<T> superset, int pageSize)
-        //{
-        //    if (superset.Count < pageSize) yield return superset;
-        //    else
-        //    {
-        //        var numberOfPages = Math.Ceiling(superset.Count / (double)pageSize);
-        //        for (var i = 0; i < numberOfPages; i++)
-        //            yield return superset.Skip(pageSize * i).Take(pageSize);
-        //    }
-        //}
-
         public static async Task Parallel<T>(this ICollection<T> superset, int pageSize,
             Action<T> action)
         {
@@ -80,6 +62,23 @@ namespace FclEx
             {
                 await items.Select(m => Task.Run(() => action(m))).WhenAll();
             }
+        }
+
+        /// <summary>
+        /// Adds an item to the collection if it's not already in the collection.
+        /// </summary>
+        /// <param name="source">Collection</param>
+        /// <param name="item">Item to check and add</param>
+        /// <typeparam name="T">Type of the items in the collection</typeparam>
+        /// <returns>Returns True if added, returns False if not.</returns>
+        public static bool AddIfNotContains<T>(this ICollection<T> source, T item)
+        {
+            Check.NotNull(source, nameof(source));
+ 
+            if (source.Contains(item)) return false;
+
+            source.Add(item);
+            return true;
         }
 
         public static async Task<IReadOnlyList<TResult>> Parallel<T, TResult>(this ICollection<T> superset,
