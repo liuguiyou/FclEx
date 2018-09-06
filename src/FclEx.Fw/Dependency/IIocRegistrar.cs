@@ -10,11 +10,9 @@ namespace FclEx.Fw.Dependency
     public interface IIocRegistrar
     {
         void AddConventionalRegistrar(IConventionalDependencyRegistrar registrar);
-
+        void RegisterAssemblyByConvention(Assembly assembly, ConventionalRegistrationConfig config);
         IIocRegistrar Register(Type type, Type impl, ServiceLifetime lifeStyle = ServiceLifetime.Singleton);
-
         IIocRegistrar Register(Type type, Func<IIocResolver, object> func, ServiceLifetime lifeStyle = ServiceLifetime.Singleton);
-
         bool IsRegistered(Type type);
     }
 }

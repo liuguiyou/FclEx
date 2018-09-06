@@ -8,6 +8,8 @@ namespace FclEx
 {
     public static class ImageSharpExtensions
     {
+        private static readonly IImageEncoder _encoder = new PngEncoder();
+
         public static Image<Rgba32> Base64StringToImage(this string base64String) => base64String.Base64StringToBytes().ToImage();
 
         public static Image<Rgba32> ToImage(this byte[] bytes) => Image.Load(bytes);
@@ -16,10 +18,9 @@ namespace FclEx
         {
             using (var m = new MemoryStream())
             {
-                image.Save(m, new PngEncoder());
+                image.Save(m, _encoder);
                 return m.ToArray();
             }
-
         }
 
         public static string ToRawBase64String(this Image<Rgba32> image, IImageEncoder encoder = null) => image.ToBytes(encoder).ToBase64String();

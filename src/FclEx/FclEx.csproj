@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>1.3.7</Version>
+    <Version>1.4.0</Version>
     <Authors>huoshan12345</Authors>
     <Description>Some basic useful extensions and helpers for C# fundamental class libraries</Description>
     <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
@@ -19,5 +19,6 @@
     <PackageReference Include="morelinq" Version="3.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0005" />
   </ItemGroup>
 </Project>

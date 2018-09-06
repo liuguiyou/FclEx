@@ -4,6 +4,7 @@ using System.Text;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Dependency.Registration;
 using Microsoft.Extensions.DependencyInjection;
+using MoreLinq;
 
 namespace FclEx.Fw.Extensions
 {

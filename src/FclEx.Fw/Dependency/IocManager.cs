@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AspectCore.Extensions.DependencyInjection;
 using FclEx.Fw.Extensions;
+using FclEx.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FclEx.Fw.Dependency
@@ -41,29 +43,45 @@ namespace FclEx.Fw.Dependency
             = new List<IConventionalDependencyRegistrar>();
 
         private IServiceProvider _serviceProvider;
+        private readonly Func<IServiceCollection, IServiceProvider> _buildFunc;
 
         /// <summary>
         /// Creates a new <see cref="IocManager"/> object.
         /// Normally, you don't directly instantiate an <see cref="IocManager"/>.
         /// This may be useful for test purposes.
         /// </summary>
-        public IocManager()
+        public IocManager() : this(new ServiceCollection(), null)
         {
-            ServiceCollection = new ServiceCollection()
+        }
+
+        public IocManager(IServiceCollection services, Func<IServiceCollection, IServiceProvider> buildFunc)
+        {
+            _buildFunc = buildFunc ?? (m => m.BuildAspectCoreServiceProvider()); ;
+            Check.NotNull(services, nameof(services));
+            ServiceCollection = services
                 .AddSingleton<IIocRegistrar>(this)
                 .AddSingleton<IIocResolver>(this)
                 .AddSingleton<IIocManager>(this);
         }
 
-        public void Build(Func<IServiceCollection, IServiceProvider> buildFunc = null)
+        public void Build()
         {
-            buildFunc = buildFunc ?? (m => m.BuildServiceProvider());
-            ServiceProvider = buildFunc(ServiceCollection);
+            _serviceProvider = _buildFunc(ServiceCollection);
         }
 
         public void AddConventionalRegistrar(IConventionalDependencyRegistrar registrar)
         {
             _conventionalRegistrars.Add(registrar);
+        }
+
+        public void RegisterAssemblyByConvention(Assembly assembly, ConventionalRegistrationConfig config)
+        {
+            var context = new ConventionalRegistrationContext(assembly, this, config);
+
+            foreach (var registerer in _conventionalRegistrars)
+            {
+                registerer.RegisterAssembly(context);
+            }
         }
 
         public IIocRegistrar Register(Type type, Type impl, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
@@ -100,7 +118,6 @@ namespace FclEx.Fw.Dependency
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

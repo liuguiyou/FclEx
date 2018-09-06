@@ -15,6 +15,22 @@ namespace FclEx
             return Nullable.GetUnderlyingType(type) ?? type;
         }
 
+        public static MethodInfo GetMethod(this Type type, string methodName, int pParametersCount = 0, int pGenericArgumentsCount = 0)
+        {
+            return type.GetMethods()
+                    .Where(m => m.Name == methodName)
+                    .Select(m => new
+                    {
+                        Method = m,
+                        Params = m.GetParameters(),
+                        Args = m.GetGenericArguments()
+                    })
+                    .Where(x => x.Params.Length == pParametersCount
+                                && x.Args.Length == pGenericArgumentsCount
+                    ).Select(x => x.Method)
+                    .First();
+        }
+
         public static bool SequenceAssignableFrom(this IEnumerable<Type> first, IEnumerable<Type> second)
         {
             var comparer = EqualityComparer<Type>.Default;

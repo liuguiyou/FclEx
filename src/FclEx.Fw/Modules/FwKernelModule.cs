@@ -2,8 +2,12 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq.Expressions;
+using AspectCore.Extensions.DependencyInjection;
+using EasyCaching.InMemory;
 using FclEx.Fw.Dependency;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Fw.Modules
 {
@@ -19,10 +23,11 @@ namespace FclEx.Fw.Modules
 
         public override void PreInitialize()
         {
-            IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
+            IocManager.ServiceCollection
+                .AddDefaultInMemoryCache()
+                .AddSingleton(NullLogger.Instance);
 
-            //IocManager.Register<IScopedIocResolver, ScopedIocResolver>(DependencyLifeStyle.Transient);
-            //IocManager.Register(typeof(IAmbientScopeProvider<>), typeof(DataContextAmbientScopeProvider<>), DependencyLifeStyle.Transient);
+            IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
 
             AddAuditingSelectors();
             AddLocalizationSources();
@@ -44,11 +49,8 @@ namespace FclEx.Fw.Modules
 
             //IocManager.Register(typeof(IOnlineClientManager<>), typeof(OnlineClientManager<>), DependencyLifeStyle.Singleton);
 
-            //IocManager.RegisterAssemblyByConvention(typeof(AbpKernelModule).GetAssembly(),
-            //    new ConventionalRegistrationConfig
-            //    {
-            //        InstallInstallers = false
-            //    });
+            IocManager.RegisterAssemblyByConvention(typeof(FwKernelModule).Assembly,
+                new ConventionalRegistrationConfig());
         }
 
         public override void PostInitialize()

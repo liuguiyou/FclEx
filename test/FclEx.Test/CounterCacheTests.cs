@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FclEx.Test
 {
-    public class TinyCacheTests
+    public class CounterCacheTests
     {
         [Fact]
         public void Test()
@@ -16,7 +16,7 @@ namespace FclEx.Test
             const int capacity = 10;
             var random = new Random(31);
             var numbers = Enumerable.Range(-8, 16).ToArray();
-            var cache = new TinyCache<int, string>(capacity);
+            var cache = new CounterCache<int, string>(capacity);
             var dic = numbers.ToDictionary(m => m, k => 0);
 
             for (var i = 0; i < numbers.Length * capacity; i++)

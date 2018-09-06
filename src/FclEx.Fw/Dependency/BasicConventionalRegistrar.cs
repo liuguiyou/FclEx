@@ -21,8 +21,23 @@ namespace FclEx.Fw.Dependency
                 .Register()
                 .WithSelf()
                 .WithDefaultInterfaces()
-                .Register(context.IocManager, ServiceLifetime.Transient)
+                .Register(context.IocManager, ServiceLifetime.Transient);
+
+            Classes.FromAssembly(context.Assembly)
+                .BasedOn<ISingletonDependency>()
+                .If(type => !type.GetTypeInfo().IsGenericTypeDefinition)
+                .Register()
+                .WithSelf()
+                .WithDefaultInterfaces()
                 .Register(context.IocManager, ServiceLifetime.Singleton);
+
+            Classes.FromAssembly(context.Assembly)
+                .BasedOn<IScopedDependency>()
+                .If(type => !type.GetTypeInfo().IsGenericTypeDefinition)
+                .Register()
+                .WithSelf()
+                .WithDefaultInterfaces()
+                .Register(context.IocManager, ServiceLifetime.Scoped);
         }
     }
 }

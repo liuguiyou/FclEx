@@ -8,6 +8,8 @@ namespace FclEx.Fw.Dependency
     /// </summary>
     public interface IIocManager : IIocRegistrar, IIocResolver, IDisposable
     {
-        void Build(Func<IServiceCollection, IServiceProvider> buildFunc = null);
+        IServiceCollection ServiceCollection { get; }
+        IServiceProvider ServiceProvider { get; }
+        void Build();
     }
 }

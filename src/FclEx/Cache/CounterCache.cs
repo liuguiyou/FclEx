@@ -17,13 +17,13 @@ namespace FclEx.Cache
     /// <typeparam name="TValue"></typeparam>
     [DebuggerTypeProxy(typeof(TinyCacheDebugView<,>))]
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
-    public sealed class TinyCache<TKey, TValue>
+    public sealed class CounterCache<TKey, TValue>
     {
         private readonly IDictionary<TKey, Counter> _dic;
         private readonly ReaderWriterLockSlim _lock;
         private readonly int? _capacity;
 
-        public TinyCache(int? capacity = null, IEqualityComparer<TKey> comparer = null)
+        public CounterCache(int? capacity = null, IEqualityComparer<TKey> comparer = null)
         {
             if (capacity > 0)
                 _capacity = capacity;
@@ -118,9 +118,9 @@ namespace FclEx.Cache
 
     internal sealed class TinyCacheDebugView<TKey, TValue>
     {
-        private readonly TinyCache<TKey, TValue> _dic;
+        private readonly CounterCache<TKey, TValue> _dic;
 
-        public TinyCacheDebugView(TinyCache<TKey, TValue> dictionary)
+        public TinyCacheDebugView(CounterCache<TKey, TValue> dictionary)
         {
             _dic = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
         }
