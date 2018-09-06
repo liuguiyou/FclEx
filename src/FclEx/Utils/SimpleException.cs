@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Environment;
 
 namespace FclEx.Utils
 {
@@ -31,8 +32,8 @@ namespace FclEx.Utils
         {
             var sb = new StringBuilder(GetType().ShortName(), 256);
             sb.AppendIf(() => ": " + Message, !Message.IsNullOrEmpty());
-            sb.AppendLineIf(() => " ---> " + InnerException, InnerException != null);
-            sb.AppendIfNotEmpty(StackTrace);
+            sb.AppendIf(() => " ---> " + InnerException, InnerException != null);
+            sb.AppendIf(NewLine + StackTrace, !StackTrace.IsNullOrEmpty());
             return sb.ToString();
         }
     }
