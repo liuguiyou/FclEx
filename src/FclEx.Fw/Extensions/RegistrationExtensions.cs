@@ -25,14 +25,23 @@ namespace FclEx.Fw.Extensions
             return new BasedOnDescriptor(types, typeof(T));
         }
 
-        public static IRegistration Register(this IRegistration registration, IIocRegistrar registrar,
+        public static IRegistration Register(this IRegistration registration, 
+            IServiceCollection services,
             ServiceLifetime lifetime)
         {
             foreach (var pair in registration.GetTypePairs())
             {
-                registrar.Register(pair.T, pair.TImpl, lifetime);
+                services.Add(new ServiceDescriptor(pair.T, pair.TImpl, lifetime));
             }
             return registration;
+        }
+
+        public static IRegistration Register(this IRegistration registration,
+            IIocManager iocManager,
+            ServiceLifetime lifetime)
+        {
+           
+            return Register(registration, iocManager.ServiceCollection, lifetime);
         }
     }
 }

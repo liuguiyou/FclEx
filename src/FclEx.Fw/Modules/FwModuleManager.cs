@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Extensions;
 using Microsoft.Extensions.Logging;
@@ -83,6 +84,9 @@ namespace FclEx.Fw.Modules
 
         private void CreateModules(ICollection<Type> moduleTypes, List<Type> plugInModuleTypes)
         {
+            var loggerFac = _iocManager.Resolve<ILoggerFactory>();
+            var config = _iocManager.Resolve<IFwStartupConfiguration>();
+
             foreach (var moduleType in moduleTypes)
             {
                 if (!(_iocManager.Resolve(moduleType) is FwModule moduleObject))
@@ -91,7 +95,8 @@ namespace FclEx.Fw.Modules
                 }
 
                 moduleObject.IocManager = _iocManager;
-                //moduleObject.Configuration = _iocManager.Resolve<IAbpStartupConfiguration>();
+                moduleObject.Logger = loggerFac.CreateLogger(moduleType);
+                moduleObject.Configuration = config;
 
                 var moduleInfo = new FwModuleInfo(moduleType, moduleObject, plugInModuleTypes.Contains(moduleType));
 

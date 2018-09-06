@@ -59,8 +59,6 @@ namespace FclEx.Fw.Dependency
             _buildFunc = buildFunc ?? (m => m.BuildAspectCoreServiceProvider()); ;
             Check.NotNull(services, nameof(services));
             ServiceCollection = services
-                .AddSingleton<IIocRegistrar>(this)
-                .AddSingleton<IIocResolver>(this)
                 .AddSingleton<IIocManager>(this);
         }
 
@@ -82,38 +80,6 @@ namespace FclEx.Fw.Dependency
             {
                 registerer.RegisterAssembly(context);
             }
-        }
-
-        public IIocRegistrar Register(Type type, Type impl, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
-        {
-            ServiceCollection.Add(new ServiceDescriptor(type, impl, lifeStyle));
-            return this;
-        }
-
-        public IIocRegistrar Register(Type type, Func<IIocResolver, object> func, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
-        {
-            ServiceCollection.Add(new ServiceDescriptor(type, p => func(this), lifeStyle));
-            return this;
-        }
-
-        public bool IsRegistered(Type type)
-        {
-            return ServiceCollection.Any(x => x.ServiceType == type);
-        }
-
-        public object Resolve(Type type)
-        {
-            return ServiceProvider.GetRequiredService(type);
-        }
-
-        public object TryResolve(Type type)
-        {
-            return ServiceProvider.GetService(type);
-        }
-
-        public IEnumerable<object> ResolveAll(Type type)
-        {
-            return ServiceProvider.GetServices(type);
         }
 
         public void Dispose()

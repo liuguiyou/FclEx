@@ -22,17 +22,5 @@ namespace FclEx.Fw.Extensions
             services.TryAdd(new ServiceDescriptor(typeof(T), typeof(TImpl), lifetime));
             return services;
         }
-
-        public static IServiceCollection RegisterIfNot<T, TImpl>(this IServiceCollection service, ServiceLifetime lifetime)
-            where T : class where TImpl : class, T
-        {
-            return service.TryAdd<T, TImpl>(lifetime);
-        }
-
-        public static IServiceCollection Register<T, TImpl>(this IServiceCollection service, ServiceLifetime lifetime)
-            where T : class where TImpl : class, T
-        {
-            return service.Add<T, TImpl>(lifetime);
-        }
     }
 }

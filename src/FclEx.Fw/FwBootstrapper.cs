@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using AspectCore.Injector;
+using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
 using FclEx.Utils;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -20,7 +23,7 @@ namespace FclEx.Fw
 
         protected bool _isDisposed;
 
-        private FwModuleManager _moduleManager;
+        private IFwModuleManager _moduleManager;
         private ILogger _logger;
 
         private FwBootstrapper([NotNull] Type startupModule, [CanBeNull] Action<FwBootstrapperOptions> optionsAction = null)
@@ -54,11 +57,12 @@ namespace FclEx.Fw
         {
             RegisterBootstrapper();
             IocManager.Build();
-
             ResolveLogger();
+
             try
             {
-                _moduleManager = IocManager.Resolve<FwModuleManager>();
+                IocManager.Resolve<IFwStartupConfiguration>().Initialize();
+                _moduleManager = IocManager.Resolve<IFwModuleManager>();
                 _moduleManager.Initialize(StartupModule);
                 _moduleManager.StartModules();
             }
@@ -71,15 +75,12 @@ namespace FclEx.Fw
 
         private void ResolveLogger()
         {
-            if (IocManager.IsRegistered<ILoggerFactory>())
-            {
-                _logger = IocManager.Resolve<ILoggerFactory>().CreateLogger(typeof(FwBootstrapper));
-            }
+            _logger = IocManager.ServiceProvider.GetRequiredService<ILogger<FwBootstrapper>>();
         }
 
         private void RegisterBootstrapper()
         {
-            IocManager.Register(this);
+            IocManager.ServiceCollection.AddSingleton(this);
         }
 
         public virtual void Dispose()

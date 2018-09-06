@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using AspectCore.Extensions.DependencyInjection;
 using EasyCaching.InMemory;
+using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,15 +18,13 @@ namespace FclEx.Fw.Modules
     /// </summary>
     public sealed class FwKernelModule : FwModule
     {
-        public FwKernelModule(ILogger logger) : base(logger)
-        {
-        }
-
         public override void PreInitialize()
         {
             IocManager.ServiceCollection
+                .AddSingleton<IFwStartupConfiguration, FwStartupConfiguration>()
+                .AddSingleton(NullLoggerProvider.Instance)
                 .AddDefaultInMemoryCache()
-                .AddSingleton(NullLogger.Instance);
+                .AddLogging();
 
             IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
 
@@ -49,7 +48,7 @@ namespace FclEx.Fw.Modules
 
             //IocManager.Register(typeof(IOnlineClientManager<>), typeof(OnlineClientManager<>), DependencyLifeStyle.Singleton);
 
-            IocManager.RegisterAssemblyByConvention(typeof(FwKernelModule).Assembly,
+            IocManager.RegisterAssemblyByConvention(GetType().Assembly,
                 new ConventionalRegistrationConfig());
         }
 

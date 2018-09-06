@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using FclEx.Fw.AutoMapper;
+using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,11 +22,12 @@ namespace FclEx.Fw.Modules
         /// <summary>
         /// Gets or sets the logger.
         /// </summary>
-        public ILogger Logger { get; }
+        public ILogger Logger { get; internal set; } = NullLogger.Instance;
 
-        protected FwModule(ILogger logger)
+        protected internal IFwStartupConfiguration Configuration { get; internal set; }
+
+        protected FwModule()
         {
-            Logger = logger;
         }
 
         /// <summary>
@@ -62,7 +65,7 @@ namespace FclEx.Fw.Modules
 
         public virtual Assembly[] GetAdditionalAssemblies()
         {
-            return new Assembly[0];
+            return Array.Empty<Assembly>();
         }
 
         /// <summary>
@@ -111,6 +114,7 @@ namespace FclEx.Fw.Modules
             var list = new List<Type>();
             AddModuleAndDependenciesRecursively(list, moduleType);
             list.AddIfNotContains(typeof(FwKernelModule));
+            list.AddIfNotContains(typeof(FwAutoMapperModule));
             return list.ToList();
         }
 
