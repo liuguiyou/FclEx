@@ -26,7 +26,7 @@ namespace FclEx.Fw.AutoMapper
             IocManager.Register<IFwAutoMapperConfiguration, FwAutoMapperConfiguration>();
             IocManager.Register<ObjectMapping.IObjectMapper, AutoMapperObjectMapper>();
 
-            Configuration.Modules.AbpAutoMapper().Configurators.Add(CreateCoreMappings);
+            Configuration.Modules.FwAutoMapper().Configurators.Add(CreateCoreMappings);
         }
 
         public override void PostInitialize()
@@ -38,7 +38,7 @@ namespace FclEx.Fw.AutoMapper
         private void Configurer(IMapperConfigurationExpression configuration)
         {
             FindAndAutoMapTypes(configuration);
-            foreach (var configurator in Configuration.Modules.AbpAutoMapper().Configurators)
+            foreach (var configurator in Configuration.Modules.FwAutoMapper().Configurators)
             {
                 configurator(configuration);
             }
@@ -49,7 +49,7 @@ namespace FclEx.Fw.AutoMapper
             lock (_syncObj)
             {
 
-                if (Configuration.Modules.AbpAutoMapper().UseStaticMapper)
+                if (Configuration.Modules.FwAutoMapper().UseStaticMapper)
                 {
                     //We should prevent duplicate mapping in an application, since Mapper is static.
                     if (!_createdMappingsBefore)

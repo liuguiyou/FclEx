@@ -20,12 +20,7 @@ namespace FclEx.Fw.Modules
     {
         public override void PreInitialize()
         {
-            IocManager.ServiceCollection
-                .AddSingleton<IFwStartupConfiguration, FwStartupConfiguration>()
-                .AddSingleton(NullLoggerProvider.Instance)
-                .AddDefaultInMemoryCache()
-                .AddLogging();
-
+            IocManager.ServiceCollection.AddDefaultInMemoryCache();
             IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
 
             AddAuditingSelectors();

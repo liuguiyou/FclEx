@@ -93,7 +93,7 @@ namespace FclEx.Fw.Extensions
         public static IIocManager RegisterIfNot(this IIocManager registrar, Type type,
             ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
         {
-            registrar.ServiceCollection.TryAdd(new ServiceDescriptor(type, lifeStyle));
+            registrar.ServiceCollection.TryAdd(new ServiceDescriptor(type, type, lifeStyle));
             return registrar;
         }
     }

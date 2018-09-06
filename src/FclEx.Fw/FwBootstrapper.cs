@@ -24,7 +24,7 @@ namespace FclEx.Fw
         protected bool _isDisposed;
 
         private IFwModuleManager _moduleManager;
-        private ILogger _logger;
+        private ILogger _logger = NullLogger.Instance;
 
         private FwBootstrapper([NotNull] Type startupModule, [CanBeNull] Action<FwBootstrapperOptions> optionsAction = null)
         {
@@ -39,7 +39,13 @@ namespace FclEx.Fw
             }
             StartupModule = startupModule;
             IocManager = options.IocManager;
-            _logger = NullLogger.Instance;
+
+            IocManager.ServiceCollection
+                .AddSingleton<IFwStartupConfiguration, FwStartupConfiguration>()
+                .AddSingleton<IFwModuleManager, FwModuleManager>()
+                .AddSingleton<IModuleConfigurations, ModuleConfigurations>()
+                .AddLogging(options.LogConfigurer)
+                .AddSingleton(NullLoggerProvider.Instance);
         }
 
         public static FwBootstrapper Create<TStartupModule>([CanBeNull] Action<FwBootstrapperOptions> optionsAction = null)
@@ -53,7 +59,7 @@ namespace FclEx.Fw
             return new FwBootstrapper(startupModule, optionsAction);
         }
 
-        public virtual void Initialize()
+        protected virtual void InitializeInternal()
         {
             RegisterBootstrapper();
             IocManager.Build();
@@ -71,6 +77,12 @@ namespace FclEx.Fw
                 _logger.LogCritical(ex, ex.ToString());
                 throw;
             }
+        }
+
+        public virtual void Initialize()
+        {
+            var t = SimpleWatch.Do(InitializeInternal);
+            _logger.LogDebug($"FwBootstrapper Initialize Finished. It takes {t.TotalSeconds:f2} seconds");
         }
 
         private void ResolveLogger()

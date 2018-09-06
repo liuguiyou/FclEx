@@ -1,4 +1,6 @@
-﻿using FclEx.Fw.Dependency;
+﻿using System;
+using FclEx.Fw.Dependency;
+using Microsoft.Extensions.Logging;
 
 namespace FclEx.Fw.Configuration.Startup
 {

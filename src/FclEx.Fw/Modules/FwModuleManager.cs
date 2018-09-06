@@ -25,7 +25,8 @@ namespace FclEx.Fw.Modules
         private readonly IIocManager _iocManager;
         //private readonly IAbpPlugInManager _abpPlugInManager;
 
-        public FwModuleManager(IIocManager iocManager, ILogger logger)
+        public FwModuleManager(IIocManager iocManager, 
+            ILogger<FwModuleManager> logger)
         {
             _iocManager = iocManager;
             Logger = logger;

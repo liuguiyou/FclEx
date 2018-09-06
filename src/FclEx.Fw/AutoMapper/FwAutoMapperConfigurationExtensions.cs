@@ -10,7 +10,7 @@ namespace FclEx.Fw.AutoMapper
         /// <summary>
         /// Used to configure FclEx.Fw.AutoMapper module.
         /// </summary>
-        public static IFwAutoMapperConfiguration AbpAutoMapper(this IModuleConfigurations configurations)
+        public static IFwAutoMapperConfiguration FwAutoMapper(this IModuleConfigurations configurations)
         {
             return configurations.AbpConfiguration.Get<IFwAutoMapperConfiguration>();
         }
