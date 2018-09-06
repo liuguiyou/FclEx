@@ -4,6 +4,7 @@ using System.Linq;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Extensions;
+using FclEx.Fw.PlugIns;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -23,13 +24,15 @@ namespace FclEx.Fw.Modules
         private FwModuleCollection _modules;
 
         private readonly IIocManager _iocManager;
-        //private readonly IAbpPlugInManager _abpPlugInManager;
+        private readonly IFwPlugInManager _plugInManager;
 
         public FwModuleManager(IIocManager iocManager, 
-            ILogger<FwModuleManager> logger)
+            ILogger<FwModuleManager> logger, 
+            IFwPlugInManager plugInManager)
         {
             _iocManager = iocManager;
             Logger = logger;
+            _plugInManager = plugInManager;
         }
 
         public virtual void Initialize(Type startupModule)
@@ -65,7 +68,8 @@ namespace FclEx.Fw.Modules
 
             Logger.LogDebug("Found " + moduleTypes.Count + " ABP modules in total.");
 
-            RegisterModules(moduleTypes);
+            // Register Modules in the Bootstrapper instead.
+            // RegisterModules(moduleTypes); 
             CreateModules(moduleTypes, plugInModuleTypes);
 
             _modules.EnsureKernelModuleToBeFirst();
@@ -80,6 +84,13 @@ namespace FclEx.Fw.Modules
         {
             plugInModuleTypes = new List<Type>();
             var modules = FwModule.FindDependedModuleTypesRecursivelyIncludingGivenModule(_modules.StartupModuleType);
+            foreach (var plugInModuleType in _plugInManager.PlugInSources.GetAllModules())
+            {
+                if (modules.AddIfNotContains(plugInModuleType))
+                {
+                    plugInModuleTypes.Add(plugInModuleType);
+                }
+            }
             return modules;
         }
 
@@ -112,13 +123,13 @@ namespace FclEx.Fw.Modules
             }
         }
 
-        private void RegisterModules(ICollection<Type> moduleTypes)
-        {
-            foreach (var moduleType in moduleTypes)
-            {
-                _iocManager.RegisterIfNot(moduleType);
-            }
-        }
+        //private void RegisterModules(ICollection<Type> moduleTypes)
+        //{
+        //    foreach (var moduleType in moduleTypes)
+        //    {
+        //        _iocManager.RegisterIfNot(moduleType);
+        //    }
+        //}
 
         private void SetDependencies()
         {
