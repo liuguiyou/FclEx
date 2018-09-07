@@ -85,7 +85,7 @@ namespace FclEx.Fw.AutoMapper
 
             foreach (var type in types)
             {
-                Logger.LogDebug(type.FullName);
+                Logger.LogDebug(type.Namespace + "." + type.ShortName());
                 configuration.CreateAutoAttributeMaps(type);
             }
         }

@@ -20,7 +20,11 @@ namespace FclEx.Fw.Test
             var boot = FwBootstrapper.Create<TModule>(o =>
             {
                 o.IocManager.Container.TryAddSingleton(output);
-                o.LogConfigurer = builder => { builder.AddProvider(new TestLoggerProvider(output)); };
+                o.LogConfigurer = builder =>
+                {
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                    builder.AddTest(output);
+                };
             });
             IocManager = boot.IocManager;
             boot.Initialize();

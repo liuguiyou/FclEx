@@ -119,7 +119,7 @@ namespace FclEx.Fw.Modules
                     StartupModule = moduleInfo;
                 }
 
-                Logger.LogDebug("Loaded module: " + moduleType.AssemblyQualifiedName);
+                Logger.LogDebug("Loaded module: " + moduleType.ShortName());
             }
         }
 

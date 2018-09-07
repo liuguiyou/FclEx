@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
+using AspectCore.Extensions.DependencyInjection;
 using AspectCore.Injector;
+using EasyCaching.InMemory;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Extensions;
@@ -83,6 +85,7 @@ namespace FclEx.Fw
         private void RegisterServices()
         {
             _options.ServiceCollection
+                .AddDefaultInMemoryCache()
                 .AddSingleton<IAssemblyFinder, AbpAssemblyFinder>()
                 .AddSingleton<ITypeFinder, TypeFinder>()
                 .AddSingleton<IFwPlugInManager, FwPlugInManager>()

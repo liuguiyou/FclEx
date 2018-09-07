@@ -21,7 +21,6 @@ namespace FclEx.Fw.Modules
     {
         public override void PreInitialize()
         {
-            IocManager.Container.AddServices(s=>s.AddDefaultInMemoryCache());
             IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
 
             AddAuditingSelectors();
