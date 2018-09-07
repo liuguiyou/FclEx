@@ -21,6 +21,7 @@
   <ItemGroup>
     <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="0.7.0" />
     <PackageReference Include="EasyCaching.InMemory" Version="0.3.0" />
+    <PackageReference Include="LightInject.Microsoft.DependencyInjection" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
