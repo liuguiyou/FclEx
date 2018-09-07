@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FclEx.Fw.Dependency;
+using LightInject;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -12,34 +13,28 @@ namespace FclEx.Fw.Extensions
     {
         public static IIocManager Register(this IIocManager resolver, Type type, Type impl, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
         {
-            resolver.ServiceCollection.Add(new ServiceDescriptor(type, impl, lifeStyle));
-            return resolver;
-        }
-
-        public static IIocManager Register(this IIocManager resolver, Type type, Func<IServiceProvider, object> func, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
-        {
-            resolver.ServiceCollection.Add(new ServiceDescriptor(type, func, lifeStyle));
+            resolver.Container.Register(type, impl, lifeStyle.ToLightInjectLifetime());
             return resolver;
         }
 
         public static bool IsRegistered(this IIocManager resolver, Type type)
         {
-            return resolver.ServiceCollection.Any(x => x.ServiceType == type);
+            return resolver.Container.CanGetInstance(type, string.Empty);
         }
 
         public static object Resolve(this IIocManager resolver, Type type)
         {
-            return resolver.ServiceProvider.GetRequiredService(type);
+            return resolver.Container.GetInstance(type);
         }
 
         public static T Resolve<T>(this IIocManager resolver)
         {
-            return resolver.ServiceProvider.GetRequiredService<T>();
+            return resolver.Container.GetInstance<T>();
         }
 
         public static IEnumerable<T> ResolveAll<T>(this IIocManager resolver)
         {
-            return resolver.ServiceProvider.GetServices<T>();
+            return resolver.Container.GetAllInstances<T>();
         }
 
         public static bool IsRegistered<T>(this IIocManager resolver)
@@ -69,16 +64,15 @@ namespace FclEx.Fw.Extensions
             return registrar.Register(t, t, lifeStyle);
         }
 
-        public static IIocManager Register(this IIocManager registrar, Type type, object impl,
-            ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
+        public static IIocManager Register(this IIocManager registrar, Type type, object impl)
         {
-            return registrar.Register(type, r => impl, lifeStyle);
+            registrar.Container.RegisterInstance(type, impl);
+            return registrar;
         }
 
-        public static IIocManager Register<T>(this IIocManager registrar,
-            T impl, ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
+        public static IIocManager Register<T>(this IIocManager registrar, T impl)
         {
-            return registrar.Register(typeof(T), impl, lifeStyle);
+            return registrar.Register(typeof(T), impl);
         }
 
         public static IIocManager RegisterIfNot<TType, TImpl>(this IIocManager registrar,
@@ -86,14 +80,16 @@ namespace FclEx.Fw.Extensions
             where TType : class
             where TImpl : class, TType
         {
-            registrar.ServiceCollection.TryAdd<TType, TImpl>(lifeStyle);
+            if (!registrar.IsRegistered<TType>())
+                registrar.Container.Register<TType, TImpl>(lifeStyle.ToLightInjectLifetime());
             return registrar;
         }
 
         public static IIocManager RegisterIfNot(this IIocManager registrar, Type type,
             ServiceLifetime lifeStyle = ServiceLifetime.Singleton)
         {
-            registrar.ServiceCollection.TryAdd(new ServiceDescriptor(type, type, lifeStyle));
+            if (!registrar.IsRegistered(type))
+                registrar.Container.Register(type, lifeStyle.ToLightInjectLifetime());
             return registrar;
         }
     }

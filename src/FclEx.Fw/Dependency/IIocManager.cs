@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using LightInject;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FclEx.Fw.Dependency
@@ -11,8 +12,6 @@ namespace FclEx.Fw.Dependency
     {
         void AddConventionalRegistrar(IConventionalDependencyRegistrar registrar);
         void RegisterAssemblyByConvention(Assembly assembly, ConventionalRegistrationConfig config = null);
-        IServiceCollection ServiceCollection { get; }
-        IServiceProvider ServiceProvider { get; }
-        void Build();
+        IServiceContainer Container { get; }
     }
 }

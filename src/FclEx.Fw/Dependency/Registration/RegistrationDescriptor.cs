@@ -34,7 +34,7 @@ namespace FclEx.Fw.Dependency.Registration
         public RegistrationDescriptor WithDefaultInterfaces()
         {
             var q = _types.SelectMany(m => m.GetInterfaces().Where(i => m.Name.Contains(GetInterfaceName(i))),
-                (c, i) => (c, i));
+                (c, i) => (i, c));
             _typePairs = _typePairs.Concat(q);
             return this;
         }
@@ -42,7 +42,7 @@ namespace FclEx.Fw.Dependency.Registration
         public RegistrationDescriptor WithServiceFromInterface(Type t)
         {
             var q = _types.SelectMany(m => m.GetInterfaces().Where(i => t.IsAssignableFrom(i)),
-                (c, i) => (c, i));
+                (c, i) => (i, c));
             _typePairs = _typePairs.Concat(q);
             return this;
         }

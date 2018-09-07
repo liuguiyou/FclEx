@@ -12,6 +12,7 @@ using FclEx.Fw.PlugIns;
 using FclEx.Fw.Reflection;
 using FclEx.Utils;
 using JetBrains.Annotations;
+using LightInject.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -60,7 +61,8 @@ namespace FclEx.Fw
             RegisterServices();
             RegisterBootstrapper();
             RegisterModules();
-            IocManager.Build();
+            IocManager.Container.CreateServiceProvider(_options.ServiceCollection);
+            IocManager.Container.Compile();
             ResolveLogger();
 
             try
@@ -80,7 +82,7 @@ namespace FclEx.Fw
 
         private void RegisterServices()
         {
-            IocManager.ServiceCollection
+            _options.ServiceCollection
                 .AddSingleton<IAssemblyFinder, AbpAssemblyFinder>()
                 .AddSingleton<ITypeFinder, TypeFinder>()
                 .AddSingleton<IFwPlugInManager, FwPlugInManager>()
@@ -108,12 +110,12 @@ namespace FclEx.Fw
 
         private void ResolveLogger()
         {
-            _logger = IocManager.ServiceProvider.GetRequiredService<ILogger<FwBootstrapper>>();
+            _logger = IocManager.Resolve<ILogger<FwBootstrapper>>();
         }
 
         private void RegisterBootstrapper()
         {
-            IocManager.ServiceCollection.AddSingleton(this);
+            IocManager.Container.AddSingleton(this);
         }
 
         public virtual void Dispose()

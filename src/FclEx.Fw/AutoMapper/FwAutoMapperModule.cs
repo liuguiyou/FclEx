@@ -58,14 +58,14 @@ namespace FclEx.Fw.AutoMapper
                         _createdMappingsBefore = true;
                     }
 
-                    IocManager.ServiceCollection.AddSingleton<IConfigurationProvider>(Mapper.Configuration);
-                    IocManager.ServiceCollection.AddSingleton<IMapper>(Mapper.Instance);
+                    IocManager.Container.AddSingleton<IConfigurationProvider>(Mapper.Configuration);
+                    IocManager.Container.AddSingleton<IMapper>(Mapper.Instance);
                 }
                 else
                 {
                     var config = new MapperConfiguration(Configurer);
-                    IocManager.ServiceCollection.AddSingleton<IConfigurationProvider>(config);
-                    IocManager.ServiceCollection.AddSingleton<IMapper>(config.CreateMapper());
+                    IocManager.Container.AddSingleton<IConfigurationProvider>(config);
+                    IocManager.Container.AddSingleton<IMapper>(config.CreateMapper());
                 }
             }
         }

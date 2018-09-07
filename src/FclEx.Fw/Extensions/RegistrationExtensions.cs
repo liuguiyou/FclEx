@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Dependency.Registration;
+using LightInject;
 using Microsoft.Extensions.DependencyInjection;
 using MoreLinq;
 
@@ -26,12 +27,12 @@ namespace FclEx.Fw.Extensions
         }
 
         public static IRegistration Register(this IRegistration registration, 
-            IServiceCollection services,
+            IServiceContainer services,
             ServiceLifetime lifetime)
         {
             foreach (var pair in registration.GetTypePairs())
             {
-                services.Add(new ServiceDescriptor(pair.T, pair.TImpl, lifetime));
+                services.Register(pair.T, pair.TImpl, lifetime.ToLightInjectLifetime());
             }
             return registration;
         }
@@ -41,7 +42,7 @@ namespace FclEx.Fw.Extensions
             ServiceLifetime lifetime)
         {
            
-            return Register(registration, iocManager.ServiceCollection, lifetime);
+            return Register(registration, iocManager.Container, lifetime);
         }
     }
 }

@@ -19,15 +19,15 @@ namespace FclEx.Fw.Modules
 
         public IReadOnlyList<FwModuleInfo> Modules => _modules;
 
-        public ILogger Logger { get;  }
+        public ILogger Logger { get; }
 
         private FwModuleCollection _modules;
 
         private readonly IIocManager _iocManager;
         private readonly IFwPlugInManager _plugInManager;
 
-        public FwModuleManager(IIocManager iocManager, 
-            ILogger<FwModuleManager> logger, 
+        public FwModuleManager(IIocManager iocManager,
+            ILogger<FwModuleManager> logger,
             IFwPlugInManager plugInManager)
         {
             _iocManager = iocManager;

@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace FclEx.Fw.Test
 {
-    public class FwBootstraperTests : FwTests<FwTestModule>
+    public class FwBootstraperTests : FwTests<FwBootstraperTests.MyTestModule>
     {
         public FwBootstraperTests(ITestOutputHelper output) : base(output)
         {
@@ -17,9 +17,14 @@ namespace FclEx.Fw.Test
         [Fact]
         public void Should_Call_Module_Events_Once()
         {
+            var manager = IocManager.Resolve<IFwModuleManager>();
+            manager.ShutdownModules();
+
             var testModule = IocManager.Resolve<MyTestModule>();
             var otherModule = IocManager.Resolve<MyOtherModule>();
             var anotherModule = IocManager.Resolve<MyAnotherModule>();
+
+
 
             testModule.PreInitializeCount.ShouldBe(1);
             testModule.InitializeCount.ShouldBe(1);

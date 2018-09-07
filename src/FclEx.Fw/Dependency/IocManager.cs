@@ -5,6 +5,8 @@ using System.Reflection;
 using AspectCore.Extensions.DependencyInjection;
 using FclEx.Fw.Extensions;
 using FclEx.Utils;
+using LightInject;
+using LightInject.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FclEx.Fw.Dependency
@@ -14,27 +16,17 @@ namespace FclEx.Fw.Dependency
     /// </summary>
     public class IocManager : IIocManager
     {
+        private static readonly ContainerOptions _defaultOptions = new ContainerOptions
+        {
+            EnablePropertyInjection = false,
+            DefaultServiceSelector = services => services.Last()
+        };
+
         /// <summary>
         /// The Singleton instance.
         /// </summary>
-        public static IocManager Instance { get; private set; } = new IocManager();
-
-        /// <summary>
-        /// Reference to the Castle Windsor Container.
-        /// </summary>
-        public IServiceProvider ServiceProvider
-        {
-            get
-            {
-                if (_serviceProvider == null)
-                    throw new Exception("Must build before use methods of IIocResolver");
-                return _serviceProvider;
-            }
-
-            private set => _serviceProvider = value;
-        }
-
-        public IServiceCollection ServiceCollection { get; }
+        public static IocManager Instance { get; } = new IocManager();
+        public IServiceContainer Container { get; } = new ServiceContainer(_defaultOptions);
 
         /// <summary>
         /// List of all registered conventional registrars.
@@ -42,29 +34,10 @@ namespace FclEx.Fw.Dependency
         private readonly List<IConventionalDependencyRegistrar> _conventionalRegistrars
             = new List<IConventionalDependencyRegistrar>();
 
-        private IServiceProvider _serviceProvider;
-        private readonly Func<IServiceCollection, IServiceProvider> _buildFunc;
-
-        /// <summary>
-        /// Creates a new <see cref="IocManager"/> object.
-        /// Normally, you don't directly instantiate an <see cref="IocManager"/>.
-        /// This may be useful for test purposes.
-        /// </summary>
-        public IocManager() : this(new ServiceCollection(), null)
+        public IocManager()
         {
-        }
-
-        public IocManager(IServiceCollection services, Func<IServiceCollection, IServiceProvider> buildFunc)
-        {
-            _buildFunc = buildFunc ?? (m => m.BuildAspectCoreServiceProvider()); ;
-            Check.NotNull(services, nameof(services));
-            ServiceCollection = services
-                .AddSingleton<IIocManager>(this);
-        }
-
-        public void Build()
-        {
-            _serviceProvider = _buildFunc(ServiceCollection);
+            Container.RegisterInstance<IIocManager>(this);
+            Container.RegisterInstance<IocManager>(this);
         }
 
         public void AddConventionalRegistrar(IConventionalDependencyRegistrar registrar)
