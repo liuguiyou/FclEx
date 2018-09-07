@@ -8,6 +8,8 @@ using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
+using FclEx.Fw.PlugIns;
+using FclEx.Fw.Reflection;
 using FclEx.Utils;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +20,11 @@ namespace FclEx.Fw
 {
     public class FwBootstrapper : IDisposable
     {
+        private readonly FwBootstrapperOptions _options = new FwBootstrapperOptions();
+
         public Type StartupModule { get; }
-        public IIocManager IocManager { get; }
+        public PlugInSourceList PlugInSources => _options.PlugInSources;
+        public IIocManager IocManager => _options.IocManager;
 
         protected bool _isDisposed;
 
@@ -30,22 +35,13 @@ namespace FclEx.Fw
         {
             Check.NotNull(startupModule, nameof(startupModule));
 
-            var options = new FwBootstrapperOptions();
-            optionsAction?.Invoke(options);
+            optionsAction?.Invoke(_options);
 
             if (!typeof(FwModule).GetTypeInfo().IsAssignableFrom(startupModule))
             {
                 throw new ArgumentException($"{nameof(startupModule)} should be derived from {nameof(FwModule)}.");
             }
             StartupModule = startupModule;
-            IocManager = options.IocManager;
-
-            IocManager.ServiceCollection
-                .AddSingleton<IFwStartupConfiguration, FwStartupConfiguration>()
-                .AddSingleton<IFwModuleManager, FwModuleManager>()
-                .AddSingleton<IModuleConfigurations, ModuleConfigurations>()
-                .AddLogging(options.LogConfigurer)
-                .AddSingleton(NullLoggerProvider.Instance);
         }
 
         public static FwBootstrapper Create<TStartupModule>([CanBeNull] Action<FwBootstrapperOptions> optionsAction = null)
@@ -61,12 +57,15 @@ namespace FclEx.Fw
 
         protected virtual void InitializeInternal()
         {
+            RegisterServices();
             RegisterBootstrapper();
+            RegisterModules();
             IocManager.Build();
             ResolveLogger();
 
             try
             {
+                IocManager.Resolve<IFwPlugInManager>().PlugInSources.AddRange(PlugInSources);
                 IocManager.Resolve<IFwStartupConfiguration>().Initialize();
                 _moduleManager = IocManager.Resolve<IFwModuleManager>();
                 _moduleManager.Initialize(StartupModule);
@@ -76,6 +75,28 @@ namespace FclEx.Fw
             {
                 _logger.LogCritical(ex, ex.ToString());
                 throw;
+            }
+        }
+
+        private void RegisterServices()
+        {
+            IocManager.ServiceCollection
+                .AddSingleton<IAssemblyFinder, AbpAssemblyFinder>()
+                .AddSingleton<ITypeFinder, TypeFinder>()
+                .AddSingleton<IFwPlugInManager, FwPlugInManager>()
+                .AddSingleton<IFwStartupConfiguration, FwStartupConfiguration>()
+                .AddSingleton<IFwModuleManager, FwModuleManager>()
+                .AddSingleton<IModuleConfigurations, ModuleConfigurations>()
+                .AddLogging(_options.LogConfigurer)
+                .AddSingleton(NullLoggerProvider.Instance);
+        }
+
+        private void RegisterModules()
+        {
+            var modules = FwModule.FindDependedModuleTypesRecursivelyIncludingGivenModule(StartupModule);
+            foreach (var moduleType in modules)
+            {
+                IocManager.RegisterIfNot(moduleType);
             }
         }
 
