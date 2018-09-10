@@ -39,9 +39,11 @@ namespace FclEx.Fw.Dependency.Registration
             return this;
         }
 
-        public RegistrationDescriptor WithServiceFromInterface(Type t)
+        public RegistrationDescriptor WithServiceFromInterface(Type t, Func<Type, bool> filter = null)
         {
-            var q = _types.SelectMany(m => m.GetInterfaces().Where(i => t.IsAssignableFrom(i)),
+            var q = _types.SelectMany(m => m.GetInterfaces()
+                    .Where(i => t.IsAssignableFrom(i) && i != t)
+                    .WhereIf(filter, filter != null),
                 (c, i) => (i, c));
             _typePairs = _typePairs.Concat(q);
             return this;

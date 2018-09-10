@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FclEx.Fw.Dependency;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
 using FclEx.Fw.Test.Logging;

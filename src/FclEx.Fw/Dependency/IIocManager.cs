@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using FclEx.Fw.Dependency.Registration.Conventional;
 using LightInject;
 using Microsoft.Extensions.DependencyInjection;
 

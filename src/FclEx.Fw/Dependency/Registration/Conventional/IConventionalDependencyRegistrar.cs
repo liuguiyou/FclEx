@@ -1,4 +1,4 @@
-﻿namespace FclEx.Fw.Dependency
+﻿namespace FclEx.Fw.Dependency.Registration.Conventional
 {
     public interface IConventionalDependencyRegistrar
     {

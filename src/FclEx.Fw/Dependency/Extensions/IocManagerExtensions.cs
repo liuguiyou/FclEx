@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FclEx.Fw.Dependency;
 using LightInject;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace FclEx.Fw.Extensions
+namespace FclEx.Fw.Dependency.Extensions
 {
     public static class IocManagerExtensions
     {

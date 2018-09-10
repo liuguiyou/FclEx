@@ -8,6 +8,7 @@ using AspectCore.Injector;
 using EasyCaching.InMemory;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
 using FclEx.Fw.PlugIns;

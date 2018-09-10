@@ -6,6 +6,7 @@ using AspectCore.Extensions.DependencyInjection;
 using EasyCaching.InMemory;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
+using FclEx.Fw.Dependency.Registration.Conventional;
 using FclEx.Fw.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,7 @@ namespace FclEx.Fw.Modules
         public override void PreInitialize()
         {
             IocManager.AddConventionalRegistrar(new BasicConventionalRegistrar());
+            IocManager.AddConventionalRegistrar(new GenericConventionalRegistrar());
 
             AddAuditingSelectors();
             AddLocalizationSources();

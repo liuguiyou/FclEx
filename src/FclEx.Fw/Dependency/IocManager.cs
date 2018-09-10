@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AspectCore.Extensions.DependencyInjection;
+using FclEx.Fw.Dependency.Registration.Conventional;
 using FclEx.Fw.Extensions;
 using FclEx.Utils;
 using LightInject;

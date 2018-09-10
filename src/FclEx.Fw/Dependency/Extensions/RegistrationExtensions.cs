@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FclEx.Fw.Dependency;
 using FclEx.Fw.Dependency.Registration;
 using LightInject;
 using Microsoft.Extensions.DependencyInjection;
-using MoreLinq;
 
-namespace FclEx.Fw.Extensions
+namespace FclEx.Fw.Dependency.Extensions
 {
     public static class RegistrationExtensions
     {

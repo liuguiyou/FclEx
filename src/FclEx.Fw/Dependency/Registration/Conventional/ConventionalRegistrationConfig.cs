@@ -1,6 +1,6 @@
 using FclEx.Fw.Configuration;
 
-namespace FclEx.Fw.Dependency
+namespace FclEx.Fw.Dependency.Registration.Conventional
 {
     /// <summary>
     /// This class is used to pass configuration/options while registering classes in conventional way.

@@ -1,4 +1,5 @@
 ﻿using FclEx.Fw.Dependency;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 
 namespace FclEx.Fw.Configuration.Startup

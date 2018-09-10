@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WeiboPoster.Utils
+namespace FclEx.Helpers
 {
     public static class LockHelper
     {

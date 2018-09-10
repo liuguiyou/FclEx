@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using AutoMapper;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
 using FclEx.Fw.Reflection;

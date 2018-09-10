@@ -1,9 +1,8 @@
-﻿using System.ComponentModel;
-using FclEx.Utils;
+﻿using FclEx.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace FclEx.Fw.Extensions
+namespace FclEx.Fw.Dependency.Extensions
 {
     public static class ServiceCollectionExtensions
     {

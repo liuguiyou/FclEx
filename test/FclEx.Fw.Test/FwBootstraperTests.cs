@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.Modules;
 using Xunit;

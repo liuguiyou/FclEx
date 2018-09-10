@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using FclEx.Utils;
 using LightInject;
 using LightInject.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FclEx.Fw.Extensions
+namespace FclEx.Fw.Dependency.Extensions
 {
     public static class LightInjectExtensions
     {

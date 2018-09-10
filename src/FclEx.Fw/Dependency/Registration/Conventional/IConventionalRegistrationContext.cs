@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace FclEx.Fw.Dependency
+namespace FclEx.Fw.Dependency.Registration.Conventional
 {
     /// <summary>
     /// Used to pass needed objects on conventional registration process.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
+using FclEx.Fw.Dependency.Extensions;
 using FclEx.Fw.Extensions;
 using FclEx.Fw.PlugIns;
 using Microsoft.Extensions.Logging;
