@@ -15,7 +15,7 @@ namespace FclEx.Fw.Dependency.Extensions
 
         public static bool IsRegistered(this IIocManager resolver, Type type)
         {
-            return resolver.Container.CanGetInstance(type, string.Empty);
+            return resolver.Container.IsRegistered(type);
         }
 
         public static object Resolve(this IIocManager resolver, Type type)

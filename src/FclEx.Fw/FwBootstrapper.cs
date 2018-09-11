@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
-using System.Text;
-using AspectCore.Extensions.DependencyInjection;
-using AspectCore.Injector;
+using AspectCore.Extensions.LightInject;
 using EasyCaching.InMemory;
 using FclEx.Fw.Configuration.Startup;
 using FclEx.Fw.Dependency;
@@ -64,6 +60,7 @@ namespace FclEx.Fw
             RegisterServices();
             RegisterBootstrapper();
             RegisterModules();
+            IocManager.Container.RegisterDynamicProxy();
             IocManager.Container.CreateServiceProvider(_options.ServiceCollection);
             IocManager.Container.Compile();
             ResolveLogger();

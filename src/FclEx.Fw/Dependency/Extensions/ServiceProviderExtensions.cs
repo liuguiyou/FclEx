@@ -10,7 +10,7 @@ namespace FclEx.Fw.Dependency.Extensions
         public static bool TryGetService<T>(this IServiceProvider provider, out T service)
         {
             service = provider.GetService<T>();
-            return service == null;
+            return service != null;
         }
 
         public static ILogger GetLogger<T>(this IServiceProvider serviceProvider)

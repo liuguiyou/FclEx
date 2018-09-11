@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FclEx.Utils;
 using LightInject;
 using LightInject.Microsoft.DependencyInjection;
@@ -10,7 +11,7 @@ namespace FclEx.Fw.Dependency.Extensions
     {
         public static bool IsRegistered(this IServiceContainer services, Type type)
         {
-            return services.CanGetInstance(type, string.Empty);
+            return services.AvailableServices.Any(sr => sr.ServiceType == type);
         }
 
         public static bool IsRegistered<TImpl>(this IServiceContainer services)

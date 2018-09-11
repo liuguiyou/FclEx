@@ -1,16 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Linq.Expressions;
-using AspectCore.Extensions.DependencyInjection;
-using EasyCaching.InMemory;
-using FclEx.Fw.Configuration.Startup;
-using FclEx.Fw.Dependency;
-using FclEx.Fw.Dependency.Registration.Conventional;
-using FclEx.Fw.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using FclEx.Fw.Dependency.Registration.Conventional;
 
 namespace FclEx.Fw.Modules
 {

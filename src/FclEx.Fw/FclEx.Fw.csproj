@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/huoshan12345/FclEx</PackageProjectUrl>
     <PackageTags>extensions;helpers</PackageTags>
-    <Version>1.4.1</Version>
+    <Version>1.4.2</Version>
     <Authors>huoshan12345</Authors>
     <Description>A simplified abp framework(https://aspnetboilerplate.com/)</Description>
     <RepositoryUrl>https://github.com/huoshan12345/FclEx</RepositoryUrl>
@@ -15,17 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Runtime\**" />
-    <EmbeddedResource Remove="Runtime\**" />
-    <None Remove="Runtime\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\AspectCore.Extensions.LightInject\AspectCore.Extensions.LightInject.csproj" />
     <ProjectReference Include="..\FclEx.Http\FclEx.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="EasyCaching.InMemory" Version="0.3.0" />
     <PackageReference Include="LightInject.Microsoft.DependencyInjection" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.2" />
@@ -35,7 +29,4 @@
     <PackageReference Include="Overby.Extensions.Attachments" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Extensions\" />
-  </ItemGroup>
 </Project>

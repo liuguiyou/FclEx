@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AspectCore.DynamicProxy;
 using EasyCaching.Core;
 using FclEx.Fw.Caching.Extensions;
 using FclEx.Fw.Dependency.Extensions;
-using FclEx.Fw.Extensions;
 using Microsoft.Extensions.Logging;
 using Overby.Extensions.Attachments;
 
-namespace FclEx.Fw.Aspect
+namespace FclEx.Fw.Aop
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class ReturnValueCacheAttribute : AbstractInterceptorAttribute
@@ -67,7 +65,7 @@ namespace FclEx.Fw.Aspect
 
                 var time = _expireSeconds.HasValue
                     ? TimeSpan.FromSeconds(_expireSeconds.Value)
-                    : TimeSpan.MaxValue;
+                    : TimeSpan.FromDays(30);
                 cache.Set(key, item, time);
             }
             else

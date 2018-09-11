@@ -2,13 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AspectCore.Extensions.DependencyInjection;
 using FclEx.Fw.Dependency.Registration.Conventional;
-using FclEx.Fw.Extensions;
-using FclEx.Utils;
 using LightInject;
-using LightInject.Microsoft.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FclEx.Fw.Dependency
 {
@@ -20,6 +15,7 @@ namespace FclEx.Fw.Dependency
         private static readonly ContainerOptions _defaultOptions = new ContainerOptions
         {
             EnablePropertyInjection = false,
+            EnableVariance = false,
             DefaultServiceSelector = services => services.Last()
         };
 

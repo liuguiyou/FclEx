@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using FclEx.Fw.Dependency;
 using FclEx.Fw.Dependency.Extensions;
@@ -20,6 +21,7 @@ namespace FclEx.Fw.Test
             _output = output ?? throw new ArgumentNullException(nameof(output));
             var boot = FwBootstrapper.Create<TModule>(o =>
             {
+                o.IocManager = new IocManager();
                 o.IocManager.Container.TryAddSingleton(output);
                 o.LogConfigurer = builder =>
                 {
@@ -32,5 +34,8 @@ namespace FclEx.Fw.Test
         }
 
         public IIocManager IocManager { get; set; }
+
+        public static IEnumerable<object[]> Numbers { get; } = new[] { -1, 0, 1, 10 }
+            .Select(m => new object[] { m }).ToArray();
     }
 }
