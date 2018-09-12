@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
-using FclEx.Http.SocksUtil.SocksPort;
-using HttpProxy = FclEx.Http.Proxy.HttpProxy;
 
 namespace FclEx.Http.Services
 {
@@ -67,18 +65,6 @@ namespace FclEx.Http.Services
                 handler.UseProxy = false;
                 handler.Proxy = null;
             }
-            var httpClient = new HttpClient(handler)
-            {
-                Timeout = TimeSpan.FromSeconds(60)
-            };
-            httpClient.DefaultRequestHeaders.Add(HttpConstants.UserAgent, HttpConstants.DefaultUserAgent);
-            httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            return httpClient;
-        }
-
-        private static HttpClient CreateSockClient(string socksAddress, int socksPort)
-        {
-            var handler = new SocksPortHandler(socksAddress, socksPort);
             var httpClient = new HttpClient(handler)
             {
                 Timeout = TimeSpan.FromSeconds(60)
@@ -144,10 +130,6 @@ namespace FclEx.Http.Services
                 case ProxyType.None:
                 case ProxyType.Http:
                     _httpClient = CreateHttpClient(_cookieContainer, proxy);
-                    break;
-
-                case ProxyType.Socks:
-                    _httpClient = CreateSockClient(proxy.Host, proxy.Port);
                     break;
 
                 case ProxyType.Https:
