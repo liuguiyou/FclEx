@@ -21,6 +21,7 @@ namespace FclEx.Http.Core
             set => _encoding = value ?? throw new ArgumentNullException(nameof(Encoding));
         }
 
+        public bool ThrowOnNonSuccessCode { get; set; } = true;
         public bool UseDefaultProxy { get; set; } = false;
         public byte[] ByteArrayData { get; set; }
         public HttpMethodType Method { get; set; }

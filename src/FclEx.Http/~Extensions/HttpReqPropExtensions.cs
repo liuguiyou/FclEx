@@ -25,6 +25,12 @@ namespace FclEx.Http
             return req;
         }
 
+        public static HttpReq ThrowOnNonSuccessCode(this HttpReq req, bool ifThrow)
+        {
+            req.ThrowOnNonSuccessCode = ifThrow;
+            return req;
+        }
+
         public static HttpReq Host(this HttpReq req, string host)
         {
             req.Host = host;
@@ -66,5 +72,7 @@ namespace FclEx.Http
             req.Scheme = scheme;
             return req;
         }
+
+
     }
 }

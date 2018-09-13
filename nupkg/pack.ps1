@@ -8,8 +8,7 @@ $srcPath = Join-Path $slnPath "src"
 # List of projects
 $projects = (
 "FclEx",
-"FclEx.Http",
-"FclEx.Fw"
+"FclEx.Http"
 )
 
 Remove-Item *.nupkg

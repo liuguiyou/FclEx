@@ -213,7 +213,8 @@ namespace FclEx.Http.Services
                 if (requestItem.ReadResultHeader)
                     ReadHeader(response, responseItem);
 
-                // response.EnsureSuccessStatusCode();
+                if (requestItem.ThrowOnNonSuccessCode)
+                    response.EnsureSuccessStatusCode();
 
                 if (requestItem.ReadResultContent)
                 {
@@ -258,7 +259,7 @@ namespace FclEx.Http.Services
                 _cookieContainer.Add(uri, cookie);
             }
         }
-        
+
         public void Dispose()
         {
             _httpClient.Dispose();

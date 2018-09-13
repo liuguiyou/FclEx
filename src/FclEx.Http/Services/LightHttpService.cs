@@ -30,7 +30,7 @@ namespace FclEx.Http.Services
         public LightHttpService(Uri uri, bool useCookie = true)
             : this(uri == null ? HttpProxy.None : new HttpProxy(uri), useCookie) { }
 
-        public LightHttpService(string url, bool useCookie = true) 
+        public LightHttpService(string url, bool useCookie = true)
             : this(url.IsNullOrEmpty() ? null : new Uri(url), useCookie) { }
 
         public LightHttpService(IWebProxyExt proxy = null, bool useCookie = true)
@@ -218,7 +218,8 @@ namespace FclEx.Http.Services
                 if (requestItem.ReadResultContent)
                     await ReadContent(response, responseItem).DonotCapture();
 
-                // response.EnsureSuccessStatusCode();
+                if (requestItem.ThrowOnNonSuccessCode)
+                    response.EnsureSuccessStatusCode();
 
                 return responseItem;
             }
@@ -268,7 +269,7 @@ namespace FclEx.Http.Services
                 cookie.Expired = true;
             }
         }
-        
+
         public void ClearAllCookies()
         {
             if (_cookieContainer == null) return;
