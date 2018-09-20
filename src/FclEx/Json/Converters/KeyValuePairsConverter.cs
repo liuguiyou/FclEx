@@ -7,7 +7,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FclEx.Json
+namespace FclEx.Json.Converters
 {
     public class KeyValuePairsConverter : JsonConverter
     {

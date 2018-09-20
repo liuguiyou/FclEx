@@ -5,14 +5,20 @@ namespace FclEx.Http
 {
     public static class HttpResExtensions
     {
-        public static HttpRes EnsureSuccessStatusCode(this HttpRes httpResponse)
+        public static HttpRes EnsureSuccessStatusCode(this HttpRes res)
         {
-            if (httpResponse.StatusCode != HttpStatusCode.Created
-                && httpResponse.StatusCode != HttpStatusCode.OK)
+            if (res.StatusCode != HttpStatusCode.Created
+                && res.StatusCode != HttpStatusCode.OK)
             {
-                throw new WebException($"call {httpResponse.Req.GetUrl()} return unsuccessful code: {httpResponse.StatusCode}/{httpResponse.StatusCode.ToInt()}");
+                throw new WebException($"call {res.Req.GetUrl()} return unsuccessful code: {res.StatusCode}/{res.StatusCode.ToInt()}");
             }
-            return httpResponse;
+            return res;
+        }
+
+        public static HttpRes ThrowIfError(this HttpRes res)
+        {
+            if (res.HasError) res.Exception.ReThrow();
+            return res;
         }
     }
 }

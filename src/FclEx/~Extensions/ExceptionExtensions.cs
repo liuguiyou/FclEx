@@ -15,6 +15,8 @@ namespace FclEx
 
         public static void ReThrow(this Exception ex) => ExceptionDispatchInfo.Capture(ex).Throw();
 
+        public static void ThrowInWrapper(this Exception e, string msg) => throw new Exception(msg, e);
+
         public static Exception GetInnermost(this Exception ex)
         {
             var p = ex;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FclEx.Json;
+using FclEx.Json.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;

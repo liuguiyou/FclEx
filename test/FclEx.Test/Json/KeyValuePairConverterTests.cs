@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using FclEx.Helpers;
 using FclEx.Json;
+using FclEx.Json.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Xunit;
