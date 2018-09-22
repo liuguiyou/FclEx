@@ -6,6 +6,7 @@ srcPath="$slnPath/src"
 projects=(
 "FclEx"
 "FclEx.Http"
+"FclEx.Image"
 )
 
 rm -f *.nupkg
