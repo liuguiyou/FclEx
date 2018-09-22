@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Http.Services
 {
@@ -147,7 +149,7 @@ namespace FclEx.Http.Services
             oldClient.Dispose();
         }
 
-        private static void ReadCookies(HttpResponseMessage response, CookieContainer cc)
+        private void ReadCookies(HttpResponseMessage response, CookieContainer cc)
         {
             if (!response.Headers.TryGetValues(HttpConstants.SetCookie, out var cookies)) return;
 
@@ -165,7 +167,7 @@ namespace FclEx.Http.Services
                 }
                 catch (Exception ex)
                 {
-                    DebuggerHepler.WriteLine($"A cookie has been discarded. [{cookieStr}][{ex.Message}]");
+                    Logger.LogTrace($"A cookie has been discarded. [{cookieStr}][{ex.Message}]");
                 }
             }
         }
@@ -265,7 +267,7 @@ namespace FclEx.Http.Services
             _httpClient.Dispose();
         }
 
-        public List<Cookie> GetAllCookies()
+        public IList<Cookie> GetAllCookies()
         {
             return _cookieContainer.GetAllCookies();
         }
@@ -291,5 +293,7 @@ namespace FclEx.Http.Services
             get => _webProxy;
             set => SetProxy(value ?? HttpProxy.None);
         }
+
+        public ILogger Logger { get; } = NullLogger.Instance;
     }
 }

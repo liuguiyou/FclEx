@@ -9,15 +9,7 @@ namespace FclEx.Http.Actions
 {
     public class ActionFuture : IActionFuture
     {
-        private readonly ActionEventListener _outerListener;
-        // private readonly LinkedList<IAction> _queue = new LinkedList<IAction>();
-
         private readonly List<Func<object[], IAction>> _queue = new List<Func<object[], IAction>>();
-
-        public ActionFuture(ActionEventListener listener = null)
-        {
-            _outerListener = listener;
-        }
 
         public virtual async ValueTask<ActionEvent> ExecuteAsync(CancellationToken token)
         {
@@ -33,10 +25,7 @@ namespace FclEx.Http.Actions
                 var action = actions[i];
                 if (action == null) continue;
 
-                action.OnActionEvent += _outerListener;
                 var result = await action.ExecuteAutoAsync(token).DonotCapture();
-                action.OnActionEvent -= _outerListener;
-
                 results[i] = result.Target;
                 switch (result.Type)
                 {

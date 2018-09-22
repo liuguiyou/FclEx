@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
+using Microsoft.Extensions.Logging;
 
 namespace FclEx.Http.Services
 {
@@ -21,12 +22,14 @@ namespace FclEx.Http.Services
         
         void AddCookie(Cookie cookie, Uri uri);
 
-        List<Cookie> GetAllCookies();
+        IList<Cookie> GetAllCookies();
 
         void ClearCookies(Uri uri);
 
         void ClearAllCookies();
 
         IWebProxyExt WebProxy { get; set; }
+
+        ILogger Logger { get; }
     }
 }

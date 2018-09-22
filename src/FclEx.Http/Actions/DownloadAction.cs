@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FclEx.Http.Core;
 using FclEx.Http.Event;
 using FclEx.Http.Services;
+using Microsoft.Extensions.Logging;
 
 namespace FclEx.Http.Actions
 {
@@ -10,13 +11,11 @@ namespace FclEx.Http.Actions
     {
         protected readonly string _url;
 
-        [Obsolete]
-        public DownloadAction(IHttpService httpService, string url, ActionEventListener listener = null) : base(httpService, listener)
-        {
-            _url = url;
-        }
-
-        public DownloadAction(string url, IHttpService httpService, ActionEventListener listener = null) : base(httpService, listener)
+        public DownloadAction(string url, 
+            IHttpService httpService, 
+            ILogger logger = null,
+            ActionEventListener listener = null)
+            : base(httpService, logger, listener)
         {
             _url = url;
         }

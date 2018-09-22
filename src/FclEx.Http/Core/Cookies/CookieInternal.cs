@@ -849,7 +849,7 @@ namespace FclEx.Http.Core
         /// </devdoc>
         internal void Dump()
         {
-            DebuggerHepler.WriteLine("Cookie: " + ToString() + "->\n"
+            DebuggerHepler.Write("Cookie: " + ToString() + "->\n"
                             + "\tComment    = " + Comment + "\n"
                             + "\tCommentUri = " + CommentUri + "\n"
                             + "\tDiscard    = " + Discard + "\n"

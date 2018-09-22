@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Core;
 using FclEx.Http.Proxy;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Http.Services
 {
@@ -27,16 +29,23 @@ namespace FclEx.Http.Services
             HttpConstants.ContentLength,
         };
 
-        public LightHttpService(Uri uri, bool useCookie = true)
-            : this(uri == null ? HttpProxy.None : new HttpProxy(uri), useCookie) { }
+        static LightHttpService()
+        {
+            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
-        public LightHttpService(string url, bool useCookie = true)
-            : this(url.IsNullOrEmpty() ? null : new Uri(url), useCookie) { }
+        public LightHttpService(Uri uri, ILogger logger = null, bool useCookie = true)
+            : this(logger, uri == null ? HttpProxy.None : new HttpProxy(uri), useCookie) { }
 
-        public LightHttpService(IWebProxyExt proxy = null, bool useCookie = true)
+        public LightHttpService(string url, ILogger logger = null, bool useCookie = true)
+            : this(url.IsNullOrEmpty() ? null : new Uri(url), logger, useCookie) { }
+
+        public LightHttpService(ILogger logger = null, IWebProxyExt proxy = null, bool useCookie = true)
         {
             if (useCookie)
                 _cookieContainer = new CookieContainer();
+            Logger = logger ?? NullLogger.Instance;
             WebProxy = proxy;
         }
 
@@ -78,7 +87,7 @@ namespace FclEx.Http.Services
             return req;
         }
 
-        private static void ReadCookies(HttpWebResponse response, CookieContainer cc)
+        private static void ReadCookies(HttpWebResponse response, CookieContainer cc, ILogger logger)
         {
             if (cc == null) return;
 
@@ -102,14 +111,14 @@ namespace FclEx.Http.Services
                     }
                     catch (Exception ex)
                     {
-                        DebuggerHepler.WriteLine("A cookie has been discarded. " + ex.Message);
-                        DebuggerHepler.WriteLine(c.ToString());
+                        logger.LogTrace("A cookie has been discarded. " + ex.Message);
+                        logger.LogTrace(c.ToString());
                     }
                 }
             }
             catch (Exception ex)
             {
-                DebuggerHepler.WriteLine("An error occurred while parsing cookie. " + ex.Message);
+                logger.LogTrace("An error occurred while parsing cookie. " + ex.Message);
             }
         }
 
@@ -167,7 +176,7 @@ namespace FclEx.Http.Services
             }
         }
 
-        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, IWebProxyExt proxy, CookieContainer cc, CancellationToken token)
+        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, IWebProxyExt proxy, CookieContainer cc, CancellationToken token, ILogger logger)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpWebResponse>();
@@ -197,7 +206,7 @@ namespace FclEx.Http.Services
                 responseItem.RedirectUris.Add(response.ResponseUri);
 
                 if (requestItem.ReadResultCookie)
-                    ReadCookies(response, cc);
+                    ReadCookies(response, cc, logger);
 
                 while (response.IfRedirect())
                 {
@@ -208,7 +217,7 @@ namespace FclEx.Http.Services
                     responseItem.RedirectUris.Add(response.ResponseUri);
 
                     if (requestItem.ReadResultCookie)
-                        ReadCookies(response, cc);
+                        ReadCookies(response, cc, logger);
                 }
                 responseItem.StatusCode = response.StatusCode;
 
@@ -233,7 +242,7 @@ namespace FclEx.Http.Services
         public ValueTask<HttpRes> ExecuteAsync(HttpReq req, CancellationToken token = default)
         {
             // 本方法依赖的类成员只有_webProxy和_cookieContainer，前者状态不可变，后者线程安全
-            return ExecuteAsync(req, _webProxy, _cookieContainer, token);
+            return ExecuteAsync(req, _webProxy, _cookieContainer, token, Logger);
         }
 
         public Cookie GetCookie(Uri uri, string name)
@@ -256,8 +265,9 @@ namespace FclEx.Http.Services
             }
         }
 
-        public List<Cookie> GetAllCookies()
+        public IList<Cookie> GetAllCookies()
         {
+            if (_cookieContainer == null) return Array.Empty<Cookie>();
             return _cookieContainer.GetAllCookies();
         }
 
@@ -285,5 +295,7 @@ namespace FclEx.Http.Services
             get => _webProxy;
             set => _webProxy = value ?? _webProxy;
         }
+
+        public ILogger Logger { get; }
     }
 }

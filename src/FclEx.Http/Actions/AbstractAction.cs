@@ -5,19 +5,25 @@ using System.Threading.Tasks;
 using FclEx.Helpers;
 using FclEx.Http.Event;
 using FclEx.Utils;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Http.Actions
 {
     public abstract class AbstractAction : IAction
     {
+        protected static ActionEventListener NullListener { get; }= (sender, @event) => @event.ToValueTask();
         protected string ActionName => GetType().GetDescription();
         protected virtual int MaxReTryTimes { get; set; } = 3;
         protected int ExcuteTimes { get; set; }
         protected int ErrorTimes { get; set; }
+        protected ActionEventListener Listener { get; }
+        public ILogger Logger { get; }
 
-        protected AbstractAction(ActionEventListener listener = null)
+        protected AbstractAction(ILogger logger = null, ActionEventListener listener = null)
         {
-            OnActionEvent += listener;
+            Listener = listener ?? NullListener;
+            Logger = logger ?? NullLogger.Instance;
         }
 
         protected virtual void LogActionEvent(ActionEvent actionEvent)
@@ -34,23 +40,23 @@ namespace FclEx.Http.Actions
                 {
                     var ex = (Exception)target;
                     var msg = ex.ToString().TrimEnd();
-                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}, {msg}]");
+                    Logger.LogTrace($"[Action={ActionName}, Result={typeName}, {msg}]");
                     break;
                 }
 
                 case ActionEventType.EvtRetry:
                 {
                     var ex = (Exception)target;
-                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}, ErrorTimes={ErrorTimes}][{ex}]");
+                    Logger.LogTrace($"[Action={ActionName}, Result={typeName}, ErrorTimes={ErrorTimes}][{ex}]");
                     break;
                 }
 
                 case ActionEventType.EvtCanceled:
-                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}, Target={target}]");
+                    Logger.LogTrace($"[Action={ActionName}, Result={typeName}, Target={target}]");
                     break;
 
                 default:
-                    DebuggerHepler.WriteLine($"[Action={ActionName}, Result={typeName}]");
+                    Logger.LogTrace($"[Action={ActionName}, Result={typeName}]");
                     break;
             }
         }
@@ -60,7 +66,7 @@ namespace FclEx.Http.Actions
             try
             {
                 LogActionEvent(actionEvent);
-                return OnActionEvent(this, actionEvent);
+                return Listener(this, actionEvent);
             }
             catch (Exception ex)
             {
@@ -76,7 +82,7 @@ namespace FclEx.Http.Actions
                 var @event = ActionEvent.Create(ErrorTimes < MaxReTryTimes ?
                     ActionEventType.EvtRetry : ActionEventType.EvtError, ex);
                 LogActionEvent(@event);
-                return OnActionEvent(this, @event);
+                return Listener(this, @event);
             }
             catch (Exception e)
             {
@@ -107,14 +113,14 @@ namespace FclEx.Http.Actions
 
         public async ValueTask<ActionEvent> ExecuteAsync(CancellationToken token)
         {
-            if (Debugger.IsLogging())
+            if (Logger.IsEnabled(LogLevel.Trace))
             {
-                DebuggerHepler.WriteLine($"[Action={ActionName} Begin]");
+                Logger.LogTrace($"[Action={ActionName} Begin]");
                 var watch = new Stopwatch();
                 watch.Start();
                 var result = await ExecuteInternalAsync(token).DonotCapture();
                 watch.Stop();
-                DebuggerHepler.WriteLine($"[Action={ActionName} End, ResultType={result.Type.GetDescription()}. {watch.ElapsedMilliseconds} ms]");
+                Logger.LogTrace($"[Action={ActionName} End, ResultType={result.Type.GetDescription()}. {watch.ElapsedMilliseconds} ms]");
                 return result;
             }
             else
@@ -122,7 +128,5 @@ namespace FclEx.Http.Actions
                 return await ExecuteInternalAsync(token).DonotCapture();
             }
         }
-
-        public event ActionEventListener OnActionEvent = (sender, @event) => @event.ToValueTask();
     }
 }

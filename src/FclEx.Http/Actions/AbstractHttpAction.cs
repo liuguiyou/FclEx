@@ -6,6 +6,7 @@ using FclEx.Http.Core;
 using FclEx.Http.Event;
 using FclEx.Http.Services;
 using FclEx.Utils;
+using Microsoft.Extensions.Logging;
 
 namespace FclEx.Http.Actions
 {
@@ -13,7 +14,11 @@ namespace FclEx.Http.Actions
     {
         protected IHttpService HttpService { get; set; }
 
-        protected AbstractHttpAction(IHttpService httpService, ActionEventListener listener = null) : base(listener)
+        protected AbstractHttpAction(
+            IHttpService httpService,
+            ILogger logger = null,
+            ActionEventListener listener = null) 
+            : base(logger, listener)
         {
             HttpService = httpService;
         }
@@ -47,19 +52,15 @@ namespace FclEx.Http.Actions
             }
             catch (Exception ex)
             {
-                if (RuntimeInfo.IsDebuggerAttached)
+                if (Logger.IsEnabled(LogLevel.Trace) && req != null)
                 {
                     // 此处用于生成请求信息，然后用fiddler等工具测试
-                    if (req != null)
-                    {
-                        var url = req.GetUrl();
-                        var header = req.GetRequestHeader(HttpService.GetCookies(req.Uri.ToString()));
-                        DebuggerHepler.WriteLine(ex.ToString());
-                        DebuggerHepler.WriteLine(url);
-                        DebuggerHepler.WriteLine(header);
-                    }
+                    var url = req.GetUrl();
+                    var header = req.GetRequestHeader(HttpService.GetCookies(req.Uri.ToString()));
+                    Logger.LogTrace(ex.ToString());
+                    Logger.LogTrace(url);
+                    Logger.LogTrace(header);
                 }
-
                 return await HandleExceptionAsync(ObjectException.Create(req, ex.Message, ex))
                     .DonotCapture();
             }
