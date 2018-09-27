@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using FclEx.Http.Core;
 
 namespace FclEx.Http
@@ -18,6 +19,20 @@ namespace FclEx.Http
         public static HttpRes ThrowIfError(this HttpRes res)
         {
             if (res.HasError) res.Exception.ReThrow();
+            return res;
+        }
+
+        public static async Task<HttpRes> ThrowIfError(this Task<HttpRes> task)
+        {
+            var res = await task.DonotCapture();
+            res.ThrowIfError();
+            return res;
+        }
+
+        public static async ValueTask<HttpRes> ThrowIfError(this ValueTask<HttpRes> task)
+        {
+            var res = await task.DonotCapture();
+            res.ThrowIfError();
             return res;
         }
     }

@@ -182,5 +182,14 @@ namespace FclEx.Http
                 return await http.SendAsync(req, retryTimes, 0).DonotCapture();
             }
         }
+
+        public static HttpReq ResultType(this HttpReq req, HttpResultType type)
+        {
+            req.ResultType = type;
+            return req;
+        }
+
+        public static HttpReq AcceptString(this HttpReq req) => req.ResultType(HttpResultType.String);
+        public static HttpReq AcceptBytes(this HttpReq req) => req.ResultType(HttpResultType.Byte);
     }
 }
