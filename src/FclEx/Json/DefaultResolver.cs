@@ -13,7 +13,7 @@ namespace FclEx.Json
         protected override JsonObjectContract CreateObjectContract(Type objectType)
         {
             var contract = base.CreateObjectContract(objectType);
-            if (contract.Converter.GetType() == typeof(T))
+            if (contract.Converter != null && contract.Converter.GetType() == typeof(T))
                 contract.Converter = null;
             return contract;
         }

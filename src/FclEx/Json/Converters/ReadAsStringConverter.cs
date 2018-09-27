@@ -6,8 +6,6 @@ namespace FclEx.Json.Converters
 {
     public class ReadAsStringConverter : JsonConverter
     {
-        private static readonly JsonSerializer _defaultSerializer = new JsonSerializer();
-
         public override bool CanConvert(Type objectType)
         {
             return true;

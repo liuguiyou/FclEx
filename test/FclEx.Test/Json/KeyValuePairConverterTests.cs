@@ -65,7 +65,8 @@ namespace FclEx.Test.Json
         };
 
 
-        public static IEnumerable<object[]> Cases { get; } = Datas.SelectMany(m => KvToColConvertors.Select(c => (m, c)))
+        public static IEnumerable<object[]> Cases { get; } = Datas
+            .SelectMany(m => KvToColConvertors.Select(c => (m, c)))
             .Select(m => new object[] { m.m, m.c }).ToArray();
 
         private static void ReadTestGeneric<T, TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> raw)
