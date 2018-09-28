@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using FclEx.Utils;
 
 namespace FclEx
 {
@@ -39,5 +40,15 @@ namespace FclEx
         public static Task<T> ToTask<T>(this T obj) => Task.FromResult(obj);
 
         public static ValueTask<T> ToValueTask<T>(this Task<T> task) => new ValueTask<T>(task);
+
+        public static void RunWithoutSyncContext(this Task task)
+        {
+            NoSyncContextScope.Run(task);
+        }
+
+        public static T RunWithoutSyncContext<T>(this Task<T> task)
+        {
+            return NoSyncContextScope.Run(task);
+        }
     }
 }

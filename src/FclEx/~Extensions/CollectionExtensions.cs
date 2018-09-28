@@ -14,10 +14,10 @@ namespace FclEx
             return col.Count(item => filter(item) && col.Remove(item));
         }
 
-        public static int Remove<T>(this ICollection<T> col, Predicate<T> filter)
-        {
-            return Remove(col, (Func<T, bool>)(m => filter(m)));
-        }
+        //public static int Remove<T>(this ICollection<T> col, Predicate<T> filter)
+        //{
+        //    return Remove(col, (Func<T, bool>)(m => filter(m)));
+        //}
 
         public static bool IsEmpty<T>(this ICollection<T> col)
         {
