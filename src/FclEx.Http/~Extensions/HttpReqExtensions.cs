@@ -190,6 +190,7 @@ namespace FclEx.Http
         }
 
         public static HttpReq AcceptString(this HttpReq req) => req.ResultType(HttpResultType.String);
+
         public static HttpReq AcceptBytes(this HttpReq req) => req.ResultType(HttpResultType.Byte);
     }
 }

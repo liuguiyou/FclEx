@@ -12,7 +12,9 @@ namespace FclEx
     public static class JsonExtensions
     {
         private static readonly JsonSerializerSettings _ignoreSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-        
+
+        private static readonly JsonSerializer _defaultJsonSerializer = JsonSerializer.CreateDefault();
+
         public static string ToJson(this object obj, Formatting formatting = Formatting.None, bool ignoreNull = false)
         {
             return JsonConvert.SerializeObject(obj, formatting, ignoreNull ? _ignoreSettings : null);
@@ -78,6 +80,16 @@ namespace FclEx
             {
                 Converters = new JsonConverter[] { converter }
             }));
+        }
+
+        public static JToken ToJToken(this object obj, JsonSerializer jsonSerializer = null)
+        {
+            return JToken.FromObject(obj, jsonSerializer ?? _defaultJsonSerializer);
+        }
+
+        public static JObject ToJObject(this object obj, JsonSerializer jsonSerializer = null)
+        {
+            return JObject.FromObject(obj, jsonSerializer ?? _defaultJsonSerializer);
         }
     }
 }
