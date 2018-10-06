@@ -11,10 +11,22 @@ namespace FclEx.Helpers
                 Debugger.Log(1, "", msg);
         }
 
+        public static void Write(Func<string> msg)
+        {
+            if (Debugger.IsLogging() && msg != null)
+                Debugger.Log(1, "", msg());
+        }
+
         public static void WriteLine(string msg)
         {
             if (Debugger.IsLogging())
                 Debugger.Log(1, "", msg + Environment.NewLine);
+        }
+
+        public static void WriteLine(Func<string> msg)
+        {
+            if (Debugger.IsLogging() && msg != null)
+                Debugger.Log(1, "", msg() + Environment.NewLine);
         }
     }
 }
