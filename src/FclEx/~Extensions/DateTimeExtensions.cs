@@ -14,12 +14,12 @@ namespace FclEx
         /// <returns></returns>
         public static long ToTimestamp(this DateTime d)
         {
-            return (long)(DateTime.UtcNow - _jan1St1970).TotalSeconds;
+            return (long)(d.ToUniversalTime() - _jan1St1970).TotalSeconds;
         }
 
         public static long ToTimestampMilli(this DateTime d)
         {
-            return (long)(DateTime.UtcNow - _jan1St1970).TotalMilliseconds;
+            return (long)(d.ToUniversalTime() - _jan1St1970).TotalMilliseconds;
         }
 
         public static string ToShort(this DateTime @this) => @this.ToString("yyyyMMddHHmmss");
