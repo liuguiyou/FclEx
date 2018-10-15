@@ -24,13 +24,13 @@ namespace FclEx.Utils
 
         public async ValueTask<IDisposable> LockAsync(CancellationToken token = default)
         {
-            await _semaphore.WaitAsync(token);
+            await _semaphore.WaitAsync(token).DonotCapture();
             return this;
         }
 
         public async ValueTask<IDisposable> LockAsync(TimeSpan span)
         {
-            await _semaphore.WaitAsync(span);
+            await _semaphore.WaitAsync(span).DonotCapture();
             return this;
         }
 

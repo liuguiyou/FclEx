@@ -21,9 +21,12 @@ namespace FclEx.Http
             return SendAsync(http, req, retryTimes, delaySeconds);
         }
 
-        public static ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 3, int delaySeconds = 0)
+        public static async ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 3, int delaySeconds = 0)
         {
-            return ActionHelper.TryAsync(() => http.ExecuteAsync(req), retryTimes, delaySeconds, HttpRes.CreateError);
+            return await ActionHelper.TryAsync(async ()
+                => await http.ExecuteAsync(req).DonotCapture(),
+                retryTimes, delaySeconds, HttpRes.CreateError)
+                .DonotCapture();
         }
 
         public static void AddCookie(this IHttpService http, Cookie cookie, string url = null)

@@ -86,11 +86,6 @@ namespace FclEx.Helpers
             if (throwOnFail) throw lastEx;
         }
 
-        public static async ValueTask TryAsync(Func<ValueTask> func, int retryTimes = 3, int delaySeconds = 0,
-            Action<Exception> onFail = null, bool throwOnFail = false)
-            => await TryAsync((Func<Task>)(async () => await func().DonotCapture()), retryTimes, delaySeconds,
-                onFail, throwOnFail).DonotCapture();
-
         public static async Task<T> TryAsync<T>(Func<Task<T>> func, int retryTimes = 3, int delaySeconds = 0,
             Func<Exception, T> onFail = null, bool throwOnFail = false, T defaultValue = default)
         {
@@ -113,10 +108,5 @@ namespace FclEx.Helpers
             if (throwOnFail && lastEx != null) throw lastEx;
             return onFail == null ? default : onFail(lastEx);
         }
-
-        public static async ValueTask<T> TryAsync<T>(Func<ValueTask<T>> func, int retryTimes = 3, int delaySeconds = 0,
-            Func<Exception, T> onFail = null, bool throwOnFail = false, T defaultValue = default)
-            => await TryAsync((Func<Task<T>>)(async () => await func().DonotCapture()), retryTimes, delaySeconds,
-                onFail, throwOnFail, defaultValue).DonotCapture();
     }
 }

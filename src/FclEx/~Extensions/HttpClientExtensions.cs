@@ -8,19 +8,19 @@ namespace FclEx
     {
         public static async Task DownLoadFileAsync(this HttpClient httpClient, string url, string savePath)
         {
-            var response = await httpClient.GetAsync(url);
+            var response = await httpClient.GetAsync(url).DonotCapture();
             response.EnsureSuccessStatusCode();
-            var stream = await response.Content.ReadAsStreamAsync();
+            var stream = await response.Content.ReadAsStreamAsync().DonotCapture();
             if (File.Exists(savePath)) return;
             using (var file = File.Create(savePath))
             {
-                await stream.CopyToAsync(file);
+                await stream.CopyToAsync(file).DonotCapture();
             }
         }
 
-        public static async Task DownLoadFileAsync(this HttpClient httpClient, string url, string saveDir, string fileName)
+        public static Task DownLoadFileAsync(this HttpClient httpClient, string url, string saveDir, string fileName)
         {
-            await DownLoadFileAsync(httpClient, url, Path.Combine(saveDir, fileName));
+            return DownLoadFileAsync(httpClient, url, Path.Combine(saveDir, fileName));
         }
     }
 }

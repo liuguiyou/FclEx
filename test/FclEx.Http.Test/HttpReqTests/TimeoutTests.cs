@@ -38,11 +38,11 @@ namespace FclEx.Http.Test.HttpReqTests
         {
             var req = HttpReq.Get(url).Timeout(timeout * 1000);
 
-            var time = await SimpleWatch.DoAsync(() => req.SendAsync());
-            _output.WriteLine("耗时：" + time.TimeSpan.TotalSeconds + "秒");
+            var time = await SimpleWatch.DoAsync(async () => await req.SendAsync());
+            _output.WriteLine("耗时:" + time.TimeSpan.TotalSeconds + "秒");
             if (time.Ret.HasError)
             {
-                _output.WriteLine("异常类型：" + time.Ret.Exception.GetInnermost().GetType());
+                _output.WriteLine("异常类型:" + time.Ret.Exception.GetInnermost().GetType());
                 if (time.Ret.Exception is WebException e && e.Status == WebExceptionStatus.Timeout)
                     Assert.True(time.TimeSpan.TotalSeconds > timeout
                                 && time.TimeSpan.TotalSeconds < timeout + 1);

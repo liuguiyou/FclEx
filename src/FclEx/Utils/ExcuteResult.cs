@@ -28,6 +28,7 @@ namespace FclEx.Utils
 
         public bool Success => Code == 0;
         public int Code { get; }
+        
         public Exception Exception { get; }
 
         public static ExcuteResult SuccessResult { get; } = new ExcuteResult(true, null);
@@ -64,15 +65,9 @@ namespace FclEx.Utils
 
         public static async Task<ExcuteResult> ExcuteAsync(Func<Task> action)
         {
-            return await ExcuteAsync((Func<ValueTask>)(async () => await action().DonotCapture()))
-                .DonotCapture();
-        }
-
-        public static async ValueTask<ExcuteResult> ExcuteAsync(Func<ValueTask> action)
-        {
             try
             {
-                await action();
+                await action().DonotCapture();
                 return SuccessResult;
             }
             catch (Exception ex)
@@ -96,15 +91,9 @@ namespace FclEx.Utils
 
         public static async Task<ExcuteResult<T>> ExcuteAsync<T>(Func<Task<T>> action)
         {
-            return await ExcuteAsync((Func<ValueTask<T>>)(async () => await action().DonotCapture()))
-                .DonotCapture();
-        }
-
-        public static async ValueTask<ExcuteResult<T>> ExcuteAsync<T>(Func<ValueTask<T>> action)
-        {
             try
             {
-                var result = await action();
+                var result = await action().DonotCapture();
                 return ExcuteResult<T>.CreateSuccess(result);
             }
             catch (Exception ex)

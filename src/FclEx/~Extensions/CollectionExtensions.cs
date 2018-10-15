@@ -60,7 +60,7 @@ namespace FclEx
         {
             foreach (var items in superset.Batch(pageSize))
             {
-                await items.Select(m => Task.Run(() => action(m))).WhenAll();
+                await items.Select(m => Task.Run(() => action(m))).WhenAll().DonotCapture();
             }
         }
 
@@ -87,7 +87,10 @@ namespace FclEx
             var list = new List<TResult>(superset.Count);
             foreach (var items in superset.Batch(pageSize))
             {
-                var r = await items.Select(m => Task.Run(() => action(m))).WhenAll();
+                var r = await items
+                    .Select(m => Task.Run(() => action(m)))
+                    .WhenAll()
+                    .DonotCapture();
                 list.AddRange(r);
             }
             return list;

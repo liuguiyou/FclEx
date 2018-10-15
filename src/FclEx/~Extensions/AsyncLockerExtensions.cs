@@ -30,7 +30,7 @@ namespace FclEx
                 {
                     if (condition())
                     {
-                        await action();
+                        await action().DonotCapture();
                     }
                 }
             }
