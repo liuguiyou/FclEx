@@ -26,7 +26,7 @@ namespace FclEx.Http.Core
         public byte[] ByteArrayData { get; set; }
         public HttpMethodType Method { get; set; }
         public int? Timeout { get; set; } = 5 * 1000;
-        public string ResultChartSet { get; set; }
+        public string ResultCharSet { get; set; }
         public HttpResultType ResultType { get; set; }
         public bool ReadResultCookie { get; set; } = true;
         public bool ReadResultHeader { get; set; } = true;

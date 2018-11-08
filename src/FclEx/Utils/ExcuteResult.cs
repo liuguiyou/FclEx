@@ -27,6 +27,7 @@ namespace FclEx.Utils
         }
 
         public bool Success => Code == 0;
+
         public int Code { get; }
         
         public Exception Exception { get; }

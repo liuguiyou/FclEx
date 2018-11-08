@@ -7,7 +7,7 @@ namespace FclEx.Benchmark
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<GetDefaultTest>();
+            BenchmarkRunner.Run<HttpServiceTest>();
             Console.Read();
         }
     }

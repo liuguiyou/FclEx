@@ -68,13 +68,13 @@ namespace FclEx.Http
 
         public static HttpReq ChartSet(this HttpReq req, string chartSet)
         {
-            req.ResultChartSet = chartSet;
+            req.ResultCharSet = chartSet;
             return req;
         }
 
         public static HttpReq TryChartSet(this HttpReq req, string chartSet)
         {
-            req.ResultChartSet = req.ResultChartSet ?? chartSet;
+            req.ResultCharSet = req.ResultCharSet ?? chartSet;
             return req;
         }
 
@@ -100,9 +100,9 @@ namespace FclEx.Http
             return sb.ToString();
         }
 
-        public static string GetRequestHeader(this HttpReq req, CookieCollection cookies)
+        public static string GetRequestHeader(this HttpReq req, IEnumerable<Cookie> cookies)
         {
-            return GetRequestHeader(req, cookies.OfType<Cookie>().Select(m => m.ToString()).JoinWith("; "));
+            return GetRequestHeader(req, cookies.Select(m => m.ToString()).JoinWith("; "));
         }
 
     }

@@ -5,6 +5,6 @@
         None, 
         Http,
         Https,
-        Socks
+        Socks5
     }
 }

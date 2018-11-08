@@ -21,7 +21,7 @@ namespace FclEx.Http
             return SendAsync(http, req, retryTimes, delaySeconds);
         }
 
-        public static async ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 3, int delaySeconds = 0)
+        public static async ValueTask<HttpRes> SendAsync(this IHttpService http, HttpReq req, int retryTimes = 1, int delaySeconds = 0)
         {
             return await ActionHelper.TryAsync(async ()
                 => await http.ExecuteAsync(req).DonotCapture(),
@@ -41,10 +41,20 @@ namespace FclEx.Http
             return http.GetCookie(uri, name);
         }
 
-        public static CookieCollection GetCookies(this IHttpService http, string url)
+        public static IReadOnlyList<Cookie> GetCookies(this IHttpService http, string url)
         {
             var uri = new Uri(url);
             return http.GetCookies(uri);
+        }
+
+
+        public static void ClearCookies(this IHttpService http, Uri uri)
+        {
+            var cookies = http.GetCookies(uri);
+            foreach (var cookie in cookies)
+            {
+                cookie.Expired = true;
+            }
         }
 
         public static void ClearCookies(this IHttpService http, string url)

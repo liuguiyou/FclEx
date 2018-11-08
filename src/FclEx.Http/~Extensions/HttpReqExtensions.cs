@@ -177,10 +177,7 @@ namespace FclEx.Http
 
         public static async ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 0)
         {
-            using (var http = new LightHttpService(useCookie: false))
-            {
-                return await http.SendAsync(req, retryTimes, 0).DonotCapture();
-            }
+            return await HttpClientService.Default.Value.SendAsync(req, retryTimes, 0).DonotCapture();
         }
 
         public static HttpReq ResultType(this HttpReq req, HttpResultType type)

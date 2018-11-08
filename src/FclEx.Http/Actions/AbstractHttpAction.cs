@@ -56,7 +56,7 @@ namespace FclEx.Http.Actions
                 {
                     // 此处用于生成请求信息，然后用fiddler等工具测试
                     var url = req.GetUrl();
-                    var header = req.GetRequestHeader(HttpService.GetCookies(req.Uri.ToString()));
+                    var header = req.GetRequestHeader(HttpService.GetCookies(req.Uri));
                     Logger.LogTrace(ex.ToString());
                     Logger.LogTrace(url);
                     Logger.LogTrace(header);

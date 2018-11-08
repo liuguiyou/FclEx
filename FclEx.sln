@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Benchmark", "performa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmark", "benchmark", "{82145F29-EBC3-49B3-A96C-0CA1F040E231}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FclEx.Image", "src\FclEx.Image\FclEx.Image.csproj", "{665BBBBB-60D9-43A5-ACBE-3445158C5DFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FclEx.Image", "src\FclEx.Image\FclEx.Image.csproj", "{665BBBBB-60D9-43A5-ACBE-3445158C5DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

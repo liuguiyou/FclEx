@@ -11,22 +11,15 @@ namespace FclEx.Http.Services
 {
     public interface IHttpService : IDisposable
     {
-        /// <summary>
-        /// 执行一个HTTP请求
-        /// </summary>
-        ValueTask<HttpRes> ExecuteAsync(HttpReq request, CancellationToken token = default);
+        ValueTask<HttpRes> ExecuteAsync(HttpReq httpReq, CancellationToken token = default);
+
+        void AddCookie(Cookie cookie, Uri uri);
 
         Cookie GetCookie(Uri uri, string name);
 
-        CookieCollection GetCookies(Uri uri);
-        
-        void AddCookie(Cookie cookie, Uri uri);
+        IReadOnlyList<Cookie> GetCookies(Uri uri);
 
-        IList<Cookie> GetAllCookies();
-
-        void ClearCookies(Uri uri);
-
-        void ClearAllCookies();
+        IReadOnlyList<Cookie> GetAllCookies();
 
         IWebProxyExt WebProxy { get; set; }
 

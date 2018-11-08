@@ -15,10 +15,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Http.Services
 {
-    public class LightHttpService : IHttpService
+    [Obsolete]
+    public class LightHttpService : AbstractHttpService
     {
-        private IWebProxyExt _webProxy = HttpProxy.None;
-        private readonly CookieContainer _cookieContainer;
         private static readonly string[] _notAddHeaderNames =
         {
             HttpConstants.ContentType,
@@ -29,30 +28,21 @@ namespace FclEx.Http.Services
             HttpConstants.ContentLength,
         };
 
-        static LightHttpService()
+        public LightHttpService(Uri uri, ILogger<LightHttpService> logger = null, bool useCookie = true)
+            : this(useCookie, WebProxyExt.Create(uri), logger) { }
+
+        public LightHttpService(string url, ILogger<LightHttpService> logger = null, bool useCookie = true)
+            : this(useCookie, WebProxyExt.Create(url), logger) { }
+
+        public LightHttpService(
+            bool useCookie = true,
+            IWebProxyExt proxy = null,
+            ILogger<LightHttpService> logger = null)
+            : base(useCookie, proxy, logger)
         {
-            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
         }
 
-        public LightHttpService(Uri uri, ILogger logger = null, bool useCookie = true)
-            : this(logger, uri == null ? HttpProxy.None : new HttpProxy(uri), useCookie) { }
-
-        public LightHttpService(string url, ILogger logger = null, bool useCookie = true)
-            : this(url.IsNullOrEmpty() ? null : new Uri(url), logger, useCookie) { }
-
-        public LightHttpService(ILogger logger = null, IWebProxyExt proxy = null, bool useCookie = true)
-        {
-            if (useCookie)
-                _cookieContainer = new CookieContainer();
-            Logger = logger ?? NullLogger.Instance;
-            WebProxy = proxy;
-        }
-
-        public void Dispose()
-        {
-            ClearAllCookies();
-        }
 
         private static HttpWebRequest BuildRequest(HttpReq request, IWebProxyExt proxy, CookieContainer cc)
         {
@@ -67,7 +57,7 @@ namespace FclEx.Http.Services
             if (request.Timeout.HasValue)
                 req.Timeout = request.Timeout.Value;
 
-            if (proxy.ProxyType != ProxyType.None)
+            if (proxy.Type != ProxyType.None)
                 req.Proxy = proxy;
             else
                 req.Proxy = request.UseDefaultProxy ? WebRequest.DefaultWebProxy : null;
@@ -87,39 +77,11 @@ namespace FclEx.Http.Services
             return req;
         }
 
-        private static void ReadCookies(HttpWebResponse response, CookieContainer cc, ILogger logger)
+        private void ReadCookies(HttpWebResponse response)
         {
-            if (cc == null) return;
-
             var cookieStr = response.Headers[HttpConstants.SetCookie];
             if (cookieStr.IsNullOrEmpty()) return;
-
-            var parser = new CookieParser(cookieStr);
-            try
-            {
-                while (true)
-                {
-                    var c = parser.Get();
-                    if (c == null) break;
-                    try
-                    {
-                        var cookie = c.ToCookie();
-                        if (cookie.Domain.IsNullOrEmpty())
-                            cc.Add(response.ResponseUri, cookie);
-                        else
-                            cc.Add(cookie);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogTrace("A cookie has been discarded. " + ex.Message);
-                        logger.LogTrace(c.ToString());
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogTrace("An error occurred while parsing cookie. " + ex.Message);
-            }
+            SaveCookies(response.ResponseUri, cookieStr);
         }
 
         private static void ReadHeader(HttpWebResponse response, HttpRes res)
@@ -154,9 +116,9 @@ namespace FclEx.Http.Services
                 switch (res.Req.ResultType)
                 {
                     case HttpResultType.String:
-                        var charset = res.Req.ResultChartSet.IsNullOrEmpty()
+                        var charset = res.Req.ResultCharSet.IsNullOrEmpty()
                             ? response.CharacterSet
-                            : res.Req.ResultChartSet;
+                            : res.Req.ResultCharSet;
 
                         var contentEncoding = charset.IsNullOrEmpty()
                             ? Encoding.UTF8
@@ -176,58 +138,58 @@ namespace FclEx.Http.Services
             }
         }
 
-        private static async ValueTask<HttpRes> ExecuteAsync(HttpReq requestItem, IWebProxyExt proxy, CookieContainer cc, CancellationToken token, ILogger logger)
+        public override async ValueTask<HttpRes> ExecuteAsync(HttpReq httpReq, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             var responses = new List<HttpWebResponse>();
 
             try
             {
-                var req = BuildRequest(requestItem, proxy, cc);
-                var data = requestItem.GetBinaryData();
+                var webRequest = BuildRequest(httpReq, WebProxy, _cookieContainer);
+                var data = httpReq.GetBinaryData();
                 if (!data.IsNullOrEmpty())
                 {
-                    req.ContentLength = data.Length;
+                    webRequest.ContentLength = data.Length;
                     //using (var stream = await req.GetRequestStreamAsync().ConfigureAwait(false))
                     //{
                     //    await stream.WriteAsync(data, 0, data.Length, token).DonotCapture();
                     //}
 
                     // use GetRequestStream() instead of GetRequestStreamAsync() to avoid hangs.
-                    using (var stream = req.GetRequestStream())
+                    using (var stream = webRequest.GetRequestStream())
                     {
                         await stream.WriteAsync(data, 0, data.Length, token).DonotCapture();
                     }
                 }
-                var responseItem = new HttpRes { Req = requestItem };
-                var response = await req.GetHttpResponseAsync().DonotCapture();
+                var responseItem = new HttpRes { Req = httpReq };
+                var response = await webRequest.GetHttpResponseAsync().DonotCapture();
 
                 responses.Add(response);
                 responseItem.RedirectUris.Add(response.ResponseUri);
 
-                if (requestItem.ReadResultCookie)
-                    ReadCookies(response, cc, logger);
+                if (httpReq.ReadResultCookie)
+                    ReadCookies(response);
 
                 while (response.IfRedirect())
                 {
                     var uri = response.GetRedirectUri();
-                    var tempReq = BuildRequest(HttpReq.Get(uri), proxy, cc);
+                    var tempReq = BuildRequest(HttpReq.Get(uri), WebProxy, _cookieContainer);
                     response = await tempReq.GetHttpResponseAsync().DonotCapture();
                     responses.Add(response);
                     responseItem.RedirectUris.Add(response.ResponseUri);
 
-                    if (requestItem.ReadResultCookie)
-                        ReadCookies(response, cc, logger);
+                    if (httpReq.ReadResultCookie)
+                        ReadCookies(response);
                 }
                 responseItem.StatusCode = response.StatusCode;
 
-                if (requestItem.ReadResultHeader)
+                if (httpReq.ReadResultHeader)
                     ReadHeader(response, responseItem);
 
-                if (requestItem.ReadResultContent)
+                if (httpReq.ReadResultContent)
                     await ReadContent(response, responseItem).DonotCapture();
 
-                if (requestItem.ThrowOnNonSuccessCode)
+                if (httpReq.ThrowOnNonSuccessCode)
                     response.EnsureSuccessStatusCode();
 
                 return responseItem;
@@ -238,39 +200,7 @@ namespace FclEx.Http.Services
                 responses.Clear();
             }
         }
-
-        public ValueTask<HttpRes> ExecuteAsync(HttpReq req, CancellationToken token = default)
-        {
-            // 本方法依赖的类成员只有_webProxy和_cookieContainer，前者状态不可变，后者线程安全
-            return ExecuteAsync(req, _webProxy, _cookieContainer, token, Logger);
-        }
-
-        public Cookie GetCookie(Uri uri, string name)
-        {
-            return _cookieContainer?.GetCookies(uri)[name];
-        }
-
-        public CookieCollection GetCookies(Uri uri)
-        {
-            return _cookieContainer?.GetCookies(uri);
-        }
-
-        public void AddCookie(Cookie cookie, Uri uri)
-        {
-            if (_cookieContainer == null) return;
-            if (uri == null) _cookieContainer.Add(cookie);
-            else
-            {
-                _cookieContainer.Add(uri, cookie);
-            }
-        }
-
-        public IList<Cookie> GetAllCookies()
-        {
-            if (_cookieContainer == null) return Array.Empty<Cookie>();
-            return _cookieContainer.GetAllCookies();
-        }
-
+        
         public void ClearCookies(Uri uri)
         {
             var cookies = GetCookies(uri);
@@ -289,13 +219,5 @@ namespace FclEx.Http.Services
                 cookie.Expired = true;
             }
         }
-
-        public IWebProxyExt WebProxy
-        {
-            get => _webProxy;
-            set => _webProxy = value ?? _webProxy;
-        }
-
-        public ILogger Logger { get; }
     }
 }
