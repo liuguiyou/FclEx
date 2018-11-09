@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FclEx.Http.Core;
+using FclEx.Http.Core.Cookies;
 using FclEx.Http.Proxy;
 using FclEx.Utils;
 using Microsoft.Extensions.Logging;
@@ -89,7 +90,6 @@ namespace FclEx.Http.Services
         protected void SaveCookies(Uri responseUri, string cookieStr)
         {
             if (!UseCookie) return;
-
             try
             {
                 var parser = new CookieParser(cookieStr);
@@ -97,6 +97,11 @@ namespace FclEx.Http.Services
                 {
                     var c = parser.Get();
                     if (c == null) break;
+                    if (c.Name.IsNullOrEmpty())
+                    {
+                        Logger.LogWarning("A cookie has been rejected: " + c);
+                        continue;
+                    }
 
                     try
                     {

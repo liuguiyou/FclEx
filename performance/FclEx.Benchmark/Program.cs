@@ -1,14 +1,21 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Running;
+using FclEx.Http;
+using FclEx.Http.Core;
+using FclEx.Http.Services;
+using FclEx.Utils;
 
 namespace FclEx.Benchmark
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        internal static async Task Main(string[] args)
         {
-            BenchmarkRunner.Run<HttpServiceTest>();
-            Console.Read();
+            //BenchmarkRunner.Run<HttpServiceTest>();
+            //Console.Read();
+            await ExcuteResult.ExcuteAsync(async () => await HttpServiceRawTest.RawTest(500).DonotCapture())
+                .Error(e => Console.WriteLine(e));
         }
     }
 }

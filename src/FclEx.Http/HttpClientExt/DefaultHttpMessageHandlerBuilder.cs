@@ -66,7 +66,7 @@ namespace FclEx.Http.HttpClientExt
         }
 
         public override HttpMessageHandler PrimaryHandler { get; }
-        public override IList<DelegatingHandler> AdditionalHandlers { get; set; }
+        public override IList<DelegatingHandler> AdditionalHandlers { get; set; } = new List<DelegatingHandler>();
         public override HttpMessageHandler Build()
         {
             Check.NotNull(PrimaryHandler, nameof(PrimaryHandler));

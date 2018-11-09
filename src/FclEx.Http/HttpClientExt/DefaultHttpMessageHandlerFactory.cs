@@ -64,6 +64,10 @@ namespace FclEx.Http.HttpClientExt
         private ActiveHandlerTrackingEntry CreateHandlerEntry(HttpClientOptions options)
         {
             var builder = new DefaultHttpMessageHandlerBuilder(options.Proxy);
+            foreach (var action in options.HttpMessageHandlerBuilderActions)
+            {
+                action(builder);
+            }
             var handler = new LifetimeTrackingHttpMessageHandler(builder.Build());
 
             // Note that we can't start the timer here. That would introduce a very very subtle race condition
@@ -74,7 +78,6 @@ namespace FclEx.Http.HttpClientExt
             // timer) and then dispose it without ever creating a client. That would be bad. It's unlikely
             // this would happen, but we want to be sure.
             return new ActiveHandlerTrackingEntry(options.Name, handler, options.HandlerLifetime);
-
         }
 
         public HttpMessageHandler CreateHandler(HttpClientOptions options)

@@ -61,6 +61,7 @@ namespace FclEx.Http.Services
 
         protected override void SetProxy(IWebProxyExt proxy)
         {
+            proxy = proxy ?? WebProxyExt.None;
             if (Equals(_webProxy, proxy)) return;
 
             switch (proxy.Type)

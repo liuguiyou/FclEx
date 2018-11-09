@@ -15,7 +15,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace FclEx.Http.Services
 {
-    [Obsolete]
     public class LightHttpService : AbstractHttpService
     {
         private static readonly string[] _notAddHeaderNames =

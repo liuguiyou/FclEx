@@ -9,10 +9,11 @@ namespace FclEx.Http
     {
         public static bool IfRedirect(this HttpResponseMessage response)
         {
-            return response.StatusCode == HttpStatusCode.Redirect
+            var flag = response.StatusCode == HttpStatusCode.Redirect
                    || response.StatusCode == HttpStatusCode.Moved
                    || response.StatusCode == HttpStatusCode.SeeOther
                    || response.StatusCode == HttpStatusCode.RedirectKeepVerb;
+            return flag && response.Headers.Location != null;
         }
 
         public static Uri GetRedirectUri(this HttpResponseMessage response)

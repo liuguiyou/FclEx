@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FclEx.Http.Core
+namespace FclEx.Http.Core.Cookies
 {
     //
     // CookieTokenizer

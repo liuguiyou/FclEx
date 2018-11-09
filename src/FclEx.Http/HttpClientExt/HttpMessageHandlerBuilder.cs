@@ -37,8 +37,8 @@ namespace FclEx.Http.HttpClientExt
         public abstract HttpMessageHandler Build();
 
         protected internal static HttpMessageHandler CreateHandlerPipeline(
-            HttpMessageHandler primaryHandler, 
-            IEnumerable<DelegatingHandler> additionalHandlers)
+            HttpMessageHandler primaryHandler,
+            IList<DelegatingHandler> additionalHandlers)
         {
             // This is similar to https://github.com/aspnet/AspNetWebStack/blob/master/src/System.Net.Http.Formatting/HttpClientFactory.cs#L58
             // but we don't want to take that package as a dependency.
@@ -53,12 +53,10 @@ namespace FclEx.Http.HttpClientExt
                 throw new ArgumentNullException(nameof(additionalHandlers));
             }
 
-            var additionalHandlersList = additionalHandlers as IReadOnlyList<DelegatingHandler> ?? additionalHandlers.ToArray();
-
             var next = primaryHandler;
-            for (var i = additionalHandlersList.Count - 1; i >= 0; i--)
+            for (var i = additionalHandlers.Count - 1; i >= 0; i--)
             {
-                var handler = additionalHandlersList[i];
+                var handler = additionalHandlers[i];
                 if (handler == null)
                 {
                     throw new InvalidOperationException($"The '{nameof(additionalHandlers)}' must not be null.");

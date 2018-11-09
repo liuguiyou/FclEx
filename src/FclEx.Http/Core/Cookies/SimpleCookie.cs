@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace FclEx.Http.Core
+namespace FclEx.Http.Core.Cookies
 {
     public class SimpleCookie
     {

@@ -175,9 +175,9 @@ namespace FclEx.Http
             return ParseQueryStringInternal(query);
         }
 
-        public static async ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 0)
+        public static ValueTask<HttpRes> SendAsync(this HttpReq req, int retryTimes = 0)
         {
-            return await HttpClientService.Default.Value.SendAsync(req, retryTimes, 0).DonotCapture();
+            return HttpClientService.Default.Value.SendAsync(req, retryTimes, 0);
         }
 
         public static HttpReq ResultType(this HttpReq req, HttpResultType type)

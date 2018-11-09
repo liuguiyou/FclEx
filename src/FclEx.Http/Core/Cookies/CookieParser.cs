@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Globalization;
 using System.Net;
+using FclEx.Helpers;
 
-namespace FclEx.Http.Core
+namespace FclEx.Http.Core.Cookies
 {
     internal class CookieParser
     {
         private static readonly string[] _dateTimeFormats =
         {
-            "ddd, d MMM yyyy HH:mm:ss UTC",
-            "ddd, d-MMM-yyyy HH:mm:ss UTC"
+            "ddd, d MMM yyyy HH:mm:ss Z",
+            "ddd, d-MMM-yyyy HH:mm:ss Z",
+            "ddd, d-MMM-yy HH:mm:ss Z",
         };
         // fields
 
@@ -63,6 +65,7 @@ namespace FclEx.Http.Core
             bool versionSet = false;
             bool secureSet = false;
             bool discardSet = false;
+            bool rejected = false;
 
             do
             {
@@ -74,6 +77,7 @@ namespace FclEx.Http.Core
                     {
                         //will be rejected
                         cookie.InternalSetName(string.Empty);
+                        rejected = true;
                     }
                     cookie.Value = m_tokenizer.Value;
                 }
@@ -85,47 +89,54 @@ namespace FclEx.Http.Core
                             switch (m_tokenizer.Token)
                             {
                                 case CookieToken.Comment:
+                                {
                                     if (!commentSet)
                                     {
                                         commentSet = true;
                                         cookie.Comment = m_tokenizer.Value;
                                     }
                                     break;
-
+                                }
                                 case CookieToken.CommentUrl:
+                                {
                                     if (!commentUriSet)
                                     {
                                         commentUriSet = true;
-                                        Uri parsed;
-                                        if (Uri.TryCreate(CheckQuoted(m_tokenizer.Value), UriKind.Absolute, out parsed))
+                                        if (Uri.TryCreate(CheckQuoted(m_tokenizer.Value), UriKind.Absolute,
+                                            out var parsed))
                                         {
                                             cookie.CommentUri = parsed;
                                         }
                                     }
-                                    break;
 
+                                    break;
+                                }
                                 case CookieToken.Domain:
+                                {
                                     if (!domainSet)
                                     {
                                         domainSet = true;
                                         cookie.Domain = CheckQuoted(m_tokenizer.Value);
                                         cookie.IsQuotedDomain = m_tokenizer.Quoted;
                                     }
-                                    break;
 
+                                    break;
+                                }
                                 case CookieToken.Expires:
+                                {
                                     if (!expiresSet)
                                     {
                                         expiresSet = true;
+                                        const DateTimeStyles style = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal;
+                                        var unQuotedValue = CheckQuoted(m_tokenizer.Value);
 
-                                        DateTime expires;
-                                        if (DateTime.TryParse(CheckQuoted(m_tokenizer.Value),
-                                            CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out expires))
+                                        if (DateTime.TryParse(unQuotedValue,
+                                            CultureInfo.InvariantCulture, style, out var expires))
                                         {
                                             cookie.Expires = expires;
                                         }
-                                        else if (DateTime.TryParseExact(CheckQuoted(m_tokenizer.Value), _dateTimeFormats,
-                                            CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal, out expires))
+                                        else if (DateTime.TryParseExact(unQuotedValue, _dateTimeFormats,
+                                            DateTimeCultureInfo.TwoDigitYear, style, out expires))
                                         {
                                             cookie.Expires = expires;
                                         }
@@ -133,16 +144,17 @@ namespace FclEx.Http.Core
                                         {
                                             //this cookie will be rejected
                                             cookie.InternalSetName(string.Empty);
+                                            rejected = true;
                                         }
                                     }
                                     break;
-
+                                }
                                 case CookieToken.MaxAge:
+                                {
                                     if (!expiresSet)
                                     {
                                         expiresSet = true;
-                                        int parsed;
-                                        if (int.TryParse(CheckQuoted(m_tokenizer.Value), out parsed))
+                                        if (int.TryParse(CheckQuoted(m_tokenizer.Value), out var parsed))
                                         {
                                             cookie.Expires = DateTime.Now.AddSeconds((double)parsed);
                                         }
@@ -150,19 +162,24 @@ namespace FclEx.Http.Core
                                         {
                                             //this cookie will be rejected
                                             cookie.InternalSetName(string.Empty);
+                                            rejected = true;
                                         }
                                     }
-                                    break;
 
+                                    break;
+                                }
                                 case CookieToken.Path:
+                                {
                                     if (!pathSet)
                                     {
                                         pathSet = true;
                                         cookie.Path = m_tokenizer.Value;
                                     }
-                                    break;
 
+                                    break;
+                                }
                                 case CookieToken.Port:
+                                {
                                     if (!portSet)
                                     {
                                         portSet = true;
@@ -174,16 +191,19 @@ namespace FclEx.Http.Core
                                         {
                                             //this cookie will be rejected
                                             cookie.InternalSetName(string.Empty);
+                                            rejected = true;
                                         }
                                     }
+
                                     break;
+                                }
 
                                 case CookieToken.Version:
+                                {
                                     if (!versionSet)
                                     {
                                         versionSet = true;
-                                        int parsed;
-                                        if (int.TryParse(CheckQuoted(m_tokenizer.Value), out parsed))
+                                        if (int.TryParse(CheckQuoted(m_tokenizer.Value), out var parsed))
                                         {
                                             cookie.Version = parsed;
                                             cookie.IsQuotedVersion = m_tokenizer.Quoted;
@@ -192,9 +212,11 @@ namespace FclEx.Http.Core
                                         {
                                             //this cookie will be rejected
                                             cookie.InternalSetName(string.Empty);
+                                            rejected = true;
                                         }
                                     }
                                     break;
+                                }
                             }
                             break;
 
@@ -232,7 +254,7 @@ namespace FclEx.Http.Core
                             break;
                     }
                 }
-            } while (!m_tokenizer.Eof && !m_tokenizer.EndOfCookie);
+            } while (!m_tokenizer.Eof && !m_tokenizer.EndOfCookie && !rejected);
             return cookie;
         }
 
